@@ -9,6 +9,7 @@ import authRoutes from './routes/auth'
 import trackRoutes from './routes/tracks'
 import blogRoutes from './routes/blog'
 import forumRoutes from './routes/forum'
+import producerRoutes from './routes/producer'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -21,6 +22,7 @@ app.route('/api/auth', authRoutes)
 app.route('/api/tracks', trackRoutes)
 app.route('/api/blog', blogRoutes)
 app.route('/api/forum', forumRoutes)
+app.route('/api/producer', producerRoutes)
 
 // HTML template function
 function renderHTML(locale: Locale, page: string) {

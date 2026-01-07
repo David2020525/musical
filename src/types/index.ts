@@ -10,6 +10,43 @@ export interface User {
   avatar_url?: string
   bio?: string
   email_verified: boolean
+  is_producer: boolean
+  producer_application_id?: number
+  created_at: string
+  updated_at: string
+}
+
+// Producer Application types
+export type ProducerApplicationStatus = 'pending' | 'approved' | 'rejected'
+
+export interface ProducerApplication {
+  id: number
+  user_id: number
+  
+  // Personal Information
+  real_name: string
+  turkish_id: string
+  phone: string
+  
+  // Social Links
+  instagram_url?: string
+  twitter_url?: string
+  youtube_url?: string
+  spotify_url?: string
+  soundcloud_url?: string
+  
+  // Portfolio Links
+  portfolio_url?: string
+  sample_track_1?: string
+  sample_track_2?: string
+  sample_track_3?: string
+  
+  // Application Status
+  status: ProducerApplicationStatus
+  admin_notes?: string
+  reviewed_by?: number
+  reviewed_at?: string
+  
   created_at: string
   updated_at: string
 }
