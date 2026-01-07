@@ -16,9 +16,10 @@ A complete music discovery and community platform built with Hono, Cloudflare Wo
 - ✅ **JWT Authentication**: Secure authentication with role-based access control (user, moderator, admin)
 - ✅ **Database Integration**: Cloudflare D1 (SQLite) with migrations and seed data
 - ✅ **State Management**: Zustand for global state (auth, locale, audio player)
-- ✅ **Form Validation**: React Hook Form + Zod schemas
+- ✅ **Form Validation**: React Hook Form + Zod schemas with complex validation rules
 - ✅ **Responsive Design**: TailwindCSS with mobile-first approach
 - ✅ **Persistent Audio Player**: Bottom player with play/pause, seek, volume control that persists across routes
+- ✅ **Producer Application System**: Multi-step form with verification, approval workflow, and upload access control
 
 ### Pages Implemented
 
@@ -39,6 +40,8 @@ A complete music discovery and community platform built with Hono, Cloudflare Wo
 4. **Profile** - Banner, avatar, bio, tabs (tracks/playlists/liked/activity)
 5. **ForumTopicDetail** - Full topic view with replies, mod controls
 6. **BlogArticle** - Rich article page with sidebar, related posts
+7. **ProducerApplication** - Multi-step form for becoming a verified producer
+8. **AdminProducerApplications** - Admin interface for reviewing producer applications
 
 ### UI Component Library
 - ✅ **8 Reusable Components**: Button, Card, Badge, Tabs, Avatar, Input, Loading, EmptyState
@@ -81,7 +84,8 @@ webapp/
 │   │   ├── auth.ts            # Auth API routes
 │   │   ├── tracks.ts          # Tracks API routes
 │   │   ├── blog.ts            # Blog API routes
-│   │   └── forum.ts           # Forum API routes
+│   │   ├── forum.ts           # Forum API routes
+│   │   └── producer.ts        # Producer application API routes
 │   ├── pages/                 # Page components
 │   │   ├── Home.tsx
 │   │   ├── Browse.tsx
@@ -91,10 +95,11 @@ webapp/
 │   │   ├── Dashboard.tsx
 │   │   └── Admin.tsx
 │   └── components/
-│       ├── Layout.tsx         # Main layout with navigation
-│       ├── AudioPlayer.tsx    # Persistent bottom audio player
-│       ├── PlayButton.tsx     # Reusable play button
-│       └── ui/                # UI component library
+│       ├── Layout.tsx                  # Main layout with navigation
+│       ├── AudioPlayer.tsx             # Persistent bottom audio player
+│       ├── PlayButton.tsx              # Reusable play button
+│       ├── ProducerApplicationForm.tsx # Multi-step producer form
+│       └── ui/                         # UI component library
 │           ├── Button.tsx
 │           ├── Card.tsx
 │           ├── Badge.tsx
@@ -104,7 +109,8 @@ webapp/
 │           ├── Loading.tsx
 │           └── EmptyState.tsx
 ├── migrations/
-│   └── 0001_initial_schema.sql
+│   ├── 0001_initial_schema.sql
+│   └── 0002_producer_applications.sql
 ├── public/static/
 ├── seed.sql
 ├── wrangler.jsonc             # Cloudflare configuration
@@ -220,6 +226,68 @@ import { PlayButton } from '../components/PlayButton'
   showIcon={true}
 />
 ```
+
+## 🎤 Producer Application System
+
+### Overview
+A comprehensive multi-step application system that allows users to become verified producers who can upload and monetize their music. The system includes:
+- **Multi-step form** with React Hook Form + Zod validation
+- **Turkish ID verification** with algorithm validation
+- **Admin review workflow** with approval/rejection
+- **Access control** - uploads blocked until approved
+
+### Application Steps
+
+#### Step 1: Personal Information
+- **Real Name**: Turkish characters supported (3-100 chars)
+- **Turkish ID**: 11-digit with checksum validation
+- **Phone**: Turkish mobile format (05XXXXXXXXX or +905XXXXXXXXX)
+
+#### Step 2: Social Media Links (Optional)
+- Instagram, Twitter, YouTube, Spotify, SoundCloud
+- URL format validation
+
+#### Step 3: Portfolio & Samples (Optional)
+- Portfolio website URL
+- Up to 3 sample track URLs
+- Showcase your work
+
+### User Flow
+1. Visit `/producer/apply`
+2. Complete 3-step form
+3. Wait for admin review (2-3 business days)
+4. Get approved → Upload access granted
+5. Start uploading tracks!
+
+### Admin Review
+Admins can:
+- View all applications (pending/approved/rejected)
+- Review application details, social links, samples
+- Approve or reject with notes
+- Track reviewer and timestamp
+
+### API Endpoints
+```bash
+# User endpoints
+GET  /api/producer/application          # Get current application
+POST /api/producer/application          # Submit application
+
+# Admin endpoints
+GET  /api/producer/admin/applications   # List all applications
+POST /api/producer/admin/applications/:id/review  # Approve/reject
+```
+
+### Test Data
+```bash
+# Seed test applications
+npx wrangler d1 execute webapp-production --local --file=./seed_producer_test.sql
+
+# Test credentials:
+# Pending application: john@example.com / password123
+# Approved producer: jane@example.com / password123
+```
+
+See [PRODUCER_APPLICATION_SYSTEM.md](./PRODUCER_APPLICATION_SYSTEM.md) for full documentation.
 
 ### Sample Audio
 All tracks include sample MP3 files from SoundHelix.com (CC0 License):
