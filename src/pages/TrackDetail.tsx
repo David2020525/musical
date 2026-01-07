@@ -11,6 +11,7 @@ import {
   Loading,
   Tabs,
 } from '../components/ui'
+import { PlayButton } from '../components/PlayButton'
 
 interface TrackDetailProps {
   trackId: string
@@ -121,13 +122,12 @@ export function TrackDetail({ trackId }: TrackDetailProps) {
                   </div>
 
                   <div className="flex items-center space-x-3">
-                    <Button
+                    <PlayButton
+                      track={track}
                       size="lg"
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      icon={<span className="text-xl">{isPlaying ? '⏸️' : '▶️'}</span>}
-                    >
-                      {isPlaying ? t('track.pause', locale) : t('track.play', locale)}
-                    </Button>
+                      showIcon={true}
+                      className="min-w-[160px]"
+                    />
                     <Button
                       variant={isLiked ? 'primary' : 'outline'}
                       onClick={() => setIsLiked(!isLiked)}

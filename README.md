@@ -15,9 +15,10 @@ A complete music discovery and community platform built with Hono, Cloudflare Wo
 - ✅ **Multi-language Support (i18n)**: English and Turkish with `/en` and `/tr` routing
 - ✅ **JWT Authentication**: Secure authentication with role-based access control (user, moderator, admin)
 - ✅ **Database Integration**: Cloudflare D1 (SQLite) with migrations and seed data
-- ✅ **State Management**: Zustand for global state (auth, locale, UI)
+- ✅ **State Management**: Zustand for global state (auth, locale, audio player)
 - ✅ **Form Validation**: React Hook Form + Zod schemas
 - ✅ **Responsive Design**: TailwindCSS with mobile-first approach
+- ✅ **Persistent Audio Player**: Bottom player with play/pause, seek, volume control that persists across routes
 
 ### Pages Implemented
 
@@ -41,12 +42,14 @@ A complete music discovery and community platform built with Hono, Cloudflare Wo
 
 ### UI Component Library
 - ✅ **8 Reusable Components**: Button, Card, Badge, Tabs, Avatar, Input, Loading, EmptyState
+- ✅ **Audio Components**: AudioPlayer (persistent bottom player), PlayButton (track card integration)
 - ✅ **Professional Design**: Consistent styling, hover effects, transitions
 - ✅ **Loading States**: Spinners and skeleton loaders
 - ✅ **Empty States**: User-friendly messages with actions
 - ✅ **Full Type Safety**: TypeScript types for all components
 
-See [UI_COMPONENTS.md](./UI_COMPONENTS.md) for detailed component documentation.
+See [UI_COMPONENTS.md](./UI_COMPONENTS.md) for detailed component documentation.  
+See [AUDIO_PLAYER.md](./AUDIO_PLAYER.md) for audio player implementation guide.
 
 ## 🏗️ Architecture
 
@@ -72,7 +75,8 @@ webapp/
 │   │   ├── i18n.ts            # Internationalization
 │   │   └── validations.ts    # Zod schemas
 │   ├── store/
-│   │   └── index.ts           # Zustand stores
+│   │   ├── index.ts           # Zustand stores (auth, locale)
+│   │   └── audioPlayerStore.ts # Audio player store
 │   ├── routes/
 │   │   ├── auth.ts            # Auth API routes
 │   │   ├── tracks.ts          # Tracks API routes
@@ -87,7 +91,18 @@ webapp/
 │   │   ├── Dashboard.tsx
 │   │   └── Admin.tsx
 │   └── components/
-│       └── Layout.tsx         # Main layout with navigation
+│       ├── Layout.tsx         # Main layout with navigation
+│       ├── AudioPlayer.tsx    # Persistent bottom audio player
+│       ├── PlayButton.tsx     # Reusable play button
+│       └── ui/                # UI component library
+│           ├── Button.tsx
+│           ├── Card.tsx
+│           ├── Badge.tsx
+│           ├── Tabs.tsx
+│           ├── Avatar.tsx
+│           ├── Input.tsx
+│           ├── Loading.tsx
+│           └── EmptyState.tsx
 ├── migrations/
 │   └── 0001_initial_schema.sql
 ├── public/static/
@@ -183,6 +198,35 @@ The app supports two languages with dedicated routes:
 - Turkish: `/tr/*`
 
 Language switcher is available in the navigation bar. Translations are managed in `src/lib/i18n.ts`.
+
+## 🎵 Persistent Audio Player
+
+### Features
+- **Global Playback**: Bottom player that persists across all route changes
+- **Full Controls**: Play/Pause, Seek bar, Volume slider, Time display
+- **Track Metadata**: Shows current track artwork, title, and artist
+- **Integration**: PlayButton component on track cards and detail pages
+- **State Management**: Zustand store for global player state
+
+### Usage
+```typescript
+// Play a track from any page
+import { PlayButton } from '../components/PlayButton'
+
+<PlayButton 
+  track={track} 
+  variant="primary" 
+  size="md" 
+  showIcon={true}
+/>
+```
+
+### Sample Audio
+All tracks include sample MP3 files from SoundHelix.com (CC0 License):
+- Track 1: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
+- Track 2-5: Additional sample tracks
+
+**See [AUDIO_PLAYER.md](./AUDIO_PLAYER.md) for complete implementation guide.**
 
 ## 🔐 Authentication & Authorization
 
