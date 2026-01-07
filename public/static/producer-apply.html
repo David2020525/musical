@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producer Application - MusicHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/en" class="text-xl font-bold text-indigo-600">
+                        🎵 MusicHub
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/en" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Home</a>
+                    <a href="/en/login" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="app" class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <p class="mt-4 text-gray-600">Loading...</p>
+        </div>
+
+        <!-- Content will be injected here -->
+        <div id="content" class="hidden"></div>
+    </div>
+
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('content').classList.remove('hidden');
+            document.getElementById('content').innerHTML = `
+                <div class="bg-white rounded-lg shadow-md p-8 text-center">
+                    <div class="text-6xl mb-4">🔒</div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Authentication Required</h2>
+                    <p class="text-gray-600 mb-6">You need to log in to apply as a producer.</p>
+                    <a href="/en/login" class="inline-block px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700">
+                        Go to Login
+                    </a>
+                </div>
+            `;
+        } else {
+            // Fetch application status
+            fetch('/api/producer/application', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+                
+                if (data.data) {
+                    // User has existing application
+                    renderApplicationStatus(data.data);
+                } else {
+                    // Show application form
+                    renderApplicationForm();
+                }
+            })
+            .catch(err => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+                document.getElementById('content').innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                        <h3 class="text-red-900 font-semibold mb-2">Error</h3>
+                        <p class="text-red-700">Failed to load application. Please try again.</p>
+                    </div>
+                `;
+            });
+        }
+
+        function renderApplicationStatus(application) {
+            const statusColors = {
+                pending: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-900', badge: 'bg-yellow-100 text-yellow-800' },
+                approved: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-900', badge: 'bg-green-100 text-green-800' },
+                rejected: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-900', badge: 'bg-red-100 text-red-800' }
+            };
+            const colors = statusColors[application.status];
+            
+            document.getElementById('content').innerHTML = `
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Application Status</h2>
+                        <span class="px-3 py-1 rounded-full text-sm font-medium ${colors.badge}">
+                            ${application.status.toUpperCase()}
+                        </span>
+                    </div>
+                    
+                    <div class="${colors.bg} ${colors.border} border rounded-lg p-4 mb-6">
+                        <p class="${colors.text}">
+                            ${application.status === 'pending' ? '⏳ Your application is under review. This usually takes 2-3 business days.' :
+                              application.status === 'approved' ? '✅ Congratulations! Your application has been approved. You can now upload tracks.' :
+                              '❌ Unfortunately, your application was not approved. Please review the admin notes below.'}
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-3">Application Details</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-500">Real Name</p>
+                                    <p class="font-medium">${application.real_name}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Phone</p>
+                                    <p class="font-medium">${application.phone}</p>
+                                </div>
+                                <div class="col-span-2">
+                                    <p class="text-sm text-gray-500">Submitted</p>
+                                    <p class="font-medium">${new Date(application.created_at).toLocaleString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${application.admin_notes ? `
+                            <div class="border-t pt-4">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Admin Notes:</p>
+                                <p class="text-gray-600">${application.admin_notes}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="mt-8 flex gap-3">
+                        <a href="/en/dashboard" class="px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700">
+                            Go to Dashboard
+                        </a>
+                        <a href="/en" class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderApplicationForm() {
+            let currentStep = 1;
+            let formData = {};
+            
+            document.getElementById('content').innerHTML = `
+                <div class="bg-white rounded-lg shadow-md p-8">
+                    <!-- Progress Steps -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="step1-indicator" class="flex items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-bold">1</div>
+                                <div class="ml-2">
+                                    <div class="text-sm font-medium text-blue-600">Step 1</div>
+                                    <div class="text-xs text-gray-500">Personal Info</div>
+                                </div>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-300 mx-4"></div>
+                            <div id="step2-indicator" class="flex items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 font-bold">2</div>
+                                <div class="ml-2">
+                                    <div class="text-sm font-medium text-gray-500">Step 2</div>
+                                    <div class="text-xs text-gray-500">Social Links</div>
+                                </div>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-300 mx-4"></div>
+                            <div id="step3-indicator" class="flex items-center">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-gray-600 font-bold">3</div>
+                                <div class="ml-2">
+                                    <div class="text-sm font-medium text-gray-500">Step 3</div>
+                                    <div class="text-xs text-gray-500">Portfolio</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Container -->
+                    <div id="form-container"></div>
+                    
+                    <!-- Error Display -->
+                    <div id="error-display" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"></div>
+                </div>
+            `;
+            
+            renderStep1();
+            
+            function updateStepIndicators() {
+                // Update step 1
+                const step1 = document.getElementById('step1-indicator').querySelector('div');
+                if (currentStep > 1) {
+                    step1.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold';
+                    step1.innerHTML = '✓';
+                }
+                
+                // Update step 2
+                const step2 = document.getElementById('step2-indicator').querySelector('div');
+                if (currentStep === 2) {
+                    step2.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-bold';
+                } else if (currentStep > 2) {
+                    step2.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold';
+                    step2.innerHTML = '✓';
+                }
+                
+                // Update step 3
+                const step3 = document.getElementById('step3-indicator').querySelector('div');
+                if (currentStep === 3) {
+                    step3.className = 'flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-bold';
+                }
+            }
+            
+            function renderStep1() {
+                document.getElementById('form-container').innerHTML = `
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Personal Information</h3>
+                    <form id="step1-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Real Name *</label>
+                            <input type="text" id="real_name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ahmet Yılmaz" required>
+                            <p class="text-xs text-gray-500 mt-1">Your full legal name</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Turkish ID Number *</label>
+                            <input type="text" id="turkish_id" maxlength="11" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="12345678901" required>
+                            <p class="text-xs text-gray-500 mt-1">11-digit Turkish ID number</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="05551234567" required>
+                            <p class="text-xs text-gray-500 mt-1">Turkish mobile number (e.g., 05551234567)</p>
+                        </div>
+                        
+                        <div class="flex justify-end gap-3 pt-4">
+                            <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                                Next →
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('step1-form').onsubmit = function(e) {
+                    e.preventDefault();
+                    formData.real_name = document.getElementById('real_name').value;
+                    formData.turkish_id = document.getElementById('turkish_id').value;
+                    formData.phone = document.getElementById('phone').value;
+                    
+                    // Basic validation
+                    if (formData.turkish_id.length !== 11) {
+                        showError('Turkish ID must be exactly 11 digits');
+                        return;
+                    }
+                    if (!formData.phone.match(/^(05|\\+905)\\d{9}$/)) {
+                        showError('Invalid phone number format');
+                        return;
+                    }
+                    
+                    currentStep = 2;
+                    updateStepIndicators();
+                    renderStep2();
+                };
+            }
+            
+            function renderStep2() {
+                document.getElementById('form-container').innerHTML = `
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Social Media Links</h3>
+                    <p class="text-sm text-gray-600 mb-4">Add your social media profiles (all optional)</p>
+                    <form id="step2-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                            <input type="url" id="instagram_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://instagram.com/yourprofile">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Twitter/X</label>
+                            <input type="url" id="twitter_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://twitter.com/yourprofile">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">YouTube</label>
+                            <input type="url" id="youtube_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://youtube.com/@yourprofile">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Spotify</label>
+                            <input type="url" id="spotify_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://open.spotify.com/artist/...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">SoundCloud</label>
+                            <input type="url" id="soundcloud_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://soundcloud.com/yourprofile">
+                        </div>
+                        
+                        <div class="flex justify-between gap-3 pt-4">
+                            <button type="button" id="back-btn" class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300">
+                                ← Back
+                            </button>
+                            <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                                Next →
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('back-btn').onclick = function() {
+                    currentStep = 1;
+                    updateStepIndicators();
+                    renderStep1();
+                };
+                
+                document.getElementById('step2-form').onsubmit = function(e) {
+                    e.preventDefault();
+                    formData.instagram_url = document.getElementById('instagram_url').value;
+                    formData.twitter_url = document.getElementById('twitter_url').value;
+                    formData.youtube_url = document.getElementById('youtube_url').value;
+                    formData.spotify_url = document.getElementById('spotify_url').value;
+                    formData.soundcloud_url = document.getElementById('soundcloud_url').value;
+                    
+                    currentStep = 3;
+                    updateStepIndicators();
+                    renderStep3();
+                };
+            }
+            
+            function renderStep3() {
+                document.getElementById('form-container').innerHTML = `
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Portfolio & Samples</h3>
+                    <p class="text-sm text-gray-600 mb-4">Share your portfolio and sample tracks (all optional)</p>
+                    <form id="step3-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Portfolio Website</label>
+                            <input type="url" id="portfolio_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://yourwebsite.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sample Track 1</label>
+                            <input type="url" id="sample_track_1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://soundcloud.com/your-track-1">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sample Track 2</label>
+                            <input type="url" id="sample_track_2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://soundcloud.com/your-track-2">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sample Track 3</label>
+                            <input type="url" id="sample_track_3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://soundcloud.com/your-track-3">
+                        </div>
+                        
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h4 class="font-medium text-blue-900 mb-2">Application Review</h4>
+                            <p class="text-sm text-blue-700">Your application will be reviewed by our team within 2-3 business days. You will receive a notification once approved.</p>
+                        </div>
+                        
+                        <div class="flex justify-between gap-3 pt-4">
+                            <button type="button" id="back-btn" class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300">
+                                ← Back
+                            </button>
+                            <button type="submit" id="submit-btn" class="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700">
+                                Submit Application
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('back-btn').onclick = function() {
+                    currentStep = 2;
+                    updateStepIndicators();
+                    renderStep2();
+                };
+                
+                document.getElementById('step3-form').onsubmit = function(e) {
+                    e.preventDefault();
+                    formData.portfolio_url = document.getElementById('portfolio_url').value;
+                    formData.sample_track_1 = document.getElementById('sample_track_1').value;
+                    formData.sample_track_2 = document.getElementById('sample_track_2').value;
+                    formData.sample_track_3 = document.getElementById('sample_track_3').value;
+                    
+                    submitApplication();
+                };
+            }
+            
+            function submitApplication() {
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+                
+                fetch('/api/producer/application', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        showError(data.error || 'Failed to submit application');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Application';
+                    }
+                })
+                .catch(err => {
+                    showError('Failed to submit application. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Application';
+                });
+            }
+            
+            function showError(message) {
+                const errorDisplay = document.getElementById('error-display');
+                errorDisplay.textContent = message;
+                errorDisplay.classList.remove('hidden');
+                setTimeout(() => {
+                    errorDisplay.classList.add('hidden');
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

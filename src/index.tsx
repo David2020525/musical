@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
+import { producerApplyHTML } from './pages/producer-apply-html'
 
 // Import routes
 import authRoutes from './routes/auth'
@@ -119,6 +120,11 @@ app.get('/', c => {
 app.get('/:locale', c => {
   const locale = (c.req.param('locale') as Locale) || 'en'
   return c.html(renderHTML(locale, ''))
+})
+
+// Special route for producer application page
+app.get('/:locale/producer/apply', c => {
+  return c.html(producerApplyHTML)
 })
 
 app.get('/:locale/*', c => {
