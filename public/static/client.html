@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicHub - Discover & Share Music</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/zustand@4.4.1/index.umd.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+    
+    <script type="text/babel" data-type="module">
+        // This is a placeholder - the actual implementation would be more complex
+        // For production, you'd bundle this properly with Vite
+        
+        const { useState, useEffect } = React;
+        
+        function App() {
+            return (
+                <div className="min-h-screen">
+                    <nav className="bg-white shadow-md">
+                        <div className="max-w-7xl mx-auto px-4 py-4">
+                            <div className="flex justify-between items-center">
+                                <h1 className="text-2xl font-bold text-indigo-600">🎵 MusicHub</h1>
+                                <div className="flex space-x-4">
+                                    <a href="/en" className="px-4 py-2 text-gray-700 hover:text-indigo-600">EN</a>
+                                    <a href="/tr" className="px-4 py-2 text-gray-700 hover:text-indigo-600">TR</a>
+                                </div>
+                            </div>
+                        </div>
+                    </nav>
+                    <main className="max-w-7xl mx-auto px-4 py-12">
+                        <h1 className="text-4xl font-bold text-center mb-8">Welcome to MusicHub</h1>
+                        <p className="text-center text-gray-600 text-lg">
+                            Discover, share, and discuss your favorite music
+                        </p>
+                    </main>
+                </div>
+            );
+        }
+        
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
