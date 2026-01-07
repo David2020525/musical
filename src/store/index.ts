@@ -3,6 +3,10 @@ import { persist } from 'zustand/middleware'
 import { User, Locale } from '../types'
 import { defaultLocale } from '../lib/i18n'
 
+// Re-export audio player store
+export { useAudioPlayerStore } from './audioPlayerStore'
+export type { CurrentTrack } from './audioPlayerStore'
+
 interface AuthState {
   user: User | null
   token: string | null

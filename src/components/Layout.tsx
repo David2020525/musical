@@ -1,5 +1,6 @@
 import { useAuthStore, useLocaleStore } from '../store'
 import { t, localizedPath, Locale, locales } from '../lib/i18n'
+import { AudioPlayer } from './AudioPlayer'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -138,6 +139,9 @@ export function Layout({ children, currentPath }: LayoutProps) {
           </p>
         </div>
       </footer>
+
+      {/* Persistent Audio Player */}
+      <AudioPlayer />
     </div>
   )
 }

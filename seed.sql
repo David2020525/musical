@@ -4,13 +4,13 @@ INSERT OR IGNORE INTO users (id, email, username, password_hash, name, role, bio
   (2, 'john@example.com', 'johndoe', '$2a$10$rKx.KZ8N5Q7qF9nVJZXqNOVvJP.kKyKGqP1K5P5cJ1RqJ1K5P5cJ1', 'John Doe', 'user', 'Music enthusiast'),
   (3, 'jane@example.com', 'janesmith', '$2a$10$rKx.KZ8N5Q7qF9nVJZXqNOVvJP.kKyKGqP1K5P5cJ1RqJ1K5P5cJ1', 'Jane Smith', 'moderator', 'Community moderator');
 
--- Insert sample tracks
-INSERT OR IGNORE INTO tracks (id, title, artist, album, genre, duration, release_year, description, plays_count, likes_count) VALUES 
-  (1, 'Summer Vibes', 'The Wavelengths', 'Endless Summer', 'Pop', 215, 2023, 'An upbeat summer anthem perfect for beach days', 1234, 89),
-  (2, 'Midnight Drive', 'Echo Dreams', 'Night Rider', 'Electronic', 245, 2023, 'Synthwave journey through neon-lit streets', 987, 67),
-  (3, 'Mountain Peak', 'Acoustic Souls', 'Nature Sounds', 'Folk', 198, 2022, 'Peaceful acoustic guitar with nature ambience', 2341, 134),
-  (4, 'Urban Groove', 'Beat Masters', 'City Life', 'Hip Hop', 203, 2024, 'Fresh beats from the streets', 3456, 201),
-  (5, 'Starlight Symphony', 'Classical Ensemble', 'Cosmos', 'Classical', 312, 2023, 'Orchestral masterpiece inspired by the cosmos', 876, 92);
+-- Insert sample tracks with audio URLs (using free sample audio)
+INSERT OR IGNORE INTO tracks (id, title, artist, album, genre, duration, release_year, audio_url, description, plays_count, likes_count) VALUES 
+  (1, 'Summer Vibes', 'The Wavelengths', 'Endless Summer', 'Pop', 215, 2023, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'An upbeat summer anthem perfect for beach days', 1234, 89),
+  (2, 'Midnight Drive', 'Echo Dreams', 'Night Rider', 'Electronic', 245, 2023, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 'Synthwave journey through neon-lit streets', 987, 67),
+  (3, 'Mountain Peak', 'Acoustic Souls', 'Nature Sounds', 'Folk', 198, 2022, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', 'Peaceful acoustic guitar with nature ambience', 2341, 134),
+  (4, 'Urban Groove', 'Beat Masters', 'City Life', 'Hip Hop', 203, 2024, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', 'Fresh beats from the streets', 3456, 201),
+  (5, 'Starlight Symphony', 'Classical Ensemble', 'Cosmos', 'Classical', 312, 2023, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', 'Orchestral masterpiece inspired by the cosmos', 876, 92);
 
 -- Insert forum categories
 INSERT OR IGNORE INTO forum_categories (id, name, slug, description, icon, posts_count) VALUES 

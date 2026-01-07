@@ -3,6 +3,7 @@ import { useLocaleStore } from '../store'
 import { t, localizedPath } from '../lib/i18n'
 import { Track, BlogPost } from '../types'
 import { Card, CardContent, Button, Badge, Loading } from '../components/ui'
+import { PlayButton } from '../components/PlayButton'
 
 // Mock data for hero slider
 const heroSlides = [
@@ -120,25 +121,28 @@ export function HomeEnhanced() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {editorPicks.map(track => (
             <Card key={track.id} hover className="p-0">
-              <a href={localizedPath(`/tracks/${track.id}`, locale)}>
-                <div className="aspect-square bg-gradient-to-br from-indigo-400 to-purple-500 rounded-t-lg flex items-center justify-center">
-                  <span className="text-6xl">🎵</span>
+              <div className="aspect-square bg-gradient-to-br from-indigo-400 to-purple-500 rounded-t-lg flex items-center justify-center">
+                <span className="text-6xl">🎵</span>
+              </div>
+              <CardContent className="p-4">
+                <a href={localizedPath(`/tracks/${track.id}`, locale)}>
+                  <h3 className="font-semibold text-gray-900 mb-1 truncate hover:text-indigo-600">
+                    {track.title}
+                  </h3>
+                </a>
+                <p className="text-sm text-gray-600 mb-3 truncate">{track.artist}</p>
+                <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                  <span className="flex items-center">
+                    <span className="mr-1">▶️</span>
+                    {track.plays_count.toLocaleString()}
+                  </span>
+                  <span className="flex items-center">
+                    <span className="mr-1">❤️</span>
+                    {track.likes_count}
+                  </span>
                 </div>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-1 truncate">{track.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3 truncate">{track.artist}</p>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
-                    <span className="flex items-center">
-                      <span className="mr-1">▶️</span>
-                      {track.plays_count.toLocaleString()}
-                    </span>
-                    <span className="flex items-center">
-                      <span className="mr-1">❤️</span>
-                      {track.likes_count}
-                    </span>
-                  </div>
-                </CardContent>
-              </a>
+                <PlayButton track={track} variant="outline" size="sm" className="w-full" />
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -175,9 +179,7 @@ export function HomeEnhanced() {
                   <div className="text-sm text-gray-500 hidden md:block">
                     ▶️ {track.plays_count.toLocaleString()}
                   </div>
-                  <Button size="sm" variant="ghost">
-                    {t('track.play', locale)}
-                  </Button>
+                  <PlayButton track={track} size="sm" variant="ghost" showIcon={false} />
                 </div>
               </div>
             ))}
