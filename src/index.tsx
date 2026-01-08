@@ -11,6 +11,9 @@ import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
 import { ultraModernDashboardHTML } from './pages/ultra-modern-dashboard'
 import { ultraModernRegisterHTML } from './pages/ultra-modern-register'
 import { ultraModernLoginHTML } from './pages/ultra-modern-login'
+import { ultraModernProfileHTML } from './pages/ultra-modern-profile'
+import { ultraModernForumHTML } from './pages/ultra-modern-forum'
+import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -160,6 +163,21 @@ app.get('/:locale/dashboard', c => {
 app.get('/:locale/tracks/:id', c => {
   const trackId = c.req.param('id')
   return c.html(ultraModernTrackDetailHTML(trackId))
+})
+
+// Profile page
+app.get('/:locale/profile', c => {
+  return c.html(ultraModernProfileHTML)
+})
+
+// Forum page
+app.get('/:locale/forum', c => {
+  return c.html(ultraModernForumHTML)
+})
+
+// Blog page
+app.get('/:locale/blog', c => {
+  return c.html(ultraModernBlogHTML)
 })
 
 // Catch-all for other pages (fallback to basic template)
