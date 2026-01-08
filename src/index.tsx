@@ -22,6 +22,7 @@ import trackRoutes from './routes/tracks'
 import blogRoutes from './routes/blog'
 import forumRoutes from './routes/forum'
 import producerRoutes from './routes/producer'
+import userRoutes from './routes/users'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -35,6 +36,7 @@ app.route('/api/tracks', trackRoutes)
 app.route('/api/blog', blogRoutes)
 app.route('/api/forum', forumRoutes)
 app.route('/api/producer', producerRoutes)
+app.route('/api/users', userRoutes)
 
 // HTML template function
 function renderHTML(locale: Locale, page: string) {
@@ -169,7 +171,8 @@ app.get('/:locale/tracks/:id', c => {
 
 // Profile page
 app.get('/:locale/profile', c => {
-  return c.html(ultraModernProfileHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernProfileHTML(locale))
 })
 
 // Forum page
