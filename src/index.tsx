@@ -7,6 +7,9 @@ import { producerApplyHTML } from './pages/producer-apply-html'
 import { loginHTML } from './pages/login-html'
 import { modernHomeHTML } from './pages/modern-home'
 import { modernBrowseHTML } from './pages/modern-browse'
+import { modernTrackDetailHTML } from './pages/modern-track-detail'
+import { modernDashboardHTML } from './pages/modern-dashboard'
+import { modernRegisterHTML } from './pages/modern-register'
 
 // Import routes
 import authRoutes from './routes/auth'
@@ -138,6 +141,22 @@ app.get('/:locale/login', c => {
 // Producer application page
 app.get('/:locale/producer/apply', c => {
   return c.html(producerApplyHTML)
+})
+
+// Register page
+app.get('/:locale/register', c => {
+  return c.html(modernRegisterHTML)
+})
+
+// Dashboard page
+app.get('/:locale/dashboard', c => {
+  return c.html(modernDashboardHTML)
+})
+
+// Track detail page
+app.get('/:locale/tracks/:id', c => {
+  const trackId = c.req.param('id')
+  return c.html(modernTrackDetailHTML(trackId))
 })
 
 // Catch-all for other pages (fallback to basic template)
