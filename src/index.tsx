@@ -5,7 +5,8 @@ import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { producerApplyHTML } from './pages/producer-apply-html'
 import { loginHTML } from './pages/login-html'
-import { homeHTML } from './pages/home-html'
+import { modernHomeHTML } from './pages/modern-home'
+import { modernBrowseHTML } from './pages/modern-browse'
 
 // Import routes
 import authRoutes from './routes/auth'
@@ -121,7 +122,12 @@ app.get('/', c => {
 
 // Home page
 app.get('/:locale', c => {
-  return c.html(homeHTML)
+  return c.html(modernHomeHTML)
+})
+
+// Browse page
+app.get('/:locale/browse', c => {
+  return c.html(modernBrowseHTML)
 })
 
 // Login page
