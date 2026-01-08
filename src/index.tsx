@@ -4,6 +4,8 @@ import { serveStatic } from 'hono/cloudflare-workers'
 import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { producerApplyHTML } from './pages/producer-apply-html'
+import { loginHTML } from './pages/login-html'
+import { homeHTML } from './pages/home-html'
 
 // Import routes
 import authRoutes from './routes/auth'
@@ -117,16 +119,22 @@ app.get('/', c => {
   return c.redirect('/en')
 })
 
+// Home page
 app.get('/:locale', c => {
-  const locale = (c.req.param('locale') as Locale) || 'en'
-  return c.html(renderHTML(locale, ''))
+  return c.html(homeHTML)
 })
 
-// Special route for producer application page
+// Login page
+app.get('/:locale/login', c => {
+  return c.html(loginHTML)
+})
+
+// Producer application page
 app.get('/:locale/producer/apply', c => {
   return c.html(producerApplyHTML)
 })
 
+// Catch-all for other pages (fallback to basic template)
 app.get('/:locale/*', c => {
   const locale = (c.req.param('locale') as Locale) || 'en'
   const path = c.req.path.replace(`/${locale}`, '')

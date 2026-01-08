@@ -1,8 +1,9 @@
 -- Insert sample users (password: "password123" hashed with bcrypt)
+-- Hash generated with: bcrypt.hashSync('password123', 10)
 INSERT OR IGNORE INTO users (id, email, username, password_hash, name, role, bio) VALUES 
-  (1, 'admin@webapp.com', 'admin', '$2a$10$rKx.KZ8N5Q7qF9nVJZXqNOVvJP.kKyKGqP1K5P5cJ1RqJ1K5P5cJ1', 'Admin User', 'admin', 'System administrator'),
-  (2, 'john@example.com', 'johndoe', '$2a$10$rKx.KZ8N5Q7qF9nVJZXqNOVvJP.kKyKGqP1K5P5cJ1RqJ1K5P5cJ1', 'John Doe', 'user', 'Music enthusiast'),
-  (3, 'jane@example.com', 'janesmith', '$2a$10$rKx.KZ8N5Q7qF9nVJZXqNOVvJP.kKyKGqP1K5P5cJ1RqJ1K5P5cJ1', 'Jane Smith', 'moderator', 'Community moderator');
+  (1, 'admin@webapp.com', 'admin', '$2b$10$9WtizPNoGT75mmzZiDvFd.hmRYLe2h8SyObRk5nHcjEc1rTlbCK5m', 'Admin User', 'admin', 'System administrator'),
+  (2, 'john@example.com', 'johndoe', '$2b$10$9WtizPNoGT75mmzZiDvFd.hmRYLe2h8SyObRk5nHcjEc1rTlbCK5m', 'John Doe', 'user', 'Music enthusiast'),
+  (3, 'jane@example.com', 'janesmith', '$2b$10$9WtizPNoGT75mmzZiDvFd.hmRYLe2h8SyObRk5nHcjEc1rTlbCK5m', 'Jane Smith', 'moderator', 'Community moderator');
 
 -- Insert sample tracks with audio URLs (using free sample audio)
 INSERT OR IGNORE INTO tracks (id, title, artist, album, genre, duration, release_year, audio_url, description, plays_count, likes_count) VALUES 
