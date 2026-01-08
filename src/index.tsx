@@ -140,7 +140,8 @@ app.get('/:locale/browse', c => {
 
 // Login page
 app.get('/:locale/login', c => {
-  return c.html(ultraModernLoginHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernLoginHTML(locale))
 })
 
 // Producer application page
