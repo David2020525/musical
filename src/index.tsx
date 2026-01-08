@@ -8,8 +8,9 @@ import { loginHTML } from './pages/login-html'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
 import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
-import { modernDashboardHTML } from './pages/modern-dashboard'
-import { modernRegisterHTML } from './pages/modern-register'
+import { ultraModernDashboardHTML } from './pages/ultra-modern-dashboard'
+import { ultraModernRegisterHTML } from './pages/ultra-modern-register'
+import { ultraModernLoginHTML } from './pages/ultra-modern-login'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -137,7 +138,7 @@ app.get('/:locale/browse', c => {
 
 // Login page
 app.get('/:locale/login', c => {
-  return c.html(loginHTML)
+  return c.html(ultraModernLoginHTML)
 })
 
 // Producer application page
@@ -152,7 +153,7 @@ app.get('/:locale/register', c => {
 
 // Dashboard page
 app.get('/:locale/dashboard', c => {
-  return c.html(modernDashboardHTML)
+  return c.html(ultraModernDashboardHTML)
 })
 
 // Track detail page
