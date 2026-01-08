@@ -7,7 +7,7 @@ import { producerApplyHTML } from './pages/producer-apply-html'
 import { loginHTML } from './pages/login-html'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
-import { modernTrackDetailHTML } from './pages/modern-track-detail'
+import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
 import { modernDashboardHTML } from './pages/modern-dashboard'
 import { modernRegisterHTML } from './pages/modern-register'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
@@ -158,7 +158,7 @@ app.get('/:locale/dashboard', c => {
 // Track detail page
 app.get('/:locale/tracks/:id', c => {
   const trackId = c.req.param('id')
-  return c.html(modernTrackDetailHTML(trackId))
+  return c.html(ultraModernTrackDetailHTML(trackId))
 })
 
 // Catch-all for other pages (fallback to basic template)
