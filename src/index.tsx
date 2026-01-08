@@ -5,7 +5,7 @@ import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { producerApplyHTML } from './pages/producer-apply-html'
 import { loginHTML } from './pages/login-html'
-import { modernHomeHTML } from './pages/modern-home'
+import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { modernBrowseHTML } from './pages/modern-browse'
 import { modernTrackDetailHTML } from './pages/modern-track-detail'
 import { modernDashboardHTML } from './pages/modern-dashboard'
@@ -125,7 +125,7 @@ app.get('/', c => {
 
 // Home page
 app.get('/:locale', c => {
-  return c.html(modernHomeHTML)
+  return c.html(ultraModernHomeHTML)
 })
 
 // Browse page
