@@ -289,13 +289,193 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
         </div>
     </div>
     
+    <!-- Editor Picks Section -->
+    <div class="px-6 mb-24 reveal">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="mb-12">
+                <h2 class="text-4xl md:text-5xl font-black mb-2">Editor's Picks</h2>
+                <p class="text-gray-400">Handpicked by our music experts</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/en/tracks/1'">
+                    <div class="aspect-video bg-gradient-to-br from-purple-500/30 to-pink-500/30 relative flex items-center justify-center">
+                        <i class="fas fa-music text-8xl text-white/20"></i>
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                            <button class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center neon-glow">
+                                <i class="fas fa-play text-2xl ml-2 text-white"></i>
+                            </button>
+                        </div>
+                        <div class="absolute top-4 left-4 px-4 py-2 glass-strong rounded-full text-sm font-bold">
+                            <i class="fas fa-star text-yellow-400 mr-2"></i>Editor's Choice
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">Midnight Dreams</h3>
+                        <p class="text-gray-400 mb-4">A mesmerizing electronic journey</p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span><i class="fas fa-user mr-2"></i>DJ Neon</span>
+                            <span><i class="fas fa-play mr-2"></i>12.5K plays</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-rows-2 gap-6">
+                    <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all">
+                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/30 to-cyan-500/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-music text-3xl text-white/40"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold mb-1">Summer Vibes 2024</h4>
+                            <p class="text-sm text-gray-400 mb-2">Feel-good electronic beats</p>
+                            <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>8.2K plays</span>
+                        </div>
+                        <button class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                            <i class="fas fa-play text-sm ml-1"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all">
+                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-green-500/30 to-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-music text-3xl text-white/40"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold mb-1">Urban Nights</h4>
+                            <p class="text-sm text-gray-400 mb-2">Hip hop meets electronica</p>
+                            <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>6.7K plays</span>
+                        </div>
+                        <button class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                            <i class="fas fa-play text-sm ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Trending Chart - Top 10 -->
+    <div class="px-6 mb-24 reveal">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="mb-12">
+                <h2 class="text-4xl md:text-5xl font-black mb-2">Top 10 This Week</h2>
+                <p class="text-gray-400">The most popular tracks right now</p>
+            </div>
+            
+            <div class="glass-strong rounded-3xl p-8">
+                <div class="space-y-4" id="trendingChart">
+                    ${Array(10).fill(0).map((_, i) => `
+                        <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/10 transition-all cursor-pointer group">
+                            <div class="text-3xl font-black ${i < 3 ? 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent' : 'text-gray-500'} w-12 text-center">
+                                ${i + 1}
+                            </div>
+                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-music text-xl text-white/40"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold truncate">Track ${i + 1}</h4>
+                                <p class="text-sm text-gray-400 truncate">Artist Name</p>
+                            </div>
+                            <div class="hidden md:block text-sm text-gray-500">
+                                ${(1000 * (10 - i) + Math.floor(Math.random() * 500)).toLocaleString()} plays
+                            </div>
+                            <button class="w-10 h-10 rounded-full glass hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
+                                <i class="fas fa-play text-sm"></i>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Latest Blog Posts -->
+    <div class="px-6 mb-24 reveal">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="flex items-center justify-between mb-12">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">Latest from Blog</h2>
+                    <p class="text-gray-400">Music news, tips, and industry insights</p>
+                </div>
+                <a href="/en/blog" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
+                    <span>View All</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
+                    <div class="aspect-video bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-xs text-gray-500 mb-2">
+                            <i class="fas fa-calendar mr-2"></i>Jan 7, 2026
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                            Top Music Production Tips for 2026
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-4">
+                            Learn the latest techniques to make your tracks stand out...
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span><i class="fas fa-user mr-2"></i>Admin</span>
+                            <span><i class="fas fa-eye mr-2"></i>2.3K views</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
+                    <div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-xs text-gray-500 mb-2">
+                            <i class="fas fa-calendar mr-2"></i>Jan 5, 2026
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                            Interview with Top Producer DJ Neon
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-4">
+                            Exclusive insights into the creative process...
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span><i class="fas fa-user mr-2"></i>Admin</span>
+                            <span><i class="fas fa-eye mr-2"></i>1.8K views</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
+                    <div class="aspect-video bg-gradient-to-br from-green-500/20 to-cyan-500/20 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-xs text-gray-500 mb-2">
+                            <i class="fas fa-calendar mr-2"></i>Jan 3, 2026
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                            Music Licensing Guide for Beginners
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-4">
+                            Everything you need to know about licensing your music...
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span><i class="fas fa-user mr-2"></i>Admin</span>
+                            <span><i class="fas fa-eye mr-2"></i>1.5K views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Featured Tracks - Advanced Grid -->
     <div class="px-6 mb-24">
         <div class="max-w-[1400px] mx-auto">
             <div class="flex items-center justify-between mb-12">
                 <div>
-                    <h2 class="text-4xl md:text-5xl font-black mb-2">Trending Now</h2>
-                    <p class="text-gray-400">The hottest tracks everyone's talking about</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">All Tracks</h2>
+                    <p class="text-gray-400">Browse our complete catalog</p>
                 </div>
                 <a href="/en/browse" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
                     <span>View All</span>
