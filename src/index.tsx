@@ -10,6 +10,8 @@ import { modernBrowseHTML } from './pages/modern-browse'
 import { modernTrackDetailHTML } from './pages/modern-track-detail'
 import { modernDashboardHTML } from './pages/modern-dashboard'
 import { modernRegisterHTML } from './pages/modern-register'
+import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
+import { PlayButtonScript } from './components/PlayButton'
 
 // Import routes
 import authRoutes from './routes/auth'

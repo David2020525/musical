@@ -1,3 +1,6 @@
+import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
+import { PlayButtonScript } from '../components/PlayButton';
+
 export const ultraModernHomeHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -494,19 +497,25 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
                     \`;
                     
                     const tracksHTML = data.data.slice(0, 8).map(track => \`
-                        <div class="glass-strong rounded-3xl overflow-hidden card-3d cursor-pointer group" onclick="window.location.href='/en/tracks/\${track.id}'">
-                            <div class="relative aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden">
+                        <div class="glass-strong rounded-3xl overflow-hidden card-3d group relative">
+                            <div class="relative aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden cursor-pointer" onclick="window.location.href='/en/tracks/\${track.id}'">
                                 <i class="fas fa-music text-6xl text-white/20"></i>
                                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center neon-glow">
-                                        <i class="fas fa-play text-purple-600 text-xl ml-1"></i>
-                                    </div>
+                                    <button 
+                                        class="play-btn w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 relative overflow-hidden z-10"
+                                        data-track-id="\${track.id}"
+                                        data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                        onclick="event.stopPropagation(); playTrack(this);"
+                                    >
+                                        <i class="fas fa-play text-xl ml-1 play-icon"></i>
+                                        <i class="fas fa-pause text-xl pause-icon hidden"></i>
+                                    </button>
                                 </div>
                                 <div class="absolute top-4 right-4 px-3 py-1 glass-strong rounded-full text-xs">
                                     \${track.genre || 'Music'}
                                 </div>
                             </div>
-                            <div class="p-6">
+                            <div class="p-6 cursor-pointer" onclick="window.location.href='/en/tracks/\${track.id}'">
                                 <h3 class="font-bold text-lg mb-1 truncate">\${track.title}</h3>
                                 <p class="text-gray-400 text-sm truncate mb-4">\${track.artist}</p>
                                 <div class="flex items-center justify-between text-xs text-gray-500">
@@ -554,5 +563,9 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
         
         loadTracks();
     </script>
+    
+    <!-- Global Audio Player -->
+    ${GlobalAudioPlayerHTML}
+    ${PlayButtonScript}
 </body>
 </html>`;
