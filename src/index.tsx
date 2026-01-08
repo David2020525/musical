@@ -6,7 +6,7 @@ import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { producerApplyHTML } from './pages/producer-apply-html'
 import { loginHTML } from './pages/login-html'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
-import { modernBrowseHTML } from './pages/modern-browse'
+import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
 import { modernTrackDetailHTML } from './pages/modern-track-detail'
 import { modernDashboardHTML } from './pages/modern-dashboard'
 import { modernRegisterHTML } from './pages/modern-register'
@@ -132,7 +132,7 @@ app.get('/:locale', c => {
 
 // Browse page
 app.get('/:locale/browse', c => {
-  return c.html(modernBrowseHTML)
+  return c.html(ultraModernBrowseHTML)
 })
 
 // Login page
