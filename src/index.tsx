@@ -3,8 +3,6 @@ import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
-import { producerApplyHTML } from './pages/producer-apply-html'
-import { loginHTML } from './pages/login-html'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
 import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
@@ -14,6 +12,7 @@ import { ultraModernLoginHTML } from './pages/ultra-modern-login'
 import { ultraModernProfileHTML } from './pages/ultra-modern-profile'
 import { ultraModernForumHTML } from './pages/ultra-modern-forum'
 import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
+import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -146,12 +145,14 @@ app.get('/:locale/login', c => {
 
 // Producer application page
 app.get('/:locale/producer/apply', c => {
-  return c.html(producerApplyHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernProducerApplicationHTML(locale))
 })
 
 // Register page
 app.get('/:locale/register', c => {
-  return c.html(modernRegisterHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernRegisterHTML(locale))
 })
 
 // Dashboard page
