@@ -15,6 +15,8 @@ import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
 import { ultraModernAdminHTML } from './pages/ultra-modern-admin'
 import { ultraModernVerifyEmailHTML } from './pages/ultra-modern-verify-email'
+import { ultraModernForgotPasswordHTML } from './pages/ultra-modern-forgot-password'
+import { ultraModernResetPasswordHTML } from './pages/ultra-modern-reset-password'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -166,6 +168,18 @@ app.get('/:locale/register', c => {
 app.get('/:locale/verify-email', c => {
   const locale = c.req.param('locale') as Locale
   return c.html(ultraModernVerifyEmailHTML(locale))
+})
+
+// Forgot password page
+app.get('/:locale/forgot-password', c => {
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernForgotPasswordHTML(locale))
+})
+
+// Reset password page
+app.get('/:locale/reset-password', c => {
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernResetPasswordHTML(locale))
 })
 
 // Dashboard page

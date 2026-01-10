@@ -251,3 +251,145 @@ Bu bağlantı 24 saat içinde geçerliliğini yitirecektir. MusicHub'da bir hesa
     }
   }
 }
+
+export function getPasswordResetEmailTemplate(params: {
+  userName: string
+  resetLink: string
+  locale?: 'en' | 'tr'
+}): { subject: string; html: string; text: string } {
+  const isEnglish = params.locale !== 'tr'
+  
+  if (isEnglish) {
+    return {
+      subject: 'Reset your MusicHub password',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Reset your password</title>
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
+          </div>
+          
+          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+            <h2 style="color: #333; margin-top: 0;">Hi ${params.userName}! 👋</h2>
+            
+            <p>We received a request to reset your MusicHub password.</p>
+            
+            <p>Click the button below to choose a new password:</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${params.resetLink}" 
+                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
+                        color: white; 
+                        padding: 15px 40px; 
+                        text-decoration: none; 
+                        border-radius: 8px; 
+                        display: inline-block;
+                        font-weight: bold;
+                        font-size: 16px;">
+                Reset Password
+              </a>
+            </div>
+            
+            <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
+            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
+              ${params.resetLink}
+            </p>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 30px;">
+              <strong>This link will expire in 1 hour.</strong> If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+            <p>© 2026 MusicHub. All rights reserved.</p>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+Hi ${params.userName}!
+
+We received a request to reset your MusicHub password.
+
+Click this link to choose a new password:
+${params.resetLink}
+
+This link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
+
+© 2026 MusicHub. All rights reserved.
+      `.trim(),
+    }
+  } else {
+    return {
+      subject: 'MusicHub şifrenizi sıfırlayın',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Şifrenizi sıfırlayın</title>
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
+          </div>
+          
+          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+            <h2 style="color: #333; margin-top: 0;">Merhaba ${params.userName}! 👋</h2>
+            
+            <p>MusicHub şifrenizi sıfırlama talebi aldık.</p>
+            
+            <p>Yeni bir şifre seçmek için aşağıdaki butona tıklayın:</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${params.resetLink}" 
+                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
+                        color: white; 
+                        padding: 15px 40px; 
+                        text-decoration: none; 
+                        border-radius: 8px; 
+                        display: inline-block;
+                        font-weight: bold;
+                        font-size: 16px;">
+                Şifreyi Sıfırla
+              </a>
+            </div>
+            
+            <p style="color: #666; font-size: 14px;">Veya bu bağlantıyı tarayıcınıza kopyalayıp yapıştırın:</p>
+            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
+              ${params.resetLink}
+            </p>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 30px;">
+              <strong>Bu bağlantı 1 saat içinde geçerliliğini yitirecektir.</strong> Şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı güvenle yok sayabilirsiniz. Şifreniz değiştirilmeyecektir.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+            <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+Merhaba ${params.userName}!
+
+MusicHub şifrenizi sıfırlama talebi aldık.
+
+Yeni bir şifre seçmek için bu bağlantıya tıklayın:
+${params.resetLink}
+
+Bu bağlantı 1 saat içinde geçerliliğini yitirecektir. Şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı güvenle yok sayabilirsiniz. Şifreniz değiştirilmeyecektir.
+
+© 2026 MusicHub. Tüm hakları saklıdır.
+      `.trim(),
+    }
+  }
+}

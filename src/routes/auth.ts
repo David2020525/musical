@@ -4,6 +4,7 @@ import { createToken, hashPassword, comparePassword } from '../lib/auth'
 import { loginSchema, registerSchema } from '../lib/validations'
 import { getEmailService, getVerificationEmailTemplate } from '../lib/email'
 import { createEmailVerificationToken, verifyEmailToken, getVerificationStatus } from '../lib/email-verification'
+import { createResetToken, getPasswordResetEmailTemplate, verifyResetToken, markTokenAsUsed } from '../lib/password-reset'
 
 const auth = new Hono<{ Bindings: Bindings }>()
 
@@ -297,6 +298,97 @@ auth.get('/verification-status', async c => {
     })
   } catch (error: any) {
     return c.json({ success: false, error: 'Failed to get verification status' }, 500)
+  }
+})
+
+// Forgot password endpoint
+auth.post('/forgot-password', async c => {
+  try {
+    const body = await c.req.json()
+    const { email, locale = 'en' } = body
+
+    if (!email) {
+      return c.json({ success: false, error: 'Email is required' }, 400)
+    }
+
+    // Get user by email
+    const user = await c.env.DB.prepare('SELECT * FROM users WHERE email = ?')
+      .bind(email)
+      .first() as any
+
+    // Always return success (don't reveal if user exists)
+    // But only send email if user exists
+    if (user) {
+      // Create reset token
+      const token = await createResetToken(c.env.DB, user.id)
+
+      // Build reset URL
+      const baseUrl = c.req.url.split('/api')[0]
+      const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`
+
+      // Get email template
+      const emailTemplate = getPasswordResetEmailTemplate(resetUrl, locale)
+
+      // Send password reset email
+      const emailService = getEmailService(c.env)
+      await emailService.send({
+        to: user.email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      })
+    }
+
+    return c.json({
+      success: true,
+      message: 'If an account exists with this email, a password reset link has been sent',
+    })
+  } catch (error: any) {
+    console.error('Forgot password error:', error)
+    return c.json({ success: false, error: 'Failed to process request' }, 500)
+  }
+})
+
+// Reset password endpoint
+auth.post('/reset-password', async c => {
+  try {
+    const body = await c.req.json()
+    const { token, password } = body
+
+    if (!token || !password) {
+      return c.json({ success: false, error: 'Token and password are required' }, 400)
+    }
+
+    if (password.length < 8) {
+      return c.json({ success: false, error: 'Password must be at least 8 characters' }, 400)
+    }
+
+    // Verify token
+    const verification = await verifyResetToken(c.env.DB, token)
+
+    if (!verification.valid) {
+      return c.json({ success: false, error: verification.error }, 400)
+    }
+
+    // Hash new password
+    const passwordHash = await hashPassword(password)
+
+    // Update user password
+    await c.env.DB.prepare(`
+      UPDATE users 
+      SET password_hash = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(passwordHash, verification.userId).run()
+
+    // Mark token as used
+    await markTokenAsUsed(c.env.DB, token)
+
+    return c.json({
+      success: true,
+      message: 'Password reset successfully',
+    })
+  } catch (error: any) {
+    console.error('Reset password error:', error)
+    return c.json({ success: false, error: 'Failed to reset password' }, 500)
   }
 })
 
