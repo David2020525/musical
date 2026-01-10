@@ -4,12 +4,12 @@ import { serveStatic } from 'hono/cloudflare-workers'
 import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
-import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
+import { ultraModernBrowseDynamicHTML } from './pages/ultra-modern-browse-dynamic'
 import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
 import { ultraModernDashboardDynamicHTML } from './pages/ultra-modern-dashboard-dynamic'
 import { ultraModernRegisterHTML } from './pages/ultra-modern-register'
 import { ultraModernLoginHTML } from './pages/ultra-modern-login'
-import { ultraModernProfileHTML } from './pages/ultra-modern-profile'
+import { ultraModernProfileDynamicHTML } from './pages/ultra-modern-profile-dynamic'
 import { ultraModernForumDynamicHTML } from './pages/ultra-modern-forum-dynamic'
 import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
@@ -143,7 +143,8 @@ app.get('/:locale', c => {
 
 // Browse page
 app.get('/:locale/browse', c => {
-  return c.html(ultraModernBrowseHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernBrowseDynamicHTML(locale))
 })
 
 // Login page
@@ -197,7 +198,7 @@ app.get('/:locale/tracks/:id', c => {
 // Profile page
 app.get('/:locale/profile', c => {
   const locale = c.req.param('locale') as Locale
-  return c.html(ultraModernProfileHTML(locale))
+  return c.html(ultraModernProfileDynamicHTML(locale))
 })
 
 // Forum page
