@@ -25,6 +25,7 @@ const phoneSchema = z
 const optionalUrlSchema = z
   .string()
   .optional()
+  .transform((val) => val || undefined)
   .refine((url) => !url || /^https?:\/\/.+/.test(url), 'Must be a valid URL starting with http:// or https://')
 
 // Step 1: Personal Information

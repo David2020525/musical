@@ -22,7 +22,7 @@ app.get('/application', async (c) => {
     const application = await c.env.DB.prepare(
       `SELECT * FROM producer_applications WHERE user_id = ?`
     )
-      .bind(payload.userId)
+      .bind(payload.id)
       .first()
 
     return c.json({
@@ -63,11 +63,25 @@ app.post('/application', async (c) => {
 
     const data = validation.data
 
+    // Ensure optional fields are null instead of undefined for D1
+    const cleanedData = {
+      ...data,
+      instagram_url: data.instagram_url || null,
+      twitter_url: data.twitter_url || null,
+      youtube_url: data.youtube_url || null,
+      spotify_url: data.spotify_url || null,
+      soundcloud_url: data.soundcloud_url || null,
+      portfolio_url: data.portfolio_url || null,
+      sample_track_1: data.sample_track_1 || null,
+      sample_track_2: data.sample_track_2 || null,
+      sample_track_3: data.sample_track_3 || null,
+    }
+
     // Check if user already has an application
     const existingApplication = await c.env.DB.prepare(
       `SELECT id, status FROM producer_applications WHERE user_id = ?`
     )
-      .bind(payload.userId)
+      .bind(payload.id)
       .first()
 
     if (existingApplication) {
@@ -79,6 +93,7 @@ app.post('/application', async (c) => {
     }
 
     // Insert new application
+    // Convert undefined to null for SQL
     const result = await c.env.DB.prepare(
       `INSERT INTO producer_applications (
         user_id, real_name, turkish_id, phone,
@@ -88,19 +103,19 @@ app.post('/application', async (c) => {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
     )
       .bind(
-        payload.userId,
-        data.real_name,
-        data.turkish_id,
-        data.phone,
-        data.instagram_url || null,
-        data.twitter_url || null,
-        data.youtube_url || null,
-        data.spotify_url || null,
-        data.soundcloud_url || null,
-        data.portfolio_url || null,
-        data.sample_track_1 || null,
-        data.sample_track_2 || null,
-        data.sample_track_3 || null
+        payload.id,
+        cleanedData.real_name,
+        cleanedData.turkish_id,
+        cleanedData.phone,
+        cleanedData.instagram_url,
+        cleanedData.twitter_url,
+        cleanedData.youtube_url,
+        cleanedData.spotify_url,
+        cleanedData.soundcloud_url,
+        cleanedData.portfolio_url,
+        cleanedData.sample_track_1,
+        cleanedData.sample_track_2,
+        cleanedData.sample_track_3
       )
       .run()
 
@@ -108,7 +123,7 @@ app.post('/application', async (c) => {
     await c.env.DB.prepare(
       `UPDATE users SET producer_application_id = ? WHERE id = ?`
     )
-      .bind(result.meta.last_row_id, payload.userId)
+      .bind(result.meta.last_row_id, payload.id)
       .run()
 
     return c.json({
@@ -143,7 +158,7 @@ app.get('/admin/applications', async (c) => {
     const user = await c.env.DB.prepare(
       `SELECT role FROM users WHERE id = ?`
     )
-      .bind(payload.userId)
+      .bind(payload.id)
       .first<{ role: string }>()
 
     if (!user || user.role !== 'admin') {
@@ -226,7 +241,7 @@ app.post('/admin/applications/:id/review', async (c) => {
     const user = await c.env.DB.prepare(
       `SELECT role FROM users WHERE id = ?`
     )
-      .bind(payload.userId)
+      .bind(payload.id)
       .first<{ role: string }>()
 
     if (!user || user.role !== 'admin') {
@@ -261,7 +276,7 @@ app.post('/admin/applications/:id/review', async (c) => {
        SET status = ?, admin_notes = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`
     )
-      .bind(status, admin_notes || null, payload.userId, applicationId)
+      .bind(status, admin_notes || null, payload.id, applicationId)
       .run()
 
     // If approved, update user's is_producer flag
