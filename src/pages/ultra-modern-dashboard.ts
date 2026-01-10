@@ -52,20 +52,20 @@ export const ultraModernDashboardHTML = `<!DOCTYPE html>
             
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
                 <div class="glass-strong rounded-3xl p-8 card-3d text-center">
-                    <div class="text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">12</div>
+                    <div class="text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2" id="stat-tracks">...</div>
                     <div class="text-sm text-gray-400">Total Tracks</div>
                 </div>
                 <div class="glass-strong rounded-3xl p-8 card-3d text-center">
-                    <div class="text-5xl font-black bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2">3.2K</div>
+                    <div class="text-5xl font-black bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2" id="stat-plays">...</div>
                     <div class="text-sm text-gray-400">Total Plays</div>
                 </div>
                 <div class="glass-strong rounded-3xl p-8 card-3d text-center">
-                    <div class="text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">245</div>
+                    <div class="text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2" id="stat-followers">...</div>
                     <div class="text-sm text-gray-400">Followers</div>
                 </div>
                 <div class="glass-strong rounded-3xl p-8 card-3d text-center">
-                    <div class="text-5xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">$420</div>
-                    <div class="text-sm text-gray-400">Revenue</div>
+                    <div class="text-5xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2" id="stat-following">...</div>
+                    <div class="text-sm text-gray-400">Following</div>
                 </div>
             </div>
             
@@ -127,11 +127,41 @@ export const ultraModernDashboardHTML = `<!DOCTYPE html>
     </div>
     
     <script>
+        // Load user stats
+        async function loadUserStats() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/en/login';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/users/me/stats', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('stat-tracks').textContent = data.data.tracks.toLocaleString();
+                    document.getElementById('stat-plays').textContent = data.data.plays.toLocaleString();
+                    document.getElementById('stat-followers').textContent = data.data.followers.toLocaleString();
+                    document.getElementById('stat-following').textContent = data.data.following.toLocaleString();
+                } else {
+                    console.error('Failed to load stats:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = '/en/login';
         }
+
+        // Load stats on page load
+        loadUserStats();
     </script>
     
     ${GlobalAudioPlayerHTML}

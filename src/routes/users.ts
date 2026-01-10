@@ -81,4 +81,42 @@ users.put('/me', async c => {
   }
 })
 
+// Get current user statistics
+users.get('/me/stats', async c => {
+  const authHeader = c.req.header('Authorization')
+  if (!authHeader) {
+    return c.json({ success: false, error: 'Not authenticated' }, 401)
+  }
+
+  try {
+    const token = authHeader.replace('Bearer ', '')
+    const decoded = await verifyToken(token)
+
+    if (!decoded) {
+      return c.json({ success: false, error: 'Invalid token' }, 401)
+    }
+
+    // const db = c.env.DB
+
+    // TODO: Tracks table doesn't have user_id column yet
+    // For now, return zeros until database schema is updated
+    // Future migration needed to add:
+    // - ALTER TABLE tracks ADD COLUMN user_id INTEGER REFERENCES users(id)
+    // - CREATE TABLE user_followers (...)
+    
+    return c.json({
+      success: true,
+      data: {
+        tracks: 0,    // TODO: Count tracks WHERE user_id = decoded.id
+        plays: 0,     // TODO: SUM plays_count WHERE user_id = decoded.id
+        followers: 0, // TODO: Add user_followers table
+        following: 0, // TODO: Add user_followers table
+      }
+    })
+  } catch (error) {
+    console.error('Get user stats error:', error)
+    return c.json({ success: false, error: 'Failed to fetch stats' }, 500)
+  }
+})
+
 export default users
