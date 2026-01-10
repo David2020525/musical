@@ -14,6 +14,7 @@ import { ultraModernForumHTML } from './pages/ultra-modern-forum'
 import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
 import { ultraModernAdminHTML } from './pages/ultra-modern-admin'
+import { ultraModernVerifyEmailHTML } from './pages/ultra-modern-verify-email'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -159,6 +160,12 @@ app.get('/:locale/producer/apply', c => {
 app.get('/:locale/register', c => {
   const locale = c.req.param('locale') as Locale
   return c.html(ultraModernRegisterHTML(locale))
+})
+
+// Email verification page
+app.get('/:locale/verify-email', c => {
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernVerifyEmailHTML(locale))
 })
 
 // Dashboard page

@@ -122,6 +122,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     'auth.register': 'Register',
     'auth.logout': 'Logout',
     'auth.forgot_password': 'Forgot Password?',
+    'auth.verify_email': 'Verify Email',
+    'auth.email_verified': 'Email Verified',
+    'auth.email_not_verified': 'Email Not Verified',
+    'auth.resend_verification': 'Resend Verification Email',
 
     // Dashboard / Profile
     'dashboard.title': 'Dashboard',
@@ -324,6 +328,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     'auth.register': 'Kayıt Ol',
     'auth.logout': 'Çıkış Yap',
     'auth.forgot_password': 'Şifremi Unuttum?',
+    'auth.verify_email': 'E-postayı Doğrula',
+    'auth.email_verified': 'E-posta Doğrulandı',
+    'auth.email_not_verified': 'E-posta Doğrulanmadı',
+    'auth.resend_verification': 'Doğrulama E-postasını Tekrar Gönder',
 
     // Dashboard / Profile
     'dashboard.title': 'Kontrol Paneli',
