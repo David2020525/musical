@@ -27,6 +27,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.edit': 'Edit',
     'common.search': 'Search',
     'common.filter': 'Filter',
+    'common.just_now': 'Just now',
+    'common.ago': 'ago',
+    'common.network_error': 'Network error. Please try again.',
 
     // Home page
     'home.title': 'Welcome to MusicHub',
@@ -100,6 +103,19 @@ export const translations: Record<Locale, Record<string, string>> = {
     'forum.posted_on': 'Posted on',
     'forum.no_topics': 'No topics yet',
     'forum.no_replies': 'No replies yet',
+    'forum.community': 'Community Forum',
+    'forum.subtitle': 'Connect with fellow music producers and artists',
+    'forum.recent_topics': 'Recent Topics',
+    'forum.create_topic': 'Create New Topic',
+    'forum.category': 'Category',
+    'forum.select_category': 'Select a category...',
+    'forum.title_placeholder': 'What\'s your topic about?',
+    'forum.content': 'Content',
+    'forum.content_placeholder': 'Share your thoughts, questions, or ideas...',
+    'forum.post_topic': 'Post Topic',
+    'forum.started_by': 'Started by',
+    'forum.in': 'in',
+    'forum.be_first': 'Be the first to start a discussion!',
 
     // Blog
     'blog.title': 'Blog',
@@ -233,6 +249,9 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.edit': 'Düzenle',
     'common.search': 'Ara',
     'common.filter': 'Filtrele',
+    'common.just_now': 'Şimdi',
+    'common.ago': 'önce',
+    'common.network_error': 'Ağ hatası. Lütfen tekrar deneyin.',
 
     // Home page
     'home.title': 'MusicHub\'a Hoş Geldiniz',
@@ -306,6 +325,19 @@ export const translations: Record<Locale, Record<string, string>> = {
     'forum.posted_on': 'Gönderim Tarihi',
     'forum.no_topics': 'Henüz konu yok',
     'forum.no_replies': 'Henüz yanıt yok',
+    'forum.community': 'Topluluk Forumu',
+    'forum.subtitle': 'Müzik prodüktörleri ve sanatçılarla bağlantı kurun',
+    'forum.recent_topics': 'Son Konular',
+    'forum.create_topic': 'Yeni Konu Oluştur',
+    'forum.category': 'Kategori',
+    'forum.select_category': 'Bir kategori seçin...',
+    'forum.title_placeholder': 'Konunuz ne hakkında?',
+    'forum.content': 'İçerik',
+    'forum.content_placeholder': 'Düşüncelerinizi, sorularınızı veya fikirlerinizi paylaşın...',
+    'forum.post_topic': 'Konu Yayınla',
+    'forum.started_by': 'Başlatan',
+    'forum.in': 'içinde',
+    'forum.be_first': 'İlk tartışmayı başlatan siz olun!',
 
     // Blog
     'blog.title': 'Blog',
