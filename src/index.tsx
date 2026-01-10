@@ -13,6 +13,7 @@ import { ultraModernProfileHTML } from './pages/ultra-modern-profile'
 import { ultraModernForumHTML } from './pages/ultra-modern-forum'
 import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
+import { ultraModernAdminHTML } from './pages/ultra-modern-admin'
 import { GlobalAudioPlayerHTML } from './components/GlobalAudioPlayer'
 import { PlayButtonScript } from './components/PlayButton'
 
@@ -23,6 +24,7 @@ import blogRoutes from './routes/blog'
 import forumRoutes from './routes/forum'
 import producerRoutes from './routes/producer'
 import userRoutes from './routes/users'
+import adminRoutes from './routes/admin'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -37,6 +39,7 @@ app.route('/api/blog', blogRoutes)
 app.route('/api/forum', forumRoutes)
 app.route('/api/producer', producerRoutes)
 app.route('/api/users', userRoutes)
+app.route('/api/admin', adminRoutes)
 
 // HTML template function
 function renderHTML(locale: Locale, page: string) {
@@ -183,6 +186,11 @@ app.get('/:locale/forum', c => {
 // Blog page
 app.get('/:locale/blog', c => {
   return c.html(ultraModernBlogHTML)
+})
+
+// Admin page
+app.get('/:locale/admin', c => {
+  return c.html(ultraModernAdminHTML)
 })
 
 // Catch-all for other pages (fallback to basic template)
