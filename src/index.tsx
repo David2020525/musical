@@ -5,7 +5,7 @@ import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { ultraModernBrowseDynamicHTML } from './pages/ultra-modern-browse-dynamic'
-import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
+import { ultraModernTrackDetailDynamicHTML } from './pages/ultra-modern-track-detail-dynamic'
 import { ultraModernDashboardDynamicHTML } from './pages/ultra-modern-dashboard-dynamic'
 import { ultraModernRegisterHTML } from './pages/ultra-modern-register'
 import { ultraModernLoginHTML } from './pages/ultra-modern-login'
@@ -191,8 +191,9 @@ app.get('/:locale/dashboard', c => {
 
 // Track detail page
 app.get('/:locale/tracks/:id', c => {
+  const locale = c.req.param('locale') as Locale
   const trackId = c.req.param('id')
-  return c.html(ultraModernTrackDetailHTML(trackId))
+  return c.html(ultraModernTrackDetailDynamicHTML(trackId, locale))
 })
 
 // Profile page

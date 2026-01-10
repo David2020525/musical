@@ -87,6 +87,15 @@ export const translations: Record<Locale, Record<string, string>> = {
     'track.tags': 'Tags',
     'track.similar': 'Similar Tracks',
     'track.comments': 'Comments',
+    'track.details': 'Track Details',
+    'track.by': 'by',
+    'track.purchase': 'Purchase for',
+    'track.not_found': 'Track Not Found',
+    'track.not_found_description': 'The track you are looking for does not exist or has been removed.',
+    'track.no_description': 'No description available.',
+    'track.no_tags': 'No tags available.',
+    'track.purchase_success': 'Purchase successful! The track is now in your library.',
+    'track.purchase_error': 'Failed to purchase track. Please try again.',
 
     // Forum
     'forum.title': 'Community Forum',
@@ -360,6 +369,15 @@ export const translations: Record<Locale, Record<string, string>> = {
     'track.tags': 'Etiketler',
     'track.similar': 'Benzer Parçalar',
     'track.comments': 'Yorumlar',
+    'track.details': 'Parça Detayları',
+    'track.by': 'tarafından',
+    'track.purchase': 'Satın Al',
+    'track.not_found': 'Parça Bulunamadı',
+    'track.not_found_description': 'Aradığınız parça mevcut değil veya kaldırılmış.',
+    'track.no_description': 'Açıklama mevcut değil.',
+    'track.no_tags': 'Etiket mevcut değil.',
+    'track.purchase_success': 'Satın alma başarılı! Parça artık kütüphanenizde.',
+    'track.purchase_error': 'Parça satın alınamadı. Lütfen tekrar deneyin.',
 
     // Forum
     'forum.title': 'Topluluk Forumu',
