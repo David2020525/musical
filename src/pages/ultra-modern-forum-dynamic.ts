@@ -4,6 +4,7 @@ import { PlayButtonScript } from '../components/PlayButton';
 
 export const ultraModernForumDynamicHTML = (locale: Locale) => {
   const _ = (key: string) => t(key, locale);
+  const otherLocale = locale === 'en' ? 'tr' : 'en';
   
   return `<!DOCTYPE html>
 <html lang="${locale}">
@@ -49,6 +50,15 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
                 <a href="/${locale}/forum" class="text-white font-semibold">${_('nav.forum')}</a>
                 <a href="/${locale}/blog" class="text-gray-300 hover:text-white">${_('nav.blog')}</a>
                 <a href="/${locale}/dashboard" class="text-gray-300 hover:text-white" id="dashboardLink">${_('nav.dashboard')}</a>
+                <!-- Language Switcher -->
+                <a 
+                    href="/${otherLocale}/forum" 
+                    class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
+                    title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
+                >
+                    <i class="fas fa-globe"></i>
+                    <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
+                </a>
             </div>
         </div>
     </nav>
