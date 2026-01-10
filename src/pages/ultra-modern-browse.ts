@@ -381,7 +381,15 @@ export const ultraModernBrowseHTML = `<!DOCTYPE html>
             const gridClass = viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4';
             document.getElementById('tracksGrid').className = gridClass;
             
-            const tracksHTML = pageTracks.map(track => \`
+            const tracksHTML = pageTracks.map(track => {
+                // Ensure track has audio_url for player
+                const trackWithAudio = {
+                    ...track,
+                    audio_url: track.audio_url || '/static/sample.mp3',
+                    artwork: track.cover_url || \`https://picsum.photos/seed/track\${track.id}/300/300\`
+                };
+                
+                return \`
                 <div class="glass-strong rounded-3xl overflow-hidden card-3d group relative">
                     <div class="relative aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden cursor-pointer" onclick="window.location.href='/en/tracks/\${track.id}'">
                         <i class="fas fa-music text-6xl text-white/20"></i>
@@ -389,7 +397,7 @@ export const ultraModernBrowseHTML = `<!DOCTYPE html>
                             <button 
                                 class="play-btn w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 relative overflow-hidden z-10"
                                 data-track-id="\${track.id}"
-                                data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                data-track='\${JSON.stringify(trackWithAudio).replace(/'/g, "&apos;")}'
                                 onclick="event.stopPropagation(); playTrack(this);"
                             >
                                 <i class="fas fa-play text-xl ml-1 play-icon"></i>
@@ -409,7 +417,8 @@ export const ultraModernBrowseHTML = `<!DOCTYPE html>
                         </div>
                     </div>
                 </div>
-            \`).join('');
+            \`;
+            }).join('');
             
             document.getElementById('tracksGrid').innerHTML = tracksHTML || '<div class="col-span-full text-center py-12 text-gray-400">No tracks found</div>';
             

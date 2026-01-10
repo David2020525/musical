@@ -1,0 +1,5 @@
+# Sample MP3 Placeholder
+# For development, you can:
+# 1. Download a royalty-free track from https://freemusicarchive.org
+# 2. Or use this test URL: https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3
+# 3. Save as sample.mp3 in this directory

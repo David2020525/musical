@@ -1,4 +1,6 @@
 import { Locale, t } from '../lib/i18n';
+import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
+import { PlayButtonScript } from '../components/PlayButton';
 
 export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
 <html lang="${locale}">
@@ -391,6 +393,10 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
             }
         });
     </script>
+    
+    <!-- Global Audio Player -->
+    ${GlobalAudioPlayerHTML}
+    ${PlayButtonScript}
 </body>
 </html>
 `;
