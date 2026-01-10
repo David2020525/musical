@@ -2,7 +2,9 @@ import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 import { t } from '../lib/i18n';
 
-export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => `<!DOCTYPE html>
+export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
+    const otherLocale = locale === 'en' ? 'tr' : 'en';
+    return `<!DOCTYPE html>
 <html lang="${locale}">
 <head>
     <meta charset="UTF-8">
@@ -74,6 +76,15 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => `<!DOCTYP
                 <a href="/${locale}/forum" class="text-white/60 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
                 <a href="/${locale}/blog" class="text-white/60 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
                 <a href="/${locale}/dashboard" class="text-white/60 hover:text-white transition-colors">${t('nav.dashboard', locale)}</a>
+                <!-- Language Switcher -->
+                <a 
+                    href="/${otherLocale}/browse" 
+                    class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
+                    title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
+                >
+                    <i class="fas fa-globe"></i>
+                    <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
+                </a>
                 <a href="/${locale}/login" class="px-6 py-2.5 rounded-xl glass hover:glass-strong transition-all">${t('nav.login', locale)}</a>
                 <a href="/${locale}/register" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all font-semibold">${t('nav.register', locale)}</a>
             </div>
@@ -304,3 +315,4 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => `<!DOCTYP
 </body>
 </html>
 `;
+}

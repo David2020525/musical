@@ -138,7 +138,8 @@ app.get('/', c => {
 
 // Home page
 app.get('/:locale', c => {
-  return c.html(ultraModernHomeHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernHomeHTML(locale))
 })
 
 // Browse page

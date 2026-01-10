@@ -1,9 +1,13 @@
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 import { MobileNavigationHTML } from '../components/MobileNavigation';
+import { t, Locale } from '../lib/i18n';
 
-export const ultraModernHomeHTML = `<!DOCTYPE html>
-<html lang="en">
+export function ultraModernHomeHTML(locale: Locale = 'en') {
+    const otherLocale = locale === 'en' ? 'tr' : 'en';
+    
+    return `<!DOCTYPE html>
+<html lang="${locale}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -169,7 +173,7 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
         <div class="max-w-[1400px] mx-auto px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 <!-- Logo -->
-                <a href="/en" class="flex items-center space-x-3 group">
+                <a href="/${locale}" class="flex items-center space-x-3 group">
                     <div class="relative">
                         <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center neon-glow">
                             <i class="fas fa-wave-square text-white text-xl"></i>
@@ -197,14 +201,29 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
                     </div>
                 </div>
                 
+                <!-- Navigation Links -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="/${locale}/browse" class="text-white/60 hover:text-white transition-colors">${t('nav.browse', locale)}</a>
+                    <a href="/${locale}/forum" class="text-white/60 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
+                    <a href="/${locale}/blog" class="text-white/60 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
+                    <a href="/${locale}/dashboard" class="text-white/60 hover:text-white transition-colors">${t('nav.dashboard', locale)}</a>
+                </div>
+                
                 <!-- Right Actions -->
                 <div class="flex items-center space-x-4">
-                    <a href="/en/browse" class="hidden md:block px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                        Browse
+                    <!-- Language Switcher -->
+                    <a 
+                        href="/${otherLocale}" 
+                        class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
+                        title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
+                    >
+                        <i class="fas fa-globe"></i>
+                        <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
                     </a>
+                    
                     <div id="authSection" class="hidden lg:block">
-                        <a href="/en/login" class="px-6 py-3 btn-micro bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
-                            Sign In
+                        <a href="/${locale}/login" class="px-6 py-3 btn-micro bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                            ${t('nav.login', locale)}
                         </a>
                     </div>
                     
@@ -753,3 +772,4 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
     ${PlayButtonScript}
 </body>
 </html>`;
+}
