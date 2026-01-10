@@ -8,11 +8,12 @@ tracks.get('/', async c => {
   try {
     const genre = c.req.query('genre')
     const search = c.req.query('search')
+    const sort = c.req.query('sort') || 'newest'
 
     let query = 'SELECT * FROM tracks WHERE 1=1'
     const params: any[] = []
 
-    if (genre) {
+    if (genre && genre !== 'all') {
       query += ' AND genre = ?'
       params.push(genre)
     }
@@ -22,7 +23,22 @@ tracks.get('/', async c => {
       params.push(`%${search}%`, `%${search}%`)
     }
 
-    query += ' ORDER BY created_at DESC'
+    // Add sorting
+    switch (sort) {
+      case 'popular':
+        query += ' ORDER BY plays_count DESC, likes_count DESC'
+        break
+      case 'trending':
+        query += ' ORDER BY likes_count DESC, plays_count DESC'
+        break
+      case 'oldest':
+        query += ' ORDER BY created_at ASC'
+        break
+      case 'newest':
+      default:
+        query += ' ORDER BY created_at DESC'
+        break
+    }
 
     const stmt = c.env.DB.prepare(query)
     const result = await stmt.bind(...params).all()

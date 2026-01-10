@@ -316,15 +316,36 @@ export const ultraModernBrowseHTML = `<!DOCTYPE html>
         const tracksPerPage = 12;
         let viewMode = 'grid';
         
-        // Load tracks
+        // Load tracks with filters
         async function loadTracks() {
             try {
-                const response = await fetch('/api/tracks');
+                // Build query string from filters
+                const params = new URLSearchParams();
+                
+                const searchQuery = document.getElementById('navSearch')?.value;
+                if (searchQuery) {
+                    params.append('search', searchQuery);
+                }
+                
+                const selectedGenres = Array.from(document.querySelectorAll('.genre-filter:checked')).map(cb => cb.value);
+                if (selectedGenres.length === 1) {
+                    params.append('genre', selectedGenres[0]);
+                }
+                
+                const sortBy = document.getElementById('sortSelect')?.value;
+                if (sortBy) {
+                    params.append('sort', sortBy);
+                }
+                
+                const url = '/api/tracks' + (params.toString() ? '?' + params.toString() : '');
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 if (data.success) {
                     allTracks = data.data;
-                    applyFilters();
+                    filteredTracks = data.data; // Server-side filtering, so filtered = all
+                    currentPage = 1;
+                    renderTracks();
                 }
             } catch (error) {
                 console.error('Failed to load tracks:', error);
@@ -332,39 +353,9 @@ export const ultraModernBrowseHTML = `<!DOCTYPE html>
             }
         }
         
-        // Apply filters
+        // Apply filters (now uses server-side filtering)
         function applyFilters() {
-            const searchQuery = document.getElementById('navSearch').value.toLowerCase();
-            const selectedGenres = Array.from(document.querySelectorAll('.genre-filter:checked')).map(cb => cb.value);
-            const sortBy = document.getElementById('sortSelect').value;
-            
-            // Filter
-            filteredTracks = allTracks.filter(track => {
-                const matchesSearch = !searchQuery || 
-                    track.title.toLowerCase().includes(searchQuery) || 
-                    track.artist.toLowerCase().includes(searchQuery);
-                const matchesGenre = selectedGenres.length === 0 || selectedGenres.includes(track.genre);
-                return matchesSearch && matchesGenre;
-            });
-            
-            // Sort
-            switch(sortBy) {
-                case 'newest':
-                    filteredTracks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    break;
-                case 'popular':
-                    filteredTracks.sort((a, b) => (b.plays_count + b.likes_count) - (a.plays_count + a.likes_count));
-                    break;
-                case 'plays':
-                    filteredTracks.sort((a, b) => (b.plays_count || 0) - (a.plays_count || 0));
-                    break;
-                case 'likes':
-                    filteredTracks.sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0));
-                    break;
-            }
-            
-            currentPage = 1;
-            renderTracks();
+            loadTracks(); // Reload tracks with current filter settings
         }
         
         // Render tracks
