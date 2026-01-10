@@ -1,5 +1,6 @@
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
+import { MobileNavigationHTML } from '../components/MobileNavigation';
 
 export const ultraModernHomeHTML = `<!DOCTYPE html>
 <html lang="en">
@@ -201,11 +202,14 @@ export const ultraModernHomeHTML = `<!DOCTYPE html>
                     <a href="/en/browse" class="hidden md:block px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
                         Browse
                     </a>
-                    <div id="authSection">
+                    <div id="authSection" class="hidden lg:block">
                         <a href="/en/login" class="px-6 py-3 btn-micro bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
                             Sign In
                         </a>
                     </div>
+                    
+                    <!-- Mobile Menu Button (injected by MobileNavigation component) -->
+                    ${MobileNavigationHTML}
                 </div>
             </div>
         </div>
