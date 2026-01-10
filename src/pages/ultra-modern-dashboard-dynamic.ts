@@ -1,0 +1,560 @@
+import { Locale, t } from '../lib/i18n';
+import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
+import { PlayButtonScript } from '../components/PlayButton';
+
+export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
+  const _ = (key: string) => t(key, locale);
+  
+  return `<!DOCTYPE html>
+<html lang="${locale}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${_('dashboard.title')} - MusicHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body {
+            background: #000000;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-strong { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.12); }
+        .card-3d { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .card-3d:hover { transform: translateY(-8px); }
+        .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="text-white pb-32">
+    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
+        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="/${locale}" class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                    <i class="fas fa-music text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MusicHub</span>
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="/${locale}" class="text-gray-300 hover:text-white">${_('nav.home')}</a>
+                <a href="/${locale}/browse" class="text-gray-300 hover:text-white">${_('nav.browse')}</a>
+                <a href="/${locale}/dashboard" class="text-white font-semibold">${_('nav.dashboard')}</a>
+                <button onclick="logout()" class="px-6 py-2.5 glass rounded-xl hover:bg-white/10">${_('auth.logout')}</button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="pt-28 px-6">
+        <div class="max-w-[1400px] mx-auto">
+            <!-- User Info -->
+            <div class="mb-12">
+                <h1 class="text-6xl font-black mb-2" id="userName">${_('dashboard.title')}</h1>
+                <p class="text-xl text-gray-400" id="userRole">${_('common.loading')}</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="glass-strong rounded-3xl p-8 card-3d text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2" id="stat-tracks">...</div>
+                    <div class="text-sm text-gray-400">${_('dashboard.total_tracks')}</div>
+                </div>
+                <div class="glass-strong rounded-3xl p-8 card-3d text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2" id="stat-plays">...</div>
+                    <div class="text-sm text-gray-400">${_('dashboard.total_plays')}</div>
+                </div>
+                <div class="glass-strong rounded-3xl p-8 card-3d text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2" id="stat-followers">...</div>
+                    <div class="text-sm text-gray-400">${_('dashboard.followers')}</div>
+                </div>
+                <div class="glass-strong rounded-3xl p-8 card-3d text-center">
+                    <div class="text-5xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2" id="stat-likes">...</div>
+                    <div class="text-sm text-gray-400">${_('dashboard.total_likes')}</div>
+                </div>
+            </div>
+            
+            <!-- Producer Section (shown only for producers) -->
+            <div id="producerSection" class="hidden">
+                <!-- Earnings Card -->
+                <div class="glass-strong rounded-3xl p-8 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-3xl font-bold">${_('dashboard.earnings')}</h2>
+                        <button id="withdrawBtn" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl font-semibold hover:shadow-lg">
+                            <i class="fas fa-wallet mr-2"></i>${_('dashboard.withdraw')}
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-green-400 mb-2" id="wallet-balance">$0.00</div>
+                            <div class="text-sm text-gray-400">${_('dashboard.available_balance')}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-blue-400 mb-2" id="wallet-earned">$0.00</div>
+                            <div class="text-sm text-gray-400">${_('dashboard.total_earned')}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-black text-purple-400 mb-2" id="wallet-withdrawn">$0.00</div>
+                            <div class="text-sm text-gray-400">${_('dashboard.total_withdrawn')}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- My Tracks -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="glass-strong rounded-3xl p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold">${_('dashboard.my_tracks')}</h2>
+                            <button id="uploadBtn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg hidden">
+                                <i class="fas fa-plus mr-2"></i>${_('dashboard.upload_new')}
+                            </button>
+                        </div>
+                        
+                        <!-- Tracks Loading -->
+                        <div id="tracksLoading" class="space-y-4">
+                            ${Array(3).fill(0).map(() => `
+                                <div class="glass rounded-2xl p-4 skeleton">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-16 rounded-xl bg-gray-700"></div>
+                                        <div class="flex-1">
+                                            <div class="h-5 bg-gray-700 rounded mb-2 w-3/4"></div>
+                                            <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Tracks List -->
+                        <div id="tracksList" class="space-y-4 hidden"></div>
+                        
+                        <!-- Empty State -->
+                        <div id="tracksEmpty" class="hidden text-center py-12">
+                            <i class="fas fa-music text-6xl text-gray-600 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-2">${_('dashboard.no_tracks')}</h3>
+                            <p class="text-gray-400 mb-6">${_('dashboard.upload_first_track')}</p>
+                            <button class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+                                <i class="fas fa-upload mr-2"></i>${_('dashboard.upload_track')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="space-y-8">
+                    <!-- Quick Actions -->
+                    <div class="glass-strong rounded-3xl p-8">
+                        <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
+                        <div class="space-y-3">
+                            <button id="uploadBtnSidebar" class="w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left hidden">
+                                <i class="fas fa-upload mr-3"></i>${_('dashboard.upload_track')}
+                            </button>
+                            <a href="/${locale}/dashboard/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                                <i class="fas fa-user mr-3"></i>${_('dashboard.edit_profile')}
+                            </a>
+                            <a href="/${locale}/producer/apply" id="applyProducerBtn" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                                <i class="fas fa-star mr-3"></i>${_('dashboard.become_producer')}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Producer Stats (shown only for producers) -->
+                    <div id="producerStats" class="glass-strong rounded-3xl p-8 hidden">
+                        <h2 class="text-2xl font-bold mb-6">${_('dashboard.producer_stats')}</h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">${_('dashboard.total_sales')}</span>
+                                <span class="font-bold" id="total-sales">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">${_('dashboard.avg_price')}</span>
+                                <span class="font-bold" id="avg-price">$0.00</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">${_('dashboard.conversion_rate')}</span>
+                                <span class="font-bold" id="conversion-rate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upload Track Modal -->
+    <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+        <div class="glass-strong rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold">${_('dashboard.upload_track')}</h2>
+                <button id="closeUploadModal" class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="uploadForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.title')}</label>
+                        <input type="text" id="trackTitle" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.artist')}</label>
+                        <input type="text" id="trackArtist" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.genre')}</label>
+                        <input type="text" id="trackGenre" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.bpm')}</label>
+                        <input type="number" id="trackBpm" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.duration')} (s)</label>
+                        <input type="number" id="trackDuration" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.mood')}</label>
+                        <input type="text" id="trackMood" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">${_('track.price')} ($)</label>
+                        <input type="number" step="0.01" id="trackPrice" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">${_('track.tags')}</label>
+                    <input type="text" id="trackTags" placeholder="${_('track.tags_placeholder')}" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">${_('track.description')}</label>
+                    <textarea id="trackDescription" rows="4" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500 resize-none"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">${_('track.audio_url')}</label>
+                    <input type="url" id="trackAudioUrl" required placeholder="https://example.com/track.mp3" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">${_('track.cover_url')}</label>
+                    <input type="url" id="trackCoverUrl" required placeholder="https://example.com/cover.jpg" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-purple-500">
+                </div>
+                
+                <div id="uploadError" class="hidden bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-400"></div>
+                
+                <div class="flex items-center justify-end space-x-4">
+                    <button type="button" id="cancelUploadBtn" class="px-6 py-3 rounded-xl font-semibold hover:bg-white/5">${_('common.cancel')}</button>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg">
+                        <span id="uploadSubmitText">${_('dashboard.upload_track')}</span>
+                        <span id="uploadSubmitLoading" class="hidden"><i class="fas fa-spinner fa-spin mr-2"></i>${_('common.loading')}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    ${GlobalAudioPlayerHTML}
+    ${PlayButtonScript}
+    
+    <script>
+        const locale = '${locale}';
+        let currentUser = null;
+        let userTracks = [];
+        
+        // Check authentication
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/${locale}/login?redirect=' + encodeURIComponent(window.location.pathname);
+                return false;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.data || data;
+                    updateUserInfo();
+                    return true;
+                } else {
+                    localStorage.removeItem('token');
+                    window.location.href = '/${locale}/login';
+                    return false;
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                return false;
+            }
+        }
+        
+        // Update user info display
+        function updateUserInfo() {
+            if (!currentUser) return;
+            
+            document.getElementById('userName').textContent = currentUser.name + "'s ${_('dashboard.title')}";
+            
+            let roleText = currentUser.is_producer ? '${_('dashboard.producer')}' : '${_('dashboard.listener')}';
+            if (currentUser.role === 'admin') roleText = '${_('dashboard.admin')}';
+            document.getElementById('userRole').textContent = roleText;
+            
+            // Show producer sections
+            if (currentUser.is_producer) {
+                document.getElementById('producerSection')?.classList.remove('hidden');
+                document.getElementById('producerStats')?.classList.remove('hidden');
+                document.getElementById('uploadBtn')?.classList.remove('hidden');
+                document.getElementById('uploadBtnSidebar')?.classList.remove('hidden');
+                document.getElementById('applyProducerBtn')?.classList.add('hidden');
+                loadEarnings();
+            }
+        }
+        
+        // Load user stats
+        async function loadUserStats() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/users/me/stats', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('stat-tracks').textContent = data.data.tracks.toLocaleString();
+                    document.getElementById('stat-plays').textContent = data.data.plays.toLocaleString();
+                    document.getElementById('stat-followers').textContent = data.data.followers.toLocaleString();
+                    document.getElementById('stat-likes').textContent = data.data.likes.toLocaleString();
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        // Load user tracks
+        async function loadTracks() {
+            const token = localStorage.getItem('token');
+            document.getElementById('tracksLoading').classList.remove('hidden');
+            document.getElementById('tracksList').classList.add('hidden');
+            document.getElementById('tracksEmpty').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/users/me/tracks', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    userTracks = data.data;
+                    renderTracks();
+                }
+            } catch (error) {
+                console.error('Failed to load tracks:', error);
+            }
+        }
+        
+        // Render tracks
+        function renderTracks() {
+            document.getElementById('tracksLoading').classList.add('hidden');
+            
+            if (userTracks.length === 0) {
+                document.getElementById('tracksEmpty').classList.remove('hidden');
+                return;
+            }
+            
+            const list = document.getElementById('tracksList');
+            list.classList.remove('hidden');
+            
+            list.innerHTML = userTracks.map(track => \`
+                <div class="glass rounded-2xl p-4 hover:bg-white/10 transition-all">
+                    <div class="flex items-center space-x-4">
+                        <img src="\${track.cover_url}" alt="\${track.title}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold truncate">\${track.title}</h4>
+                            <p class="text-sm text-gray-400 truncate">\${track.genre} • \${track.plays_count || 0} ${_('dashboard.plays')}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="w-10 h-10 rounded-xl glass hover:bg-white/10 flex items-center justify-center" onclick="playTrack(\${track.id})">
+                                <i class="fas fa-play text-sm"></i>
+                            </button>
+                            <button class="w-10 h-10 rounded-xl glass hover:bg-white/10 flex items-center justify-center" onclick="editTrack(\${track.id})">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                            <button class="w-10 h-10 rounded-xl glass hover:bg-white/10 flex items-center justify-center text-red-400" onclick="deleteTrack(\${track.id})">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            \`).join('');
+        }
+        
+        // Load earnings
+        async function loadEarnings() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/users/me/earnings', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    const wallet = data.data.wallet;
+                    document.getElementById('wallet-balance').textContent = \`$\${wallet.balance.toFixed(2)}\`;
+                    document.getElementById('wallet-earned').textContent = \`$\${wallet.total_earned.toFixed(2)}\`;
+                    document.getElementById('wallet-withdrawn').textContent = \`$\${wallet.total_withdrawn.toFixed(2)}\`;
+                    
+                    const sales = data.data.sales;
+                    document.getElementById('total-sales').textContent = sales.total_count;
+                }
+            } catch (error) {
+                console.error('Failed to load earnings:', error);
+            }
+        }
+        
+        // Upload track
+        document.getElementById('uploadForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('[type="submit"]');
+            const submitText = document.getElementById('uploadSubmitText');
+            const submitLoading = document.getElementById('uploadSubmitLoading');
+            const errorDiv = document.getElementById('uploadError');
+            
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+            submitBtn.disabled = true;
+            errorDiv.classList.add('hidden');
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/tracks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': \`Bearer \${token}\`
+                    },
+                    body: JSON.stringify({
+                        title: document.getElementById('trackTitle').value,
+                        artist: document.getElementById('trackArtist').value,
+                        genre: document.getElementById('trackGenre').value,
+                        duration: parseInt(document.getElementById('trackDuration').value),
+                        bpm: parseInt(document.getElementById('trackBpm').value) || null,
+                        mood: document.getElementById('trackMood').value || null,
+                        tags: document.getElementById('trackTags').value || null,
+                        description: document.getElementById('trackDescription').value || null,
+                        audio_url: document.getElementById('trackAudioUrl').value,
+                        cover_url: document.getElementById('trackCoverUrl').value,
+                        price: parseFloat(document.getElementById('trackPrice').value)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('uploadModal').classList.add('hidden');
+                    e.target.reset();
+                    loadTracks();
+                    loadUserStats();
+                } else {
+                    errorDiv.textContent = data.error || '${_('common.error')}';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                errorDiv.textContent = '${_('common.network_error')}';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                submitText.classList.remove('hidden');
+                submitLoading.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Modal controls
+        document.getElementById('uploadBtn')?.addEventListener('click', () => {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        });
+        
+        document.getElementById('uploadBtnSidebar')?.addEventListener('click', () => {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        });
+        
+        document.getElementById('closeUploadModal')?.addEventListener('click', () => {
+            document.getElementById('uploadModal').classList.add('hidden');
+        });
+        
+        document.getElementById('cancelUploadBtn')?.addEventListener('click', () => {
+            document.getElementById('uploadModal').classList.add('hidden');
+        });
+        
+        // Track actions
+        function playTrack(trackId) {
+            const track = userTracks.find(t => t.id === trackId);
+            if (track) {
+                console.log('Playing track:', track.title);
+                // Integrate with global audio player here
+            }
+        }
+        
+        function editTrack(trackId) {
+            console.log('Edit track:', trackId);
+            // TODO: Implement edit modal
+        }
+        
+        async function deleteTrack(trackId) {
+            if (!confirm('${_('dashboard.confirm_delete')}')) return;
+            
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(\`/api/tracks/\${trackId}\`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                
+                if (response.ok) {
+                    loadTracks();
+                    loadUserStats();
+                }
+            } catch (error) {
+                console.error('Failed to delete track:', error);
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/${locale}/login';
+        }
+        
+        // Initialize
+        async function init() {
+            const authenticated = await checkAuth();
+            if (authenticated) {
+                loadUserStats();
+                loadTracks();
+            }
+        }
+        
+        init();
+    </script>
+</body>
+</html>`;
+};

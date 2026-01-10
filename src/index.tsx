@@ -6,7 +6,7 @@ import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
 import { ultraModernBrowseHTML } from './pages/ultra-modern-browse'
 import { ultraModernTrackDetailHTML } from './pages/ultra-modern-track-detail'
-import { ultraModernDashboardHTML } from './pages/ultra-modern-dashboard'
+import { ultraModernDashboardDynamicHTML } from './pages/ultra-modern-dashboard-dynamic'
 import { ultraModernRegisterHTML } from './pages/ultra-modern-register'
 import { ultraModernLoginHTML } from './pages/ultra-modern-login'
 import { ultraModernProfileHTML } from './pages/ultra-modern-profile'
@@ -184,7 +184,8 @@ app.get('/:locale/reset-password', c => {
 
 // Dashboard page
 app.get('/:locale/dashboard', c => {
-  return c.html(ultraModernDashboardHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernDashboardDynamicHTML(locale))
 })
 
 // Track detail page
