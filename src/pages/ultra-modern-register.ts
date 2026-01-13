@@ -198,6 +198,28 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                         </p>
                     </div>
                     
+                    <!-- Producer Checkbox -->
+                    <div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border border-purple-500/30 rounded-xl p-4">
+                        <label class="flex items-start cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                id="is-producer" 
+                                class="mt-1 w-5 h-5 rounded border-purple-500 text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 bg-black/50"
+                            >
+                            <div class="ml-3">
+                                <div class="text-sm font-semibold text-purple-300 group-hover:text-purple-200 transition-colors">
+                                    <i class="fas fa-microphone mr-2"></i>
+                                    ${locale === 'tr' ? 'Müzik Üreticisiyim' : "I'm a Music Producer"}
+                                </div>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    ${locale === 'tr' 
+                                        ? 'Kendi müziklerimi yüklemek ve satmak istiyorum' 
+                                        : 'I want to upload and sell my music'}
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                    
                     <!-- Submit Button -->
                     <button 
                         type="submit" 
@@ -298,6 +320,7 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const isProducer = document.getElementById('is-producer').checked;
             
             // Client-side validation
             if (name.length < 2) {
@@ -350,11 +373,22 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                     localStorage.setItem('token', data.data.token);
                     localStorage.setItem('user', JSON.stringify(data.data.user));
                     
-                    showSuccess(t.success);
+                    // Show success message
+                    if (isProducer) {
+                        showSuccess(locale === 'tr' 
+                            ? 'Kayıt başarılı! Üretici başvuru sayfasına yönlendiriliyorsunuz...' 
+                            : 'Registration successful! Redirecting to producer application...');
+                    } else {
+                        showSuccess(t.success);
+                    }
                     
                     // Redirect after 1.5 seconds
                     setTimeout(() => {
-                        window.location.href = '/' + locale + '/login';
+                        if (isProducer) {
+                            window.location.href = '/' + locale + '/producer/apply';
+                        } else {
+                            window.location.href = '/' + locale + '/login';
+                        }
                     }, 1500);
                 } else {
                     // Show server error
