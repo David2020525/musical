@@ -318,56 +318,21 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 <p class="text-gray-400">Handpicked by our music experts</p>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/en/tracks/1'">
-                    <div class="aspect-video bg-gradient-to-br from-purple-500/30 to-pink-500/30 relative flex items-center justify-center">
-                        <i class="fas fa-music text-8xl text-white/20"></i>
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                            <button class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center neon-glow">
-                                <i class="fas fa-play text-2xl ml-2 text-white"></i>
-                            </button>
-                        </div>
-                        <div class="absolute top-4 left-4 px-4 py-2 glass-strong rounded-full text-sm font-bold">
-                            <i class="fas fa-star text-yellow-400 mr-2"></i>Editor's Choice
-                        </div>
-                    </div>
+            <div id="editorsPicks" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Loading skeleton -->
+                <div class="glass-strong rounded-3xl overflow-hidden animate-pulse">
+                    <div class="aspect-video bg-white/5"></div>
                     <div class="p-8">
-                        <h3 class="text-2xl font-bold mb-2">Midnight Dreams</h3>
-                        <p class="text-gray-400 mb-4">A mesmerizing electronic journey</p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span><i class="fas fa-user mr-2"></i>DJ Neon</span>
-                            <span><i class="fas fa-play mr-2"></i>12.5K plays</span>
-                        </div>
+                        <div class="h-6 bg-white/10 rounded mb-2"></div>
+                        <div class="h-4 bg-white/5 rounded w-2/3"></div>
                     </div>
                 </div>
-                
                 <div class="grid grid-rows-2 gap-6">
-                    <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all">
-                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/30 to-cyan-500/30 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-music text-3xl text-white/40"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="text-lg font-bold mb-1">Summer Vibes 2024</h4>
-                            <p class="text-sm text-gray-400 mb-2">Feel-good electronic beats</p>
-                            <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>8.2K plays</span>
-                        </div>
-                        <button class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                            <i class="fas fa-play text-sm ml-1"></i>
-                        </button>
+                    <div class="glass-strong rounded-3xl p-6 animate-pulse">
+                        <div class="w-24 h-24 rounded-2xl bg-white/5"></div>
                     </div>
-                    
-                    <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all">
-                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-green-500/30 to-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-music text-3xl text-white/40"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="text-lg font-bold mb-1">Urban Nights</h4>
-                            <p class="text-sm text-gray-400 mb-2">Hip hop meets electronica</p>
-                            <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>6.7K plays</span>
-                        </div>
-                        <button class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                            <i class="fas fa-play text-sm ml-1"></i>
-                        </button>
+                    <div class="glass-strong rounded-3xl p-6 animate-pulse">
+                        <div class="w-24 h-24 rounded-2xl bg-white/5"></div>
                     </div>
                 </div>
             </div>
@@ -384,24 +349,19 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             
             <div class="glass-strong rounded-3xl p-8">
                 <div class="space-y-4" id="trendingChart">
+                    <!-- Loading skeletons -->
                     ${Array(10).fill(0).map((_, i) => `
-                        <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/10 transition-all cursor-pointer group">
-                            <div class="text-3xl font-black ${i < 3 ? 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent' : 'text-gray-500'} w-12 text-center">
+                        <div class="flex items-center space-x-4 p-4 glass rounded-2xl animate-pulse">
+                            <div class="text-3xl font-black text-gray-600 w-12 text-center">
                                 ${i + 1}
                             </div>
-                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-music text-xl text-white/40"></i>
-                            </div>
+                            <div class="w-16 h-16 rounded-xl bg-white/5 flex-shrink-0"></div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-bold truncate">Track ${i + 1}</h4>
-                                <p class="text-sm text-gray-400 truncate">Artist Name</p>
+                                <div class="h-4 bg-white/10 rounded mb-2 w-32"></div>
+                                <div class="h-3 bg-white/5 rounded w-24"></div>
                             </div>
-                            <div class="hidden md:block text-sm text-gray-500">
-                                ${(1000 * (10 - i) + Math.floor(Math.random() * 500)).toLocaleString()} plays
-                            </div>
-                            <button class="w-10 h-10 rounded-full glass hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
-                                <i class="fas fa-play text-sm"></i>
-                            </button>
+                            <div class="hidden md:block w-20 h-4 bg-white/5 rounded"></div>
+                            <div class="w-10 h-10 rounded-full bg-white/5"></div>
                         </div>
                     `).join('')}
                 </div>
@@ -684,6 +644,128 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             window.location.reload();
         }
         
+        // Load Editor's Picks
+        async function loadEditorsPicks() {
+            try {
+                const response = await fetch('/api/tracks?featured=true&limit=6');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const tracks = data.data;
+                    const gradients = [
+                        'from-purple-500/30 to-pink-500/30',
+                        'from-blue-500/30 to-cyan-500/30',
+                        'from-green-500/30 to-emerald-500/30',
+                        'from-orange-500/30 to-red-500/30',
+                        'from-indigo-500/30 to-purple-500/30',
+                        'from-pink-500/30 to-rose-500/30'
+                    ];
+                    
+                    const mainTrack = tracks[0];
+                    const sideTracksHTML = tracks.slice(1, 3).map((track, i) => \`
+                        <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all" onclick="window.location.href='/${locale}/tracks/\${track.id}'">
+                            <div class="w-24 h-24 rounded-2xl bg-gradient-to-br \${gradients[i + 1]} flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-music text-3xl text-white/40"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-bold mb-1 truncate">\${track.title}</h4>
+                                <p class="text-sm text-gray-400 mb-2 truncate">\${track.artist}</p>
+                                <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>\${(track.plays_count || 0).toLocaleString()} plays</span>
+                            </div>
+                            <button 
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all play-btn"
+                                data-track-id="\${track.id}"
+                                data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                onclick="event.stopPropagation(); playTrack(this);"
+                            >
+                                <i class="fas fa-play text-sm ml-1 play-icon"></i>
+                                <i class="fas fa-pause text-sm pause-icon hidden"></i>
+                            </button>
+                        </div>
+                    \`).join('');
+                    
+                    const html = \`
+                        <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/${locale}/tracks/\${mainTrack.id}'">
+                            <div class="aspect-video bg-gradient-to-br \${gradients[0]} relative flex items-center justify-center">
+                                <i class="fas fa-music text-8xl text-white/20"></i>
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                                    <button 
+                                        class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center neon-glow play-btn"
+                                        data-track-id="\${mainTrack.id}"
+                                        data-track='\${JSON.stringify(mainTrack).replace(/'/g, "&apos;")}'
+                                        onclick="event.stopPropagation(); playTrack(this);"
+                                    >
+                                        <i class="fas fa-play text-2xl ml-2 text-white play-icon"></i>
+                                        <i class="fas fa-pause text-2xl pause-icon hidden"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute top-4 left-4 px-4 py-2 glass-strong rounded-full text-sm font-bold">
+                                    <i class="fas fa-star text-yellow-400 mr-2"></i>Editor's Choice
+                                </div>
+                            </div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold mb-2 truncate">\${mainTrack.title}</h3>
+                                <p class="text-gray-400 mb-4 truncate">\${mainTrack.description || mainTrack.genre || 'Featured track'}</p>
+                                <div class="flex items-center justify-between text-sm text-gray-500">
+                                    <span><i class="fas fa-user mr-2"></i>\${mainTrack.artist}</span>
+                                    <span><i class="fas fa-play mr-2"></i>\${(mainTrack.plays_count || 0).toLocaleString()} plays</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-rows-2 gap-6">
+                            \${sideTracksHTML}
+                        </div>
+                    \`;
+                    
+                    document.getElementById('editorsPicks').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load editor picks:', error);
+            }
+        }
+        
+        // Load Trending Tracks
+        async function loadTrending() {
+            try {
+                const response = await fetch('/api/tracks?sort=trending&limit=10');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const html = data.data.map((track, i) => \`
+                        <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/10 transition-all cursor-pointer group" onclick="window.location.href='/${locale}/tracks/\${track.id}'">
+                            <div class="text-3xl font-black \${i < 3 ? 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent' : 'text-gray-500'} w-12 text-center">
+                                \${i + 1}
+                            </div>
+                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-music text-xl text-white/40"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold truncate">\${track.title}</h4>
+                                <p class="text-sm text-gray-400 truncate">\${track.artist}</p>
+                            </div>
+                            <div class="hidden md:block text-sm text-gray-500">
+                                \${(track.plays_count || 0).toLocaleString()} plays
+                            </div>
+                            <button 
+                                class="w-10 h-10 rounded-full glass hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all play-btn"
+                                data-track-id="\${track.id}"
+                                data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                onclick="event.stopPropagation(); playTrack(this);"
+                            >
+                                <i class="fas fa-play text-sm play-icon"></i>
+                                <i class="fas fa-pause text-sm pause-icon hidden"></i>
+                            </button>
+                        </div>
+                    \`).join('');
+                    
+                    document.getElementById('trendingChart').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load trending:', error);
+            }
+        }
+        
         // Load Tracks
         async function loadTracks() {
             try {
@@ -762,6 +844,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         reveals.forEach(el => revealObserver.observe(el));
         
+        // Load all homepage data
+        loadEditorsPicks();
+        loadTrending();
         loadTracks();
     </script>
     

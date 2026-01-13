@@ -28,6 +28,8 @@ tracks.get('/', async c => {
     const genre = c.req.query('genre')
     const search = c.req.query('search')
     const sort = c.req.query('sort') || 'newest'
+    const featured = c.req.query('featured')
+    const limit = parseInt(c.req.query('limit') || '100')
 
     let query = 'SELECT * FROM tracks WHERE 1=1'
     const params: any[] = []
@@ -40,6 +42,10 @@ tracks.get('/', async c => {
     if (search) {
       query += ' AND (title LIKE ? OR artist LIKE ?)'
       params.push(`%${search}%`, `%${search}%`)
+    }
+
+    if (featured === 'true') {
+      query += ' AND is_featured = 1'
     }
 
     // Add sorting
@@ -58,6 +64,10 @@ tracks.get('/', async c => {
         query += ' ORDER BY created_at DESC'
         break
     }
+
+    // Add limit
+    query += ' LIMIT ?'
+    params.push(limit)
 
     const stmt = c.env.DB.prepare(query)
     const result = await stmt.bind(...params).all()
