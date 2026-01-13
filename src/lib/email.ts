@@ -1,12 +1,8 @@
 /**
- * Email Service for MusicHub
- * Supports multiple email providers (Resend, test mode)
+ * Email Service
  * 
- * To use in production:
- * 1. Sign up for Resend.com (free tier)
- * 2. Get API key from https://resend.com/api-keys
- * 3. Add to wrangler.jsonc: RESEND_API_KEY in secrets
- * 4. Or use .dev.vars for local development
+ * Mock implementation for development that logs emails to console.
+ * In production, replace with real email service (Resend.com, SendGrid, etc.)
  */
 
 export interface EmailOptions {
@@ -17,379 +13,303 @@ export interface EmailOptions {
 }
 
 export interface EmailService {
-  send(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }>
+  send(options: EmailOptions): Promise<{ success: boolean; error?: string }>
 }
 
 /**
- * Resend Email Service (Production)
- * Requires RESEND_API_KEY in environment
+ * Get email service instance (mock for development)
  */
-export class ResendEmailService implements EmailService {
-  constructor(private apiKey: string) {}
-
-  async send(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    try {
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'MusicHub <noreply@musichub.app>',
+export function getEmailService(env: any): EmailService {
+  return {
+    async send(options: EmailOptions) {
+      // Mock implementation for development
+      console.log('\n📧 ===== EMAIL SENT (MOCK) =====')
+      console.log(`To: ${options.to}`)
+      console.log(`Subject: ${options.subject}`)
+      console.log('HTML Content:')
+      console.log(options.html)
+      console.log('==============================\n')
+      
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      return { success: true }
+      
+      /* 
+      // PRODUCTION IMPLEMENTATION (Uncomment when ready)
+      // Install: npm install resend
+      
+      import { Resend } from 'resend'
+      
+      const resend = new Resend(env.RESEND_API_KEY)
+      
+      try {
+        await resend.emails.send({
+          from: 'MusicHub <noreply@yourdomain.com>',
           to: options.to,
           subject: options.subject,
           html: options.html,
-          text: options.text || stripHtml(options.html),
-        }),
-      })
-
-      if (!response.ok) {
-        const error = await response.text()
-        return { success: false, error: `Resend API error: ${error}` }
+          text: options.text
+        })
+        return { success: true }
+      } catch (error) {
+        console.error('Email send error:', error)
+        return { success: false, error: 'Failed to send email' }
       }
-
-      const data = await response.json() as { id: string }
-      return { success: true, messageId: data.id }
-    } catch (error: any) {
-      return { success: false, error: error.message }
+      */
     }
   }
-}
-
-/**
- * Test Email Service (Development)
- * Logs emails to console instead of sending
- */
-export class TestEmailService implements EmailService {
-  async send(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
-    console.log('📧 TEST EMAIL SERVICE - Email would be sent:')
-    console.log('To:', options.to)
-    console.log('Subject:', options.subject)
-    console.log('HTML:', options.html.substring(0, 200) + '...')
-    console.log('Text:', options.text?.substring(0, 200) + '...')
-    
-    // Simulate successful send
-    return { 
-      success: true, 
-      messageId: `test-${Date.now()}-${Math.random().toString(36).substring(7)}` 
-    }
-  }
-}
-
-/**
- * Get email service based on environment
- */
-export function getEmailService(env: any): EmailService {
-  // Check if Resend API key is available
-  if (env.RESEND_API_KEY) {
-    return new ResendEmailService(env.RESEND_API_KEY)
-  }
-  
-  // Fallback to test service for development
-  console.warn('⚠️ Using test email service - emails will not be sent')
-  console.warn('To use real emails, add RESEND_API_KEY to your environment')
-  return new TestEmailService()
-}
-
-/**
- * Helper function to strip HTML tags (basic implementation)
- */
-function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .trim()
 }
 
 /**
  * Email Templates
  */
 
-export function getVerificationEmailTemplate(params: {
+export function getVerificationEmailTemplate(options: {
   userName: string
   verificationLink: string
   locale?: 'en' | 'tr'
 }): { subject: string; html: string; text: string } {
-  const isEnglish = params.locale !== 'tr'
-  
-  if (isEnglish) {
-    return {
+  const { userName: name, verificationLink: verificationUrl, locale = 'en' } = options
+  const templates = {
+    en: {
       subject: 'Verify your MusicHub email address',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Verify your email</title>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+            .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+            .link { color: #667eea; word-break: break-all; }
+          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
-          </div>
-          
-          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #333; margin-top: 0;">Hi ${params.userName}! 👋</h2>
-            
-            <p>Welcome to MusicHub! We're excited to have you join our community of music lovers and creators.</p>
-            
-            <p>To get started, please verify your email address by clicking the button below:</p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${params.verificationLink}" 
-                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
-                        color: white; 
-                        padding: 15px 40px; 
-                        text-decoration: none; 
-                        border-radius: 8px; 
-                        display: inline-block;
-                        font-weight: bold;
-                        font-size: 16px;">
-                Verify Email Address
-              </a>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎵 Welcome to MusicHub!</h1>
             </div>
-            
-            <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
-            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
-              ${params.verificationLink}
-            </p>
-            
-            <p style="color: #666; font-size: 14px; margin-top: 30px;">
-              This link will expire in 24 hours. If you didn't create an account on MusicHub, you can safely ignore this email.
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© 2026 MusicHub. All rights reserved.</p>
+            <div class="content">
+              <p>Hi ${name},</p>
+              <p>Thanks for signing up! Please verify your email address to activate your account and start exploring thousands of tracks.</p>
+              <p style="text-align: center;">
+                <a href="${verificationUrl}" class="button">Verify Email Address</a>
+              </p>
+              <p>Or copy and paste this link into your browser:</p>
+              <p><a href="${verificationUrl}" class="link">${verificationUrl}</a></p>
+              <p><strong>This link expires in 24 hours.</strong></p>
+              <p>If you didn't create this account, you can safely ignore this email.</p>
+            </div>
+            <div class="footer">
+              <p>© 2026 MusicHub. All rights reserved.</p>
+            </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Hi ${params.userName}!
+Hi ${name},
 
-Welcome to MusicHub! We're excited to have you join our community of music lovers and creators.
+Thanks for signing up for MusicHub!
 
-To get started, please verify your email address by clicking this link:
-${params.verificationLink}
+Please verify your email address by clicking the link below:
+${verificationUrl}
 
-This link will expire in 24 hours. If you didn't create an account on MusicHub, you can safely ignore this email.
+This link expires in 24 hours.
+
+If you didn't create this account, you can safely ignore this email.
 
 © 2026 MusicHub. All rights reserved.
-      `.trim(),
-    }
-  } else {
-    return {
+      `.trim()
+    },
+    tr: {
       subject: 'MusicHub e-posta adresinizi doğrulayın',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>E-postanızı doğrulayın</title>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+            .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+            .link { color: #667eea; word-break: break-all; }
+          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
-          </div>
-          
-          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #333; margin-top: 0;">Merhaba ${params.userName}! 👋</h2>
-            
-            <p>MusicHub'a hoş geldiniz! Müzik severler ve yaratıcılar topluluğumuza katıldığınız için çok mutluyuz.</p>
-            
-            <p>Başlamak için lütfen aşağıdaki butona tıklayarak e-posta adresinizi doğrulayın:</p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${params.verificationLink}" 
-                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
-                        color: white; 
-                        padding: 15px 40px; 
-                        text-decoration: none; 
-                        border-radius: 8px; 
-                        display: inline-block;
-                        font-weight: bold;
-                        font-size: 16px;">
-                E-postayı Doğrula
-              </a>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎵 MusicHub'a Hoş Geldiniz!</h1>
             </div>
-            
-            <p style="color: #666; font-size: 14px;">Veya bu bağlantıyı tarayıcınıza kopyalayıp yapıştırın:</p>
-            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
-              ${params.verificationLink}
-            </p>
-            
-            <p style="color: #666; font-size: 14px; margin-top: 30px;">
-              Bu bağlantı 24 saat içinde geçerliliğini yitirecektir. MusicHub'da bir hesap oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+            <div class="content">
+              <p>Merhaba ${name},</p>
+              <p>Kaydınız için teşekkürler! Hesabınızı aktifleştirmek ve binlerce parçayı keşfetmeye başlamak için lütfen e-posta adresinizi doğrulayın.</p>
+              <p style="text-align: center;">
+                <a href="${verificationUrl}" class="button">E-posta Adresini Doğrula</a>
+              </p>
+              <p>Veya bu bağlantıyı tarayıcınıza kopyalayıp yapıştırın:</p>
+              <p><a href="${verificationUrl}" class="link">${verificationUrl}</a></p>
+              <p><strong>Bu bağlantı 24 saat içinde geçerliliğini yitirecektir.</strong></p>
+              <p>Bu hesabı siz oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.</p>
+            </div>
+            <div class="footer">
+              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+            </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Merhaba ${params.userName}!
+Merhaba ${name},
 
-MusicHub'a hoş geldiniz! Müzik severler ve yaratıcılar topluluğumuza katıldığınız için çok mutluyuz.
+MusicHub'a kaydolduğunuz için teşekkürler!
 
-Başlamak için lütfen bu bağlantıya tıklayarak e-posta adresinizi doğrulayın:
-${params.verificationLink}
+Lütfen aşağıdaki bağlantıya tıklayarak e-posta adresinizi doğrulayın:
+${verificationUrl}
 
-Bu bağlantı 24 saat içinde geçerliliğini yitirecektir. MusicHub'da bir hesap oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.
+Bu bağlantı 24 saat içinde geçerliliğini yitirecektir.
+
+Bu hesabı siz oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.
 
 © 2026 MusicHub. Tüm hakları saklıdır.
-      `.trim(),
+      `.trim()
     }
   }
+  
+  return templates[locale]
 }
 
-export function getPasswordResetEmailTemplate(params: {
-  userName: string
-  resetLink: string
-  locale?: 'en' | 'tr'
-}): { subject: string; html: string; text: string } {
-  const isEnglish = params.locale !== 'tr'
-  
-  if (isEnglish) {
-    return {
+export function getPasswordResetEmailTemplate(
+  resetUrl: string,
+  locale: 'en' | 'tr' = 'en'
+): { subject: string; html: string; text: string } {
+  const name = 'User' // Generic name since we don't pass it from auth routes
+  const templates = {
+    en: {
       subject: 'Reset your MusicHub password',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Reset your password</title>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+            .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+            .link { color: #667eea; word-break: break-all; }
+            .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 20px 0; border-radius: 4px; }
+          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
-          </div>
-          
-          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #333; margin-top: 0;">Hi ${params.userName}! 👋</h2>
-            
-            <p>We received a request to reset your MusicHub password.</p>
-            
-            <p>Click the button below to choose a new password:</p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${params.resetLink}" 
-                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
-                        color: white; 
-                        padding: 15px 40px; 
-                        text-decoration: none; 
-                        border-radius: 8px; 
-                        display: inline-block;
-                        font-weight: bold;
-                        font-size: 16px;">
-                Reset Password
-              </a>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🔐 Password Reset</h1>
             </div>
-            
-            <p style="color: #666; font-size: 14px;">Or copy and paste this link into your browser:</p>
-            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
-              ${params.resetLink}
-            </p>
-            
-            <p style="color: #666; font-size: 14px; margin-top: 30px;">
-              <strong>This link will expire in 1 hour.</strong> If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© 2026 MusicHub. All rights reserved.</p>
+            <div class="content">
+              <p>Hi ${name},</p>
+              <p>We received a request to reset your password for your MusicHub account.</p>
+              <p style="text-align: center;">
+                <a href="${resetUrl}" class="button">Reset Password</a>
+              </p>
+              <p>Or copy and paste this link into your browser:</p>
+              <p><a href="${resetUrl}" class="link">${resetUrl}</a></p>
+              <div class="warning">
+                <strong>⚠️ Important:</strong> This link expires in 1 hour for security reasons.
+              </div>
+              <p><strong>If you didn't request this password reset, please ignore this email.</strong> Your password will remain unchanged.</p>
+            </div>
+            <div class="footer">
+              <p>© 2026 MusicHub. All rights reserved.</p>
+            </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Hi ${params.userName}!
+Hi ${name},
 
-We received a request to reset your MusicHub password.
+We received a request to reset your password for your MusicHub account.
 
-Click this link to choose a new password:
-${params.resetLink}
+Click the link below to reset your password:
+${resetUrl}
 
-This link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email. Your password will not be changed.
+This link expires in 1 hour for security reasons.
+
+If you didn't request this password reset, please ignore this email. Your password will remain unchanged.
 
 © 2026 MusicHub. All rights reserved.
-      `.trim(),
-    }
-  } else {
-    return {
+      `.trim()
+    },
+    tr: {
       subject: 'MusicHub şifrenizi sıfırlayın',
       html: `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Şifrenizi sıfırlayın</title>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; background: #667eea; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+            .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+            .link { color: #667eea; word-break: break-all; }
+            .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 20px 0; border-radius: 4px; }
+          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #9333EA, #EC4899); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎵 MusicHub</h1>
-          </div>
-          
-          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #333; margin-top: 0;">Merhaba ${params.userName}! 👋</h2>
-            
-            <p>MusicHub şifrenizi sıfırlama talebi aldık.</p>
-            
-            <p>Yeni bir şifre seçmek için aşağıdaki butona tıklayın:</p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${params.resetLink}" 
-                 style="background: linear-gradient(135deg, #9333EA, #EC4899); 
-                        color: white; 
-                        padding: 15px 40px; 
-                        text-decoration: none; 
-                        border-radius: 8px; 
-                        display: inline-block;
-                        font-weight: bold;
-                        font-size: 16px;">
-                Şifreyi Sıfırla
-              </a>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🔐 Şifre Sıfırlama</h1>
             </div>
-            
-            <p style="color: #666; font-size: 14px;">Veya bu bağlantıyı tarayıcınıza kopyalayıp yapıştırın:</p>
-            <p style="background: white; padding: 15px; border-radius: 5px; word-break: break-all; font-size: 12px; color: #9333EA;">
-              ${params.resetLink}
-            </p>
-            
-            <p style="color: #666; font-size: 14px; margin-top: 30px;">
-              <strong>Bu bağlantı 1 saat içinde geçerliliğini yitirecektir.</strong> Şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı güvenle yok sayabilirsiniz. Şifreniz değiştirilmeyecektir.
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-            <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+            <div class="content">
+              <p>Merhaba ${name},</p>
+              <p>MusicHub hesabınız için şifre sıfırlama talebi aldık.</p>
+              <p style="text-align: center;">
+                <a href="${resetUrl}" class="button">Şifreyi Sıfırla</a>
+              </p>
+              <p>Veya bu bağlantıyı tarayıcınıza kopyalayıp yapıştırın:</p>
+              <p><a href="${resetUrl}" class="link">${resetUrl}</a></p>
+              <div class="warning">
+                <strong>⚠️ Önemli:</strong> Bu bağlantı güvenlik nedeniyle 1 saat içinde geçerliliğini yitirecektir.
+              </div>
+              <p><strong>Bu şifre sıfırlama talebini siz yapmadıysanız, lütfen bu e-postayı yok sayın.</strong> Şifreniz değişmeden kalacaktır.</p>
+            </div>
+            <div class="footer">
+              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+            </div>
           </div>
         </body>
         </html>
       `,
       text: `
-Merhaba ${params.userName}!
+Merhaba ${name},
 
-MusicHub şifrenizi sıfırlama talebi aldık.
+MusicHub hesabınız için şifre sıfırlama talebi aldık.
 
-Yeni bir şifre seçmek için bu bağlantıya tıklayın:
-${params.resetLink}
+Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:
+${resetUrl}
 
-Bu bağlantı 1 saat içinde geçerliliğini yitirecektir. Şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı güvenle yok sayabilirsiniz. Şifreniz değiştirilmeyecektir.
+Bu bağlantı güvenlik nedeniyle 1 saat içinde geçerliliğini yitirecektir.
+
+Bu şifre sıfırlama talebini siz yapmadıysanız, lütfen bu e-postayı yok sayın. Şifreniz değişmeden kalacaktır.
 
 © 2026 MusicHub. Tüm hakları saklıdır.
-      `.trim(),
+      `.trim()
     }
   }
+  
+  return templates[locale]
 }

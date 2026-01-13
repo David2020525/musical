@@ -2,9 +2,9 @@ import { Hono } from 'hono'
 import { Bindings } from '../types'
 import { createToken, hashPassword, comparePassword } from '../lib/auth'
 import { loginSchema, registerSchema } from '../lib/validations'
-import { getEmailService, getVerificationEmailTemplate } from '../lib/email'
+import { getEmailService, getVerificationEmailTemplate, getPasswordResetEmailTemplate } from '../lib/email'
 import { createEmailVerificationToken, verifyEmailToken, getVerificationStatus } from '../lib/email-verification'
-import { createResetToken, getPasswordResetEmailTemplate, verifyResetToken, markTokenAsUsed } from '../lib/password-reset'
+import { createResetToken, verifyResetToken, markTokenAsUsed } from '../lib/password-reset'
 
 const auth = new Hono<{ Bindings: Bindings }>()
 
