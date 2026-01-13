@@ -72,6 +72,11 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 <p class="text-xl text-gray-400" id="userRole">${_('common.loading')}</p>
             </div>
             
+            <!-- Producer Application Status Banner -->
+            <div id="applicationStatusBanner" class="hidden mb-8">
+                <!-- Will be dynamically populated -->
+            </div>
+            
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <div class="glass-strong rounded-3xl p-8 card-3d text-center">
@@ -338,6 +343,74 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 document.getElementById('uploadBtnSidebar')?.classList.remove('hidden');
                 document.getElementById('applyProducerBtn')?.classList.add('hidden');
                 loadEarnings();
+            }
+            
+            // Check producer application status
+            loadProducerApplicationStatus();
+        }
+        
+        // Load producer application status
+        async function loadProducerApplicationStatus() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                const response = await fetch('/api/producer/application', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data) {
+                        const app = data.data;
+                        const banner = document.getElementById('applicationStatusBanner');
+                        
+                        if (app.status === 'pending') {
+                            banner.innerHTML = \`
+                                <div class="glass-strong rounded-3xl p-6 border-2 border-yellow-500/30">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-clock text-2xl text-yellow-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="text-2xl font-bold mb-2 text-yellow-300">${_('dashboard.application_pending')}</h3>
+                                            <p class="text-gray-300 mb-4">${_('dashboard.application_pending_message')}</p>
+                                            <div class="flex items-center space-x-4 text-sm">
+                                                <span class="text-gray-400"><i class="fas fa-calendar mr-2"></i>Applied: \${new Date(app.created_at).toLocaleDateString('${locale}')}</span>
+                                                <a href="/${locale}/producer/apply" class="text-purple-400 hover:text-purple-300"><i class="fas fa-eye mr-2"></i>View Application</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            \`;
+                            banner.classList.remove('hidden');
+                        } else if (app.status === 'rejected') {
+                            banner.innerHTML = \`
+                                <div class="glass-strong rounded-3xl p-6 border-2 border-red-500/30">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-times-circle text-2xl text-red-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="text-2xl font-bold mb-2 text-red-300">${_('dashboard.application_rejected')}</h3>
+                                            <p class="text-gray-300 mb-2">${_('dashboard.application_rejected_message')}</p>
+                                            \${app.admin_notes ? \`<p class="text-sm text-gray-400 mb-4"><strong>Admin Notes:</strong> \${app.admin_notes}</p>\` : ''}
+                                            <a href="/${locale}/producer/apply" class="inline-block px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg">
+                                                <i class="fas fa-redo mr-2"></i>Re-apply
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            \`;
+                            banner.classList.remove('hidden');
+                        } else if (app.status === 'approved') {
+                            // Don't show banner for approved producers - they see full producer dashboard
+                            banner.classList.add('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load producer application status:', error);
             }
         }
         
