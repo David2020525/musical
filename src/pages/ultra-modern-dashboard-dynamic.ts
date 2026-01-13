@@ -762,6 +762,109 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             return past.toLocaleDateString('${locale}');
         }
         
+        // Load purchases for listeners
+        async function loadPurchases() {
+            const token = localStorage.getItem('token');
+            document.getElementById('purchasesLoading').classList.remove('hidden');
+            document.getElementById('purchasesList').classList.add('hidden');
+            document.getElementById('purchasesEmpty').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/users/me/purchases', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                document.getElementById('purchasesLoading').classList.add('hidden');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const purchasesList = document.getElementById('purchasesList');
+                    purchasesList.innerHTML = data.data.map(purchase => \`
+                        <div class="glass rounded-2xl p-4 hover:bg-white/5 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-600/30 to-pink-600/30 flex items-center justify-center">
+                                        <i class="fas fa-music text-2xl text-white/60"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-lg">\${purchase.title}</h4>
+                                        <p class="text-sm text-gray-400">\${purchase.artist}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString('${locale}')}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="text-right mr-4">
+                                        <div class="text-xl font-bold text-green-400">$\${purchase.price}</div>
+                                        <div class="text-xs text-gray-500">\${purchase.payment_status}</div>
+                                    </div>
+                                    <a href="\${purchase.audio_url}" download class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:shadow-lg text-sm">
+                                        <i class="fas fa-download mr-2"></i>Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    \`).join('');
+                    purchasesList.classList.remove('hidden');
+                    
+                    // Update stats
+                    document.getElementById('total-purchases').textContent = data.data.length;
+                } else {
+                    document.getElementById('purchasesEmpty').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load purchases:', error);
+                document.getElementById('purchasesLoading').classList.add('hidden');
+                document.getElementById('purchasesEmpty').classList.remove('hidden');
+            }
+        }
+        
+        // Load recently played for listeners
+        async function loadRecentlyPlayed() {
+            const token = localStorage.getItem('token');
+            document.getElementById('recentlyPlayedLoading').classList.remove('hidden');
+            document.getElementById('recentlyPlayedList').classList.add('hidden');
+            document.getElementById('recentlyPlayedEmpty').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/users/me/play-history?limit=10', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                document.getElementById('recentlyPlayedLoading').classList.add('hidden');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const recentlyPlayedList = document.getElementById('recentlyPlayedList');
+                    recentlyPlayedList.innerHTML = data.data.map(item => \`
+                        <a href="/${locale}/tracks/\${item.track_id}" class="block glass rounded-xl p-3 hover:bg-white/10 transition-all">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center">
+                                    <i class="fas fa-play text-sm text-white/60"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-semibold truncate">\${item.track_title || 'Unknown Track'}</h5>
+                                    <p class="text-xs text-gray-400 truncate">\${item.artist || 'Unknown Artist'}</p>
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    \${new Date(item.played_at).toLocaleDateString('${locale}', { month: 'short', day: 'numeric' })}
+                                </div>
+                            </div>
+                        </a>
+                    \`).join('');
+                    recentlyPlayedList.classList.remove('hidden');
+                    
+                    // Update stats
+                    document.getElementById('total-listens').textContent = data.pagination?.total || data.data.length;
+                } else {
+                    document.getElementById('recentlyPlayedEmpty').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load recently played:', error);
+                document.getElementById('recentlyPlayedLoading').classList.add('hidden');
+                document.getElementById('recentlyPlayedEmpty').classList.add('hidden');
+            }
+        }
+        
         // Upload track
         document.getElementById('uploadForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();

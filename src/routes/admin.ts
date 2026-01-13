@@ -166,4 +166,76 @@ admin.get('/applications', async (c) => {
   }
 })
 
+// PUT /api/admin/applications/:id/approve - Approve producer application
+admin.put('/applications/:id/approve', async (c) => {
+  try {
+    const appId = c.req.param('id')
+    const { notes } = await c.req.json()
+
+    // Get application
+    const app = await c.env.DB.prepare('SELECT * FROM producer_applications WHERE id = ?')
+      .bind(appId)
+      .first() as any
+
+    if (!app) {
+      return c.json({ success: false, error: 'Application not found' }, 404)
+    }
+
+    if (app.status !== 'pending') {
+      return c.json({ success: false, error: 'Application already processed' }, 400)
+    }
+
+    // Update application status
+    await c.env.DB.prepare('UPDATE producer_applications SET status = ?, admin_notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+      .bind('approved', notes || null, appId)
+      .run()
+
+    // Update user to producer
+    await c.env.DB.prepare('UPDATE users SET is_producer = 1 WHERE id = ?')
+      .bind(app.user_id)
+      .run()
+
+    // Create wallet for producer
+    await c.env.DB.prepare('INSERT INTO wallets (user_id, balance, currency) VALUES (?, 0, ?)')
+      .bind(app.user_id, 'USD')
+      .run()
+
+    return c.json({ success: true, message: 'Application approved successfully' })
+  } catch (error) {
+    console.error('Approve application error:', error)
+    return c.json({ success: false, error: 'Failed to approve application' }, 500)
+  }
+})
+
+// PUT /api/admin/applications/:id/reject - Reject producer application
+admin.put('/applications/:id/reject', async (c) => {
+  try {
+    const appId = c.req.param('id')
+    const { notes } = await c.req.json()
+
+    // Get application
+    const app = await c.env.DB.prepare('SELECT * FROM producer_applications WHERE id = ?')
+      .bind(appId)
+      .first() as any
+
+    if (!app) {
+      return c.json({ success: false, error: 'Application not found' }, 404)
+    }
+
+    if (app.status !== 'pending') {
+      return c.json({ success: false, error: 'Application already processed' }, 400)
+    }
+
+    // Update application status
+    await c.env.DB.prepare('UPDATE producer_applications SET status = ?, admin_notes = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+      .bind('rejected', notes || null, appId)
+      .run()
+
+    return c.json({ success: true, message: 'Application rejected' })
+  } catch (error) {
+    console.error('Reject application error:', error)
+    return c.json({ success: false, error: 'Failed to reject application' }, 500)
+  }
+})
+
 export default admin
