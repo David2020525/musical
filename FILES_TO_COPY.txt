@@ -1,0 +1,40 @@
+================================================================================
+ 📋 QUICK REFERENCE - Files to Copy/Paste
+================================================================================
+
+FILE 1: CONSOLIDATED_MIGRATION.sql (542 lines)
+Location: /home/user/webapp/CONSOLIDATED_MIGRATION.sql
+
+To view: cat /home/user/webapp/CONSOLIDATED_MIGRATION.sql
+To copy: Select all and copy
+
+Paste into: Cloudflare D1 Console → Execute
+
+
+FILE 2: seed_production.sql (71 lines)  
+Location: /home/user/webapp/seed_production.sql
+
+To view: cat /home/user/webapp/seed_production.sql
+To copy: Select all and copy
+
+Paste into: Cloudflare D1 Console → Execute
+
+
+================================================================================
+ 🔗 Cloudflare D1 Console Access
+================================================================================
+
+1. Go to: https://dash.cloudflare.com/
+2. Click: Workers & Pages
+3. Click: D1
+4. Click: musichub-production
+5. Click: Console tab
+6. Paste SQL and click Execute
+
+================================================================================
+ ⚡ Quick Deploy Command (After Database Setup)
+================================================================================
+
+cd /home/user/webapp && npx wrangler pages deploy dist --project-name musichub
+
+================================================================================
