@@ -587,4 +587,76 @@ forum.delete('/replies/:id', async c => {
   }
 })
 
+/**
+ * Like/Unlike a topic
+ * POST /api/forum/topics/:slug/like
+ */
+forum.post('/topics/:slug/like', async c => {
+  try {
+    const authHeader = c.req.header('Authorization')
+    if (!authHeader) {
+      return c.json({ success: false, error: 'Authentication required' }, 401)
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const payload = await verifyToken(token, c.env)
+    if (!payload) {
+      return c.json({ success: false, error: 'Invalid token' }, 401)
+    }
+
+    const slug = c.req.param('slug')
+
+    // Get topic
+    const topic = await c.env.DB.prepare(
+      'SELECT id FROM forum_topics WHERE slug = ?'
+    ).bind(slug).first<{ id: number }>()
+
+    if (!topic) {
+      return c.json({ success: false, error: 'Topic not found' }, 404)
+    }
+
+    // Check if already liked
+    const existingLike = await c.env.DB.prepare(
+      'SELECT id FROM forum_likes WHERE topic_id = ? AND user_id = ?'
+    ).bind(topic.id, payload.id).first()
+
+    if (existingLike) {
+      // Unlike
+      await c.env.DB.prepare(
+        'DELETE FROM forum_likes WHERE id = ?'
+      ).bind(existingLike.id).run()
+
+      // Decrement likes count
+      await c.env.DB.prepare(
+        'UPDATE forum_topics SET likes_count = likes_count - 1 WHERE id = ?'
+      ).bind(topic.id).run()
+
+      return c.json({
+        success: true,
+        action: 'unliked',
+        message: 'Topic unliked',
+      })
+    } else {
+      // Like
+      await c.env.DB.prepare(
+        'INSERT INTO forum_likes (topic_id, user_id, created_at) VALUES (?, ?, datetime(\'now\'))'
+      ).bind(topic.id, payload.id).run()
+
+      // Increment likes count
+      await c.env.DB.prepare(
+        'UPDATE forum_topics SET likes_count = likes_count + 1 WHERE id = ?'
+      ).bind(topic.id).run()
+
+      return c.json({
+        success: true,
+        action: 'liked',
+        message: 'Topic liked',
+      })
+    }
+  } catch (error) {
+    console.error('Like topic error:', error)
+    return c.json({ success: false, error: 'Failed to like topic' }, 500)
+  }
+})
+
 export default forum

@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { Bindings } from '../types'
 import { verifyToken } from '../lib/auth'
+import { createR2Client, validateAudioFile, validateImageFile, generateFileKey } from '../lib/r2'
 import { z } from 'zod'
 
 const tracks = new Hono<{ Bindings: Bindings }>()
@@ -169,6 +170,158 @@ tracks.get('/genres/list', async c => {
     })
   } catch (error) {
     return c.json({ success: false, error: 'Failed to fetch genres' }, 500)
+  }
+})
+
+/**
+ * Upload audio file to R2
+ * POST /api/tracks/upload/audio
+ */
+tracks.post('/upload/audio', async c => {
+  const authHeader = c.req.header('Authorization')
+  if (!authHeader) {
+    return c.json({ success: false, error: 'Authentication required' }, 401)
+  }
+
+  try {
+    const token = authHeader.replace('Bearer ', '')
+    const payload = await verifyToken(token, c.env)
+
+    if (!payload) {
+      return c.json({ success: false, error: 'Invalid token' }, 401)
+    }
+
+    // Check if user is a producer
+    const user = await c.env.DB.prepare(
+      'SELECT is_producer, role FROM users WHERE id = ?'
+    ).bind(payload.id).first<{ is_producer: number; role: string }>()
+
+    if (!user || (user.is_producer !== 1 && user.role !== 'admin')) {
+      return c.json({ success: false, error: 'Producer access required' }, 403)
+    }
+
+    // Get file from form data
+    const formData = await c.req.formData()
+    const file = formData.get('audio') as File
+
+    if (!file) {
+      return c.json({ success: false, error: 'No audio file provided' }, 400)
+    }
+
+    // Validate audio file
+    const validation = validateAudioFile(file)
+    if (!validation.valid) {
+      return c.json({ success: false, error: validation.error }, 400)
+    }
+
+    // Generate unique key
+    const key = generateFileKey(file.name, payload.id, 'audio')
+
+    // Upload to R2
+    const r2Client = createR2Client(c.env)
+    const arrayBuffer = await file.arrayBuffer()
+    
+    const result = await r2Client.upload({
+      key,
+      body: arrayBuffer,
+      contentType: file.type,
+      metadata: {
+        userId: payload.id.toString(),
+        originalName: file.name,
+        size: file.size.toString(),
+      },
+    })
+
+    if (!result.success) {
+      return c.json({ success: false, error: result.error || 'Upload failed' }, 500)
+    }
+
+    return c.json({
+      success: true,
+      url: result.url,
+      key,
+      size: file.size,
+      type: file.type,
+    })
+  } catch (error) {
+    console.error('Audio upload error:', error)
+    return c.json({ success: false, error: 'Failed to upload audio file' }, 500)
+  }
+})
+
+/**
+ * Upload cover image to R2
+ * POST /api/tracks/upload/cover
+ */
+tracks.post('/upload/cover', async c => {
+  const authHeader = c.req.header('Authorization')
+  if (!authHeader) {
+    return c.json({ success: false, error: 'Authentication required' }, 401)
+  }
+
+  try {
+    const token = authHeader.replace('Bearer ', '')
+    const payload = await verifyToken(token, c.env)
+
+    if (!payload) {
+      return c.json({ success: false, error: 'Invalid token' }, 401)
+    }
+
+    // Check if user is a producer
+    const user = await c.env.DB.prepare(
+      'SELECT is_producer, role FROM users WHERE id = ?'
+    ).bind(payload.id).first<{ is_producer: number; role: string }>()
+
+    if (!user || (user.is_producer !== 1 && user.role !== 'admin')) {
+      return c.json({ success: false, error: 'Producer access required' }, 403)
+    }
+
+    // Get file from form data
+    const formData = await c.req.formData()
+    const file = formData.get('cover') as File
+
+    if (!file) {
+      return c.json({ success: false, error: 'No cover image provided' }, 400)
+    }
+
+    // Validate image file
+    const validation = validateImageFile(file)
+    if (!validation.valid) {
+      return c.json({ success: false, error: validation.error }, 400)
+    }
+
+    // Generate unique key
+    const key = generateFileKey(file.name, payload.id, 'cover')
+
+    // Upload to R2
+    const r2Client = createR2Client(c.env)
+    const arrayBuffer = await file.arrayBuffer()
+    
+    const result = await r2Client.upload({
+      key,
+      body: arrayBuffer,
+      contentType: file.type,
+      metadata: {
+        userId: payload.id.toString(),
+        originalName: file.name,
+        size: file.size.toString(),
+      },
+    })
+
+    if (!result.success) {
+      return c.json({ success: false, error: result.error || 'Upload failed' }, 500)
+    }
+
+    return c.json({
+      success: true,
+      url: result.url,
+      key,
+      size: file.size,
+      type: file.type,
+    })
+  } catch (error) {
+    console.error('Cover upload error:', error)
+    return c.json({ success: false, error: 'Failed to upload cover image' }, 500)
   }
 })
 

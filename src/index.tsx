@@ -33,6 +33,7 @@ import userRoutes from './routes/users'
 import adminRoutes from './routes/admin'
 import paymentRoutes from './routes/payments'
 import walletRoutes from './routes/wallet'
+import searchRoutes from './routes/search'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -50,6 +51,7 @@ app.route('/api/users', userRoutes)
 app.route('/api/admin', adminRoutes)
 app.route('/api/payments', paymentRoutes)
 app.route('/api/wallet', walletRoutes)
+app.route('/api/search', searchRoutes)
 
 // HTML template function
 function renderHTML(locale: Locale, page: string) {
