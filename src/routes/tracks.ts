@@ -30,6 +30,11 @@ tracks.get('/', async c => {
     const sort = c.req.query('sort') || 'newest'
     const featured = c.req.query('featured')
     const limit = parseInt(c.req.query('limit') || '100')
+    const priceMin = c.req.query('price_min')
+    const priceMax = c.req.query('price_max')
+    const freeOnly = c.req.query('free_only')
+    const dateFilter = c.req.query('date')
+    const producer = c.req.query('producer')
 
     let query = 'SELECT * FROM tracks WHERE 1=1'
     const params: any[] = []
@@ -46,6 +51,51 @@ tracks.get('/', async c => {
 
     if (featured === 'true') {
       query += ' AND is_featured = 1'
+    }
+
+    // Price filters
+    if (freeOnly === 'true') {
+      query += ' AND (price IS NULL OR price = 0)'
+    } else {
+      if (priceMin) {
+        query += ' AND price >= ?'
+        params.push(parseFloat(priceMin))
+      }
+      if (priceMax) {
+        query += ' AND price <= ?'
+        params.push(parseFloat(priceMax))
+      }
+    }
+
+    // Date filter
+    if (dateFilter) {
+      const now = new Date()
+      let dateCondition = ''
+      
+      switch (dateFilter) {
+        case 'today':
+          dateCondition = "DATE(created_at) = DATE('now')"
+          break
+        case 'week':
+          dateCondition = "created_at >= DATE('now', '-7 days')"
+          break
+        case 'month':
+          dateCondition = "created_at >= DATE('now', '-1 month')"
+          break
+        case 'year':
+          dateCondition = "created_at >= DATE('now', '-1 year')"
+          break
+      }
+      
+      if (dateCondition) {
+        query += ` AND ${dateCondition}`
+      }
+    }
+
+    // Producer filter
+    if (producer) {
+      query += ' AND artist LIKE ?'
+      params.push(`%${producer}%`)
     }
 
     // Add sorting

@@ -129,6 +129,87 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 <option value="R&B">R&B</option>
                 <option value="Country">Country</option>
             </select>
+
+            <!-- Sort Filter -->
+            <select 
+                id="sort-filter"
+                class="px-6 py-4 rounded-2xl glass-strong text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer"
+            >
+                <option value="newest">Newest First</option>
+                <option value="popular">Most Popular</option>
+                <option value="trending">Trending</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="mb-8 glass-strong rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">Advanced Filters</h3>
+                <button id="reset-filters" class="text-sm text-purple-400 hover:text-purple-300">
+                    <i class="fas fa-redo mr-1"></i>Reset All
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Price Range -->
+                <div>
+                    <label class="block text-sm text-gray-400 mb-3">
+                        <i class="fas fa-dollar-sign mr-2"></i>Price Range
+                    </label>
+                    <div class="flex items-center gap-3">
+                        <input 
+                            type="number" 
+                            id="price-min" 
+                            placeholder="Min" 
+                            min="0"
+                            class="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                        />
+                        <span class="text-gray-500">-</span>
+                        <input 
+                            type="number" 
+                            id="price-max" 
+                            placeholder="Max" 
+                            min="0"
+                            class="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                        />
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <input type="checkbox" id="free-only" class="rounded">
+                        <label for="free-only" class="text-sm text-gray-400">Free only</label>
+                    </div>
+                </div>
+
+                <!-- Date Range -->
+                <div>
+                    <label class="block text-sm text-gray-400 mb-3">
+                        <i class="fas fa-calendar mr-2"></i>Upload Date
+                    </label>
+                    <select 
+                        id="date-filter"
+                        class="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-purple-500"
+                    >
+                        <option value="">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+
+                <!-- Producer Filter -->
+                <div>
+                    <label class="block text-sm text-gray-400 mb-3">
+                        <i class="fas fa-user-music mr-2"></i>Producer
+                    </label>
+                    <input 
+                        type="text" 
+                        id="producer-filter" 
+                        placeholder="Search by producer..." 
+                        class="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                    />
+                </div>
+            </div>
         </div>
 
         <!-- Loading State -->
@@ -173,6 +254,12 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         let currentPage = 1;
         let currentGenre = '';
         let currentSearch = '';
+        let currentSort = 'newest';
+        let currentPriceMin = '';
+        let currentPriceMax = '';
+        let currentFreeOnly = false;
+        let currentDateFilter = '';
+        let currentProducer = '';
         let hasMore = true;
         let isLoading = false;
 
@@ -199,12 +286,17 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
                 // Build query params
                 const params = new URLSearchParams({
-                    page: currentPage.toString(),
                     limit: '12'
                 });
 
                 if (currentGenre) params.append('genre', currentGenre);
                 if (currentSearch) params.append('search', currentSearch);
+                if (currentSort) params.append('sort', currentSort);
+                if (currentPriceMin) params.append('price_min', currentPriceMin);
+                if (currentPriceMax) params.append('price_max', currentPriceMax);
+                if (currentFreeOnly) params.append('free_only', 'true');
+                if (currentDateFilter) params.append('date', currentDateFilter);
+                if (currentProducer) params.append('producer', currentProducer);
 
                 // Fetch from API
                 const response = await fetch(\`/api/tracks?\${params}\`);
@@ -301,6 +393,80 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         genreFilter.addEventListener('change', (e) => {
             currentGenre = e.target.value;
             currentPage = 1;
+            loadTracks();
+        });
+
+        // Sort filter
+        const sortFilter = document.getElementById('sort-filter');
+        sortFilter.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            currentPage = 1;
+            loadTracks();
+        });
+
+        // Price filters
+        const priceMin = document.getElementById('price-min');
+        const priceMax = document.getElementById('price-max');
+        const freeOnly = document.getElementById('free-only');
+
+        priceMin.addEventListener('input', (e) => {
+            currentPriceMin = e.target.value;
+            currentPage = 1;
+            setTimeout(() => loadTracks(), 500); // Debounce
+        });
+
+        priceMax.addEventListener('input', (e) => {
+            currentPriceMax = e.target.value;
+            currentPage = 1;
+            setTimeout(() => loadTracks(), 500); // Debounce
+        });
+
+        freeOnly.addEventListener('change', (e) => {
+            currentFreeOnly = e.target.checked;
+            currentPage = 1;
+            loadTracks();
+        });
+
+        // Date filter
+        const dateFilter = document.getElementById('date-filter');
+        dateFilter.addEventListener('change', (e) => {
+            currentDateFilter = e.target.value;
+            currentPage = 1;
+            loadTracks();
+        });
+
+        // Producer filter
+        const producerFilter = document.getElementById('producer-filter');
+        producerFilter.addEventListener('input', (e) => {
+            currentProducer = e.target.value;
+            currentPage = 1;
+            setTimeout(() => loadTracks(), 500); // Debounce
+        });
+
+        // Reset filters
+        const resetFilters = document.getElementById('reset-filters');
+        resetFilters.addEventListener('click', () => {
+            // Reset all filter values
+            currentGenre = '';
+            currentSearch = '';
+            currentSort = 'newest';
+            currentPriceMin = '';
+            currentPriceMax = '';
+            currentFreeOnly = false;
+            currentDateFilter = '';
+            currentProducer = '';
+            currentPage = 1;
+
+            // Reset UI
+            document.getElementById('search-input').value = '';
+            genreFilter.value = '';
+            sortFilter.value = 'newest';
+            priceMin.value = '';
+            priceMax.value = '';
+            freeOnly.checked = false;
+            dateFilter.value = '';
+            producerFilter.value = '';
+
             loadTracks();
         });
 
