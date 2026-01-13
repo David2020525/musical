@@ -1,6 +1,5 @@
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
-import { MobileNavigationHTML } from '../components/MobileNavigation';
 import { t, Locale } from '../lib/i18n';
 
 export function ultraModernHomeHTML(locale: Locale = 'en') {
@@ -227,8 +226,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         </a>
                     </div>
                     
-                    <!-- Mobile Menu Button (injected by MobileNavigation component) -->
-                    ${MobileNavigationHTML}
+                    <!-- Mobile Menu Toggle (hidden for now - can be added later) -->
                 </div>
             </div>
         </div>
