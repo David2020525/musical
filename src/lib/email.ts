@@ -17,46 +17,58 @@ export interface EmailService {
 }
 
 /**
- * Get email service instance (mock for development)
+ * Get email service instance
  */
 export function getEmailService(env: any): EmailService {
+  const apiKey = env.RESEND_API_KEY || 're_2GYfsV9V_3jKPpLg5iG7BwSd9vVqnfzRs';
+  const fromEmail = env.RESEND_FROM_EMAIL || 'va01@abgrouponline.com';
+  const useMock = !env.RESEND_API_KEY; // Use mock if no API key configured
+
   return {
     async send(options: EmailOptions) {
-      // Mock implementation for development
-      console.log('\n📧 ===== EMAIL SENT (MOCK) =====')
-      console.log(`To: ${options.to}`)
-      console.log(`Subject: ${options.subject}`)
-      console.log('HTML Content:')
-      console.log(options.html)
-      console.log('==============================\n')
-      
-      // Simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 100))
-      
-      return { success: true }
-      
-      /* 
-      // PRODUCTION IMPLEMENTATION (Uncomment when ready)
-      // Install: npm install resend
-      
-      import { Resend } from 'resend'
-      
-      const resend = new Resend(env.RESEND_API_KEY)
-      
-      try {
-        await resend.emails.send({
-          from: 'MusicHub <noreply@yourdomain.com>',
-          to: options.to,
-          subject: options.subject,
-          html: options.html,
-          text: options.text
-        })
+      // Mock mode for development
+      if (useMock) {
+        console.log('\n📧 ===== EMAIL SENT (MOCK) =====')
+        console.log(`To: ${options.to}`)
+        console.log(`Subject: ${options.subject}`)
+        console.log('HTML Content:')
+        console.log(options.html)
+        console.log('==============================\n')
+        
+        await new Promise(resolve => setTimeout(resolve, 100))
         return { success: true }
-      } catch (error) {
-        console.error('Email send error:', error)
-        return { success: false, error: 'Failed to send email' }
       }
-      */
+
+      // Production mode with Resend API
+      try {
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            from: `MusicHub <${fromEmail}>`,
+            to: options.to,
+            subject: options.subject,
+            html: options.html,
+            text: options.text,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.text();
+          console.error('Resend API error:', error);
+          return { success: false, error: `Failed to send email: ${error}` };
+        }
+
+        const data = await response.json();
+        console.log('✅ Email sent successfully:', data.id);
+        return { success: true };
+      } catch (error) {
+        console.error('Email send error:', error);
+        return { success: false, error: 'Failed to send email' };
+      }
     }
   }
 }
