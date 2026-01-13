@@ -1,0 +1,513 @@
+// Prisma Schema for MusicHub - PostgreSQL/Neon Database
+// This schema supports all M3 features: payments, uploads, wallet, admin panel, forum
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  username         String    @unique
+  name             String
+  password         String
+  avatar_url       String?
+  bio              String?
+  role             Role      @default(USER)
+  is_producer      Boolean   @default(false)
+  is_verified      Boolean   @default(false)
+  email_verified   Boolean   @default(false)
+  verification_token String?
+  reset_token      String?
+  reset_token_expiry DateTime?
+  
+  // Timestamps
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  last_login_at    DateTime?
+  
+  // Relations
+  tracks           Track[]
+  purchases        Purchase[]
+  wallet           Wallet?
+  withdrawals      WithdrawalRequest[]
+  producer_application ProducerApplication?
+  forum_topics     ForumTopic[]
+  forum_replies    ForumReply[]
+  forum_likes      ForumLike[]
+  blog_posts       BlogPost[]
+  track_likes      TrackLike[]
+  track_plays      TrackPlay[]
+  notifications    Notification[]
+  
+  @@index([email])
+  @@index([username])
+  @@index([role])
+  @@index([is_producer])
+}
+
+enum Role {
+  USER
+  MODERATOR
+  EDITOR
+  ADMIN
+}
+
+// ============================================================================
+// PRODUCER APPLICATION & KYC
+// ============================================================================
+
+model ProducerApplication {
+  id               String    @id @default(uuid())
+  user_id          String    @unique
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Personal Info
+  real_name        String
+  turkish_id       String
+  phone            String
+  
+  // Social Media (optional)
+  instagram        String?
+  twitter          String?
+  youtube          String?
+  spotify          String?
+  soundcloud       String?
+  
+  // Portfolio (optional)
+  portfolio_url    String?
+  sample_track_1   String?
+  sample_track_2   String?
+  sample_track_3   String?
+  
+  // Application Status
+  status           ApplicationStatus @default(PENDING)
+  admin_notes      String?
+  reviewed_by      String?
+  reviewed_at      DateTime?
+  
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  
+  @@index([status])
+  @@index([created_at])
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ============================================================================
+// MUSIC TRACKS & UPLOADS
+// ============================================================================
+
+model Track {
+  id               String    @id @default(uuid())
+  user_id          String
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Basic Info
+  title            String
+  description      String?   @db.Text
+  genre            String
+  tags             String[]
+  
+  // Pricing
+  price            Decimal   @db.Decimal(10, 2)
+  license_type     LicenseType @default(PERSONAL)
+  
+  // File Storage (R2)
+  audio_url        String    // Full track URL
+  preview_url      String    // 30-second preview URL
+  cover_url        String?   // Cover artwork URL
+  
+  // Metadata
+  duration         Int       // Duration in seconds
+  bitrate          Int?      // Audio bitrate
+  sample_rate      Int?      // Sample rate (44100, 48000, etc.)
+  file_size        Int       // File size in bytes
+  
+  // Engagement
+  plays_count      Int       @default(0)
+  likes_count      Int       @default(0)
+  sales_count      Int       @default(0)
+  
+  // Publishing
+  status           TrackStatus @default(PUBLISHED)
+  published_at     DateTime  @default(now())
+  
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  
+  // Relations
+  purchases        Purchase[]
+  likes            TrackLike[]
+  plays            TrackPlay[]
+  
+  @@index([user_id])
+  @@index([genre])
+  @@index([status])
+  @@index([created_at])
+  @@index([plays_count])
+  @@index([likes_count])
+}
+
+enum LicenseType {
+  PERSONAL
+  COMMERCIAL
+  EXCLUSIVE
+}
+
+enum TrackStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model TrackLike {
+  id         String   @id @default(uuid())
+  user_id    String
+  track_id   String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  track      Track    @relation(fields: [track_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  
+  @@unique([user_id, track_id])
+  @@index([track_id])
+}
+
+model TrackPlay {
+  id         String   @id @default(uuid())
+  user_id    String?
+  track_id   String
+  ip_address String?
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  track      Track    @relation(fields: [track_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  
+  @@index([track_id])
+  @@index([user_id])
+  @@index([created_at])
+}
+
+// ============================================================================
+// PAYMENTS & PURCHASES
+// ============================================================================
+
+model Purchase {
+  id                String    @id @default(uuid())
+  user_id           String
+  track_id          String
+  user              User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  track             Track     @relation(fields: [track_id], references: [id], onDelete: Restrict)
+  
+  // Payment Info
+  amount            Decimal   @db.Decimal(10, 2)
+  platform_commission Decimal @db.Decimal(10, 2) // 15% platform fee
+  artist_earning    Decimal   @db.Decimal(10, 2) // 85% to artist
+  
+  // Iyzico Payment Details
+  payment_id        String    @unique
+  payment_token     String?
+  conversation_id   String?
+  payment_status    PaymentStatus @default(PENDING)
+  
+  // Transaction Details
+  paid_at           DateTime?
+  download_count    Int       @default(0)
+  last_downloaded_at DateTime?
+  
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  
+  @@unique([user_id, track_id])
+  @@index([user_id])
+  @@index([track_id])
+  @@index([payment_status])
+  @@index([created_at])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// ============================================================================
+// WALLET & WITHDRAWALS
+// ============================================================================
+
+model Wallet {
+  id               String    @id @default(uuid())
+  user_id          String    @unique
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Balance
+  available_balance Decimal  @db.Decimal(10, 2) @default(0)
+  pending_balance   Decimal  @db.Decimal(10, 2) @default(0)
+  lifetime_earnings Decimal  @db.Decimal(10, 2) @default(0)
+  
+  // Bank Info (for withdrawals)
+  bank_name        String?
+  iban             String?
+  account_holder   String?
+  
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  
+  @@index([user_id])
+}
+
+model WithdrawalRequest {
+  id               String    @id @default(uuid())
+  user_id          String
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Request Details
+  amount           Decimal   @db.Decimal(10, 2)
+  bank_name        String
+  iban             String
+  account_holder   String
+  note             String?
+  
+  // Status
+  status           WithdrawalStatus @default(PENDING)
+  admin_notes      String?
+  processed_by     String?
+  processed_at     DateTime?
+  
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at])
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  PAID
+  REJECTED
+}
+
+// ============================================================================
+// FORUM SYSTEM
+// ============================================================================
+
+model ForumCategory {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  icon        String?
+  order       Int          @default(0)
+  
+  // Stats
+  topics_count Int         @default(0)
+  
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  
+  // Relations
+  topics      ForumTopic[]
+  
+  @@index([slug])
+}
+
+model ForumTopic {
+  id            String         @id @default(uuid())
+  category_id   String
+  category      ForumCategory  @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  user_id       String
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  title         String
+  slug          String         @unique
+  content       String         @db.Text
+  
+  // Status
+  is_pinned     Boolean        @default(false)
+  is_locked     Boolean        @default(false)
+  
+  // Stats
+  views_count   Int            @default(0)
+  replies_count Int            @default(0)
+  likes_count   Int            @default(0)
+  
+  // Last Activity
+  last_reply_at DateTime?
+  last_reply_by String?
+  
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  
+  // Relations
+  replies       ForumReply[]
+  likes         ForumLike[]
+  
+  @@index([category_id])
+  @@index([user_id])
+  @@index([slug])
+  @@index([created_at])
+  @@index([is_pinned])
+}
+
+model ForumReply {
+  id         String     @id @default(uuid())
+  topic_id   String
+  topic      ForumTopic @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+  user_id    String
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  content    String     @db.Text
+  
+  // Moderation
+  is_deleted Boolean    @default(false)
+  edited_at  DateTime?
+  edited_by  String?
+  
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  
+  @@index([topic_id])
+  @@index([user_id])
+  @@index([created_at])
+}
+
+model ForumLike {
+  id         String     @id @default(uuid())
+  topic_id   String
+  topic      ForumTopic @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+  user_id    String
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  created_at DateTime   @default(now())
+  
+  @@unique([user_id, topic_id])
+  @@index([topic_id])
+}
+
+// ============================================================================
+// BLOG & CMS
+// ============================================================================
+
+model BlogPost {
+  id            String     @id @default(uuid())
+  author_id     String
+  author        User       @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  
+  title         String
+  slug          String     @unique
+  content       String     @db.Text
+  excerpt       String?
+  cover_image   String?
+  
+  // SEO
+  meta_title    String?
+  meta_description String?
+  
+  // Publishing
+  published     Boolean    @default(false)
+  published_at  DateTime?
+  scheduled_for DateTime?
+  
+  // Stats
+  views_count   Int        @default(0)
+  
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  
+  @@index([author_id])
+  @@index([slug])
+  @@index([published])
+  @@index([published_at])
+}
+
+model Announcement {
+  id            String     @id @default(uuid())
+  title         String
+  content       String     @db.Text
+  type          AnnouncementType @default(INFO)
+  
+  // Display
+  is_active     Boolean    @default(true)
+  starts_at     DateTime   @default(now())
+  expires_at    DateTime?
+  
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  
+  @@index([is_active])
+  @@index([starts_at])
+}
+
+enum AnnouncementType {
+  INFO
+  WARNING
+  SUCCESS
+  ERROR
+}
+
+model HeroSlide {
+  id            String     @id @default(uuid())
+  title         String
+  subtitle      String?
+  image_url     String
+  link_url      String?
+  button_text   String?
+  order         Int        @default(0)
+  is_active     Boolean    @default(true)
+  
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  
+  @@index([order])
+  @@index([is_active])
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+model Notification {
+  id         String           @id @default(uuid())
+  user_id    String
+  user       User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  type       NotificationType
+  title      String
+  message    String
+  link       String?
+  
+  is_read    Boolean          @default(false)
+  read_at    DateTime?
+  
+  created_at DateTime         @default(now())
+  
+  @@index([user_id])
+  @@index([is_read])
+  @@index([created_at])
+}
+
+enum NotificationType {
+  PURCHASE
+  SALE
+  WITHDRAWAL
+  PRODUCER_APPROVED
+  PRODUCER_REJECTED
+  FORUM_REPLY
+  TRACK_LIKE
+  SYSTEM
+}
