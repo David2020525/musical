@@ -6,13 +6,15 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "webapp-production",
-      "database_id": "local-dev"
-    }
-  ],
+  // D1 database - Commented out for deployment (requires API token with D1 permissions)
+  // To enable: Update API token permissions, create production DB, uncomment below
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB",
+  //     "database_name": "webapp-production",
+  //     "database_id": "YOUR_PRODUCTION_DATABASE_ID"
+  //   }
+  // ],
   // Environment variables for production deployment
   // Use: npx wrangler pages secret put <KEY_NAME> --project-name musichub
   "vars": {
