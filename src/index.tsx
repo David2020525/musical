@@ -15,6 +15,7 @@ import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
 import { ultraModernAdminHTML } from './pages/ultra-modern-admin'
 import { ultraModernAdminProducersHTML } from './pages/ultra-modern-admin-producers'
+import { ultraModernAdminUsersHTML } from './pages/ultra-modern-admin-users'
 import { ultraModernVerifyEmailHTML } from './pages/ultra-modern-verify-email'
 import { ultraModernForgotPasswordHTML } from './pages/ultra-modern-forgot-password'
 import { ultraModernResetPasswordHTML } from './pages/ultra-modern-reset-password'
@@ -230,6 +231,11 @@ app.get('/:locale/admin', c => {
 // Admin producer applications page
 app.get('/:locale/admin/producers', c => {
   return c.html(ultraModernAdminProducersHTML)
+})
+
+// Admin users management page
+app.get('/:locale/admin/users', c => {
+  return c.html(ultraModernAdminUsersHTML)
 })
 
 // Catch-all for other pages (fallback to basic template)
