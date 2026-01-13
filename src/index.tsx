@@ -12,6 +12,7 @@ import { ultraModernLoginHTML } from './pages/ultra-modern-login'
 import { ultraModernProfileDynamicHTML } from './pages/ultra-modern-profile-dynamic'
 import { ultraModernForumDynamicHTML } from './pages/ultra-modern-forum-dynamic'
 import { ultraModernBlogHTML } from './pages/ultra-modern-blog'
+import { ultraModernBlogDetailHTML } from './pages/ultra-modern-blog-detail'
 import { ultraModernProducerApplicationHTML } from './pages/ultra-modern-producer-application'
 import { ultraModernAdminHTML } from './pages/ultra-modern-admin'
 import { ultraModernAdminProducersHTML } from './pages/ultra-modern-admin-producers'
@@ -221,6 +222,12 @@ app.get('/:locale/forum/:slug', c => {
 // Blog page
 app.get('/:locale/blog', c => {
   return c.html(ultraModernBlogHTML)
+})
+
+// Blog article detail page
+app.get('/:locale/blog/:slug', c => {
+  const locale = (c.req.param('locale') as Locale) || 'en'
+  return c.html(ultraModernBlogDetailHTML(locale))
 })
 
 // Admin page
