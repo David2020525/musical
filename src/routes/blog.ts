@@ -4,6 +4,40 @@ import { Bindings } from '../types'
 const blog = new Hono<{ Bindings: Bindings }>()
 
 // Get all blog posts
+blog.get('/posts', async c => {
+  try {
+    const published = c.req.query('published')
+    const limit = parseInt(c.req.query('limit') || '100')
+
+    let query = `
+      SELECT 
+        p.*,
+        u.name as author_name,
+        u.username as author_username,
+        u.avatar_url as author_avatar
+      FROM blog_posts p
+      LEFT JOIN users u ON p.author_id = u.id
+      WHERE 1=1
+    `
+
+    if (published !== 'false') {
+      query += ' AND p.published = 1'
+    }
+
+    query += ' ORDER BY p.created_at DESC LIMIT ?'
+
+    const result = await c.env.DB.prepare(query).bind(limit).all()
+
+    return c.json({
+      success: true,
+      data: result.results,
+    })
+  } catch (error) {
+    return c.json({ success: false, error: 'Failed to fetch blog posts' }, 500)
+  }
+})
+
+// Legacy route for compatibility
 blog.get('/', async c => {
   try {
     const published = c.req.query('published')

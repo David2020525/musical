@@ -383,56 +383,19 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 </a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
-                    <div class="aspect-video bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center">
-                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
-                    </div>
+            <div id="blogPreview" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Loading skeletons -->
+                ${Array(3).fill(0).map(() => `
+                <div class="glass-strong rounded-3xl overflow-hidden animate-pulse">
+                    <div class="aspect-video bg-white/5"></div>
                     <div class="p-6">
-                        <div class="text-xs text-gray-500 mb-2">
-                            <i class="fas fa-calendar mr-2"></i>Jan 7, 2026
-                        </div>
-                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
-                            Top Music Production Tips for 2026
-                        </h3>
-                        <p class="text-gray-400 text-sm mb-4">
-                            Learn the latest techniques to make your tracks stand out...
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span><i class="fas fa-user mr-2"></i>Admin</span>
-                            <span><i class="fas fa-eye mr-2"></i>2.3K views</span>
-                        </div>
+                        <div class="h-3 bg-white/5 rounded w-24 mb-2"></div>
+                        <div class="h-5 bg-white/10 rounded mb-2"></div>
+                        <div class="h-4 bg-white/5 rounded w-full mb-1"></div>
+                        <div class="h-4 bg-white/5 rounded w-2/3"></div>
                     </div>
                 </div>
-                
-                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
-                    <div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="text-xs text-gray-500 mb-2">
-                            <i class="fas fa-calendar mr-2"></i>Jan 5, 2026
-                        </div>
-                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
-                            Interview with Top Producer DJ Neon
-                        </h3>
-                        <p class="text-gray-400 text-sm mb-4">
-                            Exclusive insights into the creative process...
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span><i class="fas fa-user mr-2"></i>Admin</span>
-                            <span><i class="fas fa-eye mr-2"></i>1.8K views</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
-                    <div class="aspect-video bg-gradient-to-br from-green-500/20 to-cyan-500/20 flex items-center justify-center">
-                        <i class="fas fa-newspaper text-6xl text-white/20"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="text-xs text-gray-500 mb-2">
-                            <i class="fas fa-calendar mr-2"></i>Jan 3, 2026
+                `).join('')}
                         </div>
                         <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
                             Music Licensing Guide for Beginners
@@ -644,6 +607,57 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             window.location.reload();
         }
         
+        // Load Blog Posts
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch('/api/blog/posts?limit=3');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const gradients = [
+                        'from-orange-500/20 to-red-500/20',
+                        'from-blue-500/20 to-purple-500/20',
+                        'from-green-500/20 to-cyan-500/20'
+                    ];
+                    
+                    const html = data.data.map((post, i) => {
+                        const date = new Date(post.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        
+                        return \`
+                            <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/${locale}/blog/\${post.slug}'">
+                                <div class="aspect-video bg-gradient-to-br \${gradients[i]} flex items-center justify-center">
+                                    <i class="fas fa-newspaper text-6xl text-white/20"></i>
+                                </div>
+                                <div class="p-6">
+                                    <div class="text-xs text-gray-500 mb-2">
+                                        <i class="fas fa-calendar mr-2"></i>\${date}
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">
+                                        \${post.title}
+                                    </h3>
+                                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                                        \${post.excerpt || post.content.substring(0, 100) + '...'}
+                                    </p>
+                                    <div class="flex items-center justify-between text-sm text-gray-500">
+                                        <span><i class="fas fa-user mr-2"></i>\${post.author_name}</span>
+                                        <span><i class="fas fa-eye mr-2"></i>\${(post.views_count || 0).toLocaleString()} views</span>
+                                    </div>
+                                </div>
+                            </div>
+                        \`;
+                    }).join('');
+                    
+                    document.getElementById('blogPreview').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load blog posts:', error);
+            }
+        }
+        
         // Load Editor's Picks
         async function loadEditorsPicks() {
             try {
@@ -845,6 +859,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         reveals.forEach(el => revealObserver.observe(el));
         
         // Load all homepage data
+        loadBlogPosts();
         loadEditorsPicks();
         loadTrending();
         loadTracks();
