@@ -209,6 +209,13 @@ app.get('/:locale/forum', c => {
   return c.html(ultraModernForumDynamicHTML(locale))
 })
 
+// Forum topic detail page
+app.get('/:locale/forum/:slug', c => {
+  const locale = c.req.param('locale') as Locale
+  // For now, use the same page - it will handle both views
+  return c.html(ultraModernForumDynamicHTML(locale))
+})
+
 // Blog page
 app.get('/:locale/blog', c => {
   return c.html(ultraModernBlogHTML)
