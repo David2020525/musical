@@ -207,6 +207,114 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
         </div>
     </div>
     
+    <!-- Listener Section (shown only for non-producers) -->
+    <div id="listenerSection" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- My Purchases -->
+            <div class="lg:col-span-2">
+                <div class="glass-strong rounded-3xl p-8">
+                    <h2 class="text-2xl font-bold mb-6">${_('dashboard.my_purchases')}</h2>
+                    
+                    <!-- Purchases Loading -->
+                    <div id="purchasesLoading" class="space-y-4">
+                        ${Array(3).fill(0).map(() => `
+                            <div class="glass rounded-2xl p-4 skeleton">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-16 h-16 rounded-xl bg-gray-700"></div>
+                                    <div class="flex-1">
+                                        <div class="h-5 bg-gray-700 rounded mb-2 w-3/4"></div>
+                                        <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Purchases List -->
+                    <div id="purchasesList" class="space-y-4 hidden"></div>
+                    
+                    <!-- Empty State -->
+                    <div id="purchasesEmpty" class="hidden text-center py-12">
+                        <i class="fas fa-shopping-bag text-6xl text-gray-600 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-2">${_('dashboard.no_purchases')}</h3>
+                        <p class="text-gray-400 mb-6">${_('dashboard.browse_tracks_message')}</p>
+                        <a href="/${locale}/browse" class="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg">
+                            <i class="fas fa-search mr-2"></i>${_('dashboard.browse_tracks')}
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Recently Played -->
+                <div class="glass-strong rounded-3xl p-8 mt-8">
+                    <h2 class="text-2xl font-bold mb-6">${_('dashboard.recently_played')}</h2>
+                    
+                    <!-- Recently Played Loading -->
+                    <div id="recentlyPlayedLoading" class="space-y-3">
+                        ${Array(5).fill(0).map(() => `
+                            <div class="glass rounded-xl p-3 skeleton">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 rounded-lg bg-gray-700"></div>
+                                    <div class="flex-1">
+                                        <div class="h-4 bg-gray-700 rounded mb-1 w-2/3"></div>
+                                        <div class="h-3 bg-gray-700 rounded w-1/3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Recently Played List -->
+                    <div id="recentlyPlayedList" class="space-y-3 hidden"></div>
+                    
+                    <!-- Empty State -->
+                    <div id="recentlyPlayedEmpty" class="hidden text-center py-8">
+                        <i class="fas fa-headphones text-5xl text-gray-600 mb-3"></i>
+                        <h3 class="text-xl font-bold mb-2">${_('dashboard.no_history')}</h3>
+                        <p class="text-gray-400 text-sm">${_('dashboard.start_listening_message')}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                <!-- Quick Actions -->
+                <div class="glass-strong rounded-3xl p-8">
+                    <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
+                    <div class="space-y-3">
+                        <a href="/${locale}/browse" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                            <i class="fas fa-search mr-3"></i>${_('dashboard.browse_tracks')}
+                        </a>
+                        <a href="/${locale}/dashboard/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                            <i class="fas fa-user mr-3"></i>${_('dashboard.edit_profile')}
+                        </a>
+                        <a href="/${locale}/producer/apply" id="applyProducerBtnListener" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                            <i class="fas fa-star mr-3"></i>${_('dashboard.become_producer')}
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Listener Stats -->
+                <div class="glass-strong rounded-3xl p-8">
+                    <h2 class="text-2xl font-bold mb-6">${_('dashboard.your_stats')}</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400">${_('dashboard.total_purchases')}</span>
+                            <span class="font-bold" id="total-purchases">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400">${_('dashboard.total_listens')}</span>
+                            <span class="font-bold" id="total-listens">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400">${_('dashboard.member_since')}</span>
+                            <span class="font-bold text-sm" id="member-since">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Upload Track Modal -->
     <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
         <div class="glass-strong rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -343,6 +451,18 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 document.getElementById('uploadBtnSidebar')?.classList.remove('hidden');
                 document.getElementById('applyProducerBtn')?.classList.add('hidden');
                 loadEarnings();
+            } else {
+                // Show listener sections
+                document.getElementById('listenerSection')?.classList.remove('hidden');
+                document.getElementById('applyProducerBtnListener')?.classList.remove('hidden');
+                loadPurchases();
+                loadRecentlyPlayed();
+                
+                // Set member since
+                if (currentUser.created_at) {
+                    const memberDate = new Date(currentUser.created_at);
+                    document.getElementById('member-since').textContent = memberDate.toLocaleDateString('${locale}', { year: 'numeric', month: 'short' });
+                }
             }
             
             // Check producer application status
@@ -513,6 +633,133 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             } catch (error) {
                 console.error('Failed to load earnings:', error);
             }
+        }
+        
+        // Load purchases (for listeners)
+        async function loadPurchases() {
+            const token = localStorage.getItem('token');
+            document.getElementById('purchasesLoading').classList.remove('hidden');
+            document.getElementById('purchasesList').classList.add('hidden');
+            document.getElementById('purchasesEmpty').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/users/me/purchases', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                document.getElementById('purchasesLoading').classList.add('hidden');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const purchases = data.data;
+                    const html = purchases.map(purchase => \`
+                        <div class="glass rounded-2xl p-4 hover:bg-white/5 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <img src="\${purchase.cover_url || 'https://via.placeholder.com/64'}" 
+                                         alt="\${purchase.title}" 
+                                         class="w-16 h-16 rounded-xl object-cover">
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-lg">\${purchase.title}</h3>
+                                        <p class="text-sm text-gray-400">\${purchase.artist}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString('${locale}')}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-green-400 font-bold">$\${purchase.price.toFixed(2)}</span>
+                                    <button onclick="playTrack('\${purchase.audio_url}', '\${purchase.title}', '\${purchase.artist}')" 
+                                            class="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center hover:shadow-lg">
+                                        <i class="fas fa-play text-sm"></i>
+                                    </button>
+                                    <a href="\${purchase.audio_url}" 
+                                       download 
+                                       class="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-white/10"
+                                       title="Download">
+                                        <i class="fas fa-download text-sm"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    \`).join('');
+                    
+                    document.getElementById('purchasesList').innerHTML = html;
+                    document.getElementById('purchasesList').classList.remove('hidden');
+                    
+                    // Update stats
+                    document.getElementById('total-purchases').textContent = purchases.length;
+                } else {
+                    document.getElementById('purchasesEmpty').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load purchases:', error);
+                document.getElementById('purchasesLoading').classList.add('hidden');
+                document.getElementById('purchasesEmpty').classList.remove('hidden');
+            }
+        }
+        
+        // Load recently played (for listeners)
+        async function loadRecentlyPlayed() {
+            const token = localStorage.getItem('token');
+            document.getElementById('recentlyPlayedLoading').classList.remove('hidden');
+            document.getElementById('recentlyPlayedList').classList.add('hidden');
+            document.getElementById('recentlyPlayedEmpty').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/api/users/me/play-history?limit=10', {
+                    headers: { 'Authorization': \`Bearer \${token}\` }
+                });
+                const data = await response.json();
+                
+                document.getElementById('recentlyPlayedLoading').classList.add('hidden');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const history = data.data;
+                    const html = history.map(item => \`
+                        <div class="glass rounded-xl p-3 hover:bg-white/5 transition-all cursor-pointer"
+                             onclick="playTrack('\${item.audio_url}', '\${item.title}', '\${item.artist}')">
+                            <div class="flex items-center space-x-3">
+                                <img src="\${item.cover_url || 'https://via.placeholder.com/48'}" 
+                                     alt="\${item.title}" 
+                                     class="w-12 h-12 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-semibold text-sm truncate">\${item.title}</h4>
+                                    <p class="text-xs text-gray-400 truncate">\${item.artist}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-gray-500">\${formatTimeAgo(item.played_at)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    \`).join('');
+                    
+                    document.getElementById('recentlyPlayedList').innerHTML = html;
+                    document.getElementById('recentlyPlayedList').classList.remove('hidden');
+                    
+                    // Update stats
+                    document.getElementById('total-listens').textContent = history.length;
+                } else {
+                    document.getElementById('recentlyPlayedEmpty').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Failed to load play history:', error);
+                document.getElementById('recentlyPlayedLoading').classList.add('hidden');
+                document.getElementById('recentlyPlayedEmpty').classList.remove('hidden');
+            }
+        }
+        
+        // Helper function to format time ago
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const past = new Date(date);
+            const diffMs = now - past;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) return \`\${diffMins}m ago\`;
+            if (diffHours < 24) return \`\${diffHours}h ago\`;
+            if (diffDays < 7) return \`\${diffDays}d ago\`;
+            return past.toLocaleDateString('${locale}');
         }
         
         // Upload track

@@ -309,6 +309,45 @@ users.get('/me/purchases', async c => {
   }
 })
 
+// Get user's play history
+users.get('/me/play-history', async c => {
+  const authHeader = c.req.header('Authorization')
+  if (!authHeader) {
+    return c.json({ success: false, error: 'Not authenticated' }, 401)
+  }
+
+  try {
+    const token = authHeader.replace('Bearer ', '')
+    const decoded = await verifyToken(token)
+
+    if (!decoded) {
+      return c.json({ success: false, error: 'Invalid token' }, 401)
+    }
+
+    const limit = parseInt(c.req.query('limit') || '10')
+
+    // Get play history with track details
+    const history = await c.env.DB.prepare(
+      `SELECT 
+        ph.id, ph.played_at,
+        t.id as track_id, t.title, t.artist, t.cover_url, t.audio_url
+       FROM play_history ph
+       JOIN tracks t ON ph.track_id = t.id
+       WHERE ph.user_id = ?
+       ORDER BY ph.played_at DESC
+       LIMIT ?`
+    ).bind(decoded.id, limit).all()
+
+    return c.json({
+      success: true,
+      data: history.results
+    })
+  } catch (error) {
+    console.error('Get play history error:', error)
+    return c.json({ success: false, error: 'Failed to fetch play history' }, 500)
+  }
+})
+
 // Request withdrawal (producers only)
 users.post('/me/withdrawals', async c => {
   const authHeader = c.req.header('Authorization')
