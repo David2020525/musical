@@ -39,17 +39,48 @@ export function extractToken(authHeader: string | null): string | null {
   return authHeader.substring(7)
 }
 
-// Password hashing utilities (for reference - actual hashing done server-side)
+// Fast password hashing using Web Crypto API (optimized for Cloudflare Workers)
 export async function hashPassword(password: string): Promise<string> {
-  // In a real implementation, use bcryptjs or similar
-  // This is a placeholder - actual implementation would use bcryptjs
-  const bcrypt = await import('bcryptjs')
-  return bcrypt.hash(password, 10)
+  const salt = crypto.getRandomValues(new Uint8Array(16))
+  const encoder = new TextEncoder()
+  const passwordData = encoder.encode(password + Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join(''))
+  
+  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('')
+  
+  return `$sha256$${saltHex}$${hashHex}`
 }
 
 export async function comparePassword(password: string, hash: string): Promise<boolean> {
-  const bcrypt = await import('bcryptjs')
-  return bcrypt.compare(password, hash)
+  // Handle both bcrypt and SHA-256 hashes
+  if (hash.startsWith('$2a$') || hash.startsWith('$2b$')) {
+    // Legacy bcrypt hash - use bcryptjs
+    try {
+      const bcrypt = await import('bcryptjs')
+      return bcrypt.compare(password, hash)
+    } catch {
+      return false
+    }
+  }
+  
+  // SHA-256 hash
+  if (!hash.startsWith('$sha256$')) return false
+  
+  const parts = hash.split('$')
+  if (parts.length !== 4) return false
+  
+  const saltHex = parts[2]
+  const storedHashHex = parts[3]
+  
+  const encoder = new TextEncoder()
+  const passwordData = encoder.encode(password + saltHex)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const computedHashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  
+  return computedHashHex === storedHashHex
 }
 
 // Role-based access control
