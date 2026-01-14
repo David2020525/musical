@@ -9,8 +9,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "musichub-production",
-      "database_id": "d356dd0d-b3a0-45f2-9181-33d58e4bd890"
+      "database_name": "music",
+      "database_id": "873f8f65-474c-490c-81dc-6dabc303dadb"
     }
   ],
   // Environment variables for production deployment
