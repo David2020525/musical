@@ -146,6 +146,10 @@ export const ultraModernBlogHTML = `<!DOCTYPE html>
     </div>
     
     ${GlobalAudioPlayerHTML}
+    
+    <script>
+    // Play Button Functions
     ${PlayButtonScript}
+    </script>
 </body>
 </html>`;

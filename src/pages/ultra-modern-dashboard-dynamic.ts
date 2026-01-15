@@ -397,7 +397,11 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
     </div>
     
     ${GlobalAudioPlayerHTML}
+    
+    <script>
+    // Play Button Functions
     ${PlayButtonScript}
+    </script>
     
     <script>
         const locale = '${locale}';

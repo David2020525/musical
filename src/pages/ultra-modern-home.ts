@@ -867,7 +867,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     <!-- Global Audio Player -->
     ${GlobalAudioPlayerHTML}
+    
+    <script>
+    // Play Button Functions
     ${PlayButtonScript}
+    </script>
 </body>
 </html>`;
 }
