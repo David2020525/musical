@@ -63,7 +63,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
         </div>
     </nav>
     
-    <div class="pt-28 px-6">
+    <div class="pt-28 px-6 pb-32">
         <div class="max-w-[1400px] mx-auto">
             <!-- Loading State -->
             <div id="loading" class="text-center py-20">

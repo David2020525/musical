@@ -91,7 +91,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
     </nav>
 
     <!-- Loading State -->
-    <div id="loading-state" class="pt-32 px-6 max-w-[1400px] mx-auto">
+    <div id="loading-state" class="pt-32 px-6 pb-32 max-w-[1400px] mx-auto">
         <div class="flex gap-8 mb-8">
             <div class="w-96 h-96 rounded-3xl skeleton"></div>
             <div class="flex-1">
@@ -116,7 +116,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
     </div>
 
     <!-- Track Content -->
-    <div id="track-content" class="hidden pt-32 px-6 max-w-[1400px] mx-auto">
+    <div id="track-content" class="hidden pt-32 px-6 pb-32 max-w-[1400px] mx-auto">
         <!-- Track Header -->
         <div class="flex flex-col lg:flex-row gap-8 mb-12">
             <!-- Cover Art -->

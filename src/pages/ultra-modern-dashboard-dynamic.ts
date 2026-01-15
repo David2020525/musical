@@ -64,7 +64,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
         </div>
     </nav>
     
-    <div class="pt-28 px-6">
+    <div class="pt-28 px-6 pb-32">
         <div class="max-w-[1400px] mx-auto">
             <!-- User Info -->
             <div class="mb-12">

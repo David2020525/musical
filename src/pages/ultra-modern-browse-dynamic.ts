@@ -118,7 +118,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
     </nav>
 
     <!-- Main Content -->
-    <div class="pt-32 px-6 max-w-[1400px] mx-auto">
+    <div class="pt-32 px-6 pb-32 max-w-[1400px] mx-auto">
         <!-- Header -->
         <div class="mb-12">
             <h1 class="text-5xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">

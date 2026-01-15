@@ -63,7 +63,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
         </div>
     </nav>
     
-    <div class="pt-28 px-6">
+    <div class="pt-28 px-6 pb-32">
         <div class="max-w-[1400px] mx-auto">
             <div class="mb-12">
                 <h1 class="text-6xl font-black mb-4">${_('forum.community')}</h1>
