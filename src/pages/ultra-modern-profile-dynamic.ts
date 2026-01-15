@@ -185,6 +185,9 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
+        const i18nAdmin = '${_('dashboard.admin')}';
+        const i18nProfileSaved = '${_('profile.saved') || 'Profile updated successfully!'}';
+        const i18nNetworkError = '${_('common.network_error')}';
         let currentUser = null;
         
         // Check authentication
@@ -236,7 +239,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
                 
                 // Populate sidebar
                 let roleText = currentUser.is_producer ? '${_('dashboard.producer')}' : '${_('dashboard.listener')}';
-                if (currentUser.role === 'admin') roleText = \`${_('dashboard.admin')}\`;
+                if (currentUser.role === 'admin') roleText = i18nAdmin;
                 document.getElementById('userRole').textContent = roleText;
                 
                 const joinedDate = new Date(currentUser.created_at);
@@ -316,7 +319,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
                 const data = await response.json();
                 
                 if (data.success) {
-                    successDiv.textContent = \`${_('profile.saved') || 'Profile updated successfully!'}\`;
+                    successDiv.textContent = i18nProfileSaved;
                     successDiv.classList.remove('hidden');
                     
                     // Reload after 1 second
@@ -328,7 +331,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
-                errorDiv.textContent = \`${_('common.network_error')}\`;
+                errorDiv.textContent = i18nNetworkError;
                 errorDiv.classList.remove('hidden');
             } finally {
                 saveText.classList.remove('hidden');

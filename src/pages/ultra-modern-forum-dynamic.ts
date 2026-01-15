@@ -175,6 +175,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
+        const i18nNetworkError = '${_('common.network_error')}';
         let currentUser = null;
         let categories = [];
         let topics = [];
@@ -407,7 +408,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
                     formError.classList.remove('hidden');
                 }
             } catch (error) {
-                formError.textContent = \`${_('common.network_error')}\`;
+                formError.textContent = i18nNetworkError;
                 formError.classList.remove('hidden');
             } finally {
                 submitText.classList.remove('hidden');

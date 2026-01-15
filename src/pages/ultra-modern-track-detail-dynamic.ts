@@ -239,6 +239,9 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
 
         const trackId = '${trackId}';
         const locale = '${locale}';
+        const i18nFree = '${t('common.free', locale)}';
+        const i18nNoDescription = '${t('track.no_description', locale)}';
+        const i18nNoTags = '${t('track.no_tags', locale)}';
         let currentTrack = null;
 
         const loadingState = document.getElementById('loading-state');
@@ -285,11 +288,9 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 document.getElementById('track-mood').textContent = currentTrack.mood || 'Unknown';
                 
                 const price = currentTrack.price || 0;
-                const freeText = \`${t('common.free', locale)}\`;
-                document.getElementById('track-price').textContent = price > 0 ? '$' + price : freeText;
+                document.getElementById('track-price').textContent = price > 0 ? '$' + price : i18nFree;
                 
-                const noDescText = \`${t('track.no_description', locale)}\`;
-                document.getElementById('track-description').textContent = currentTrack.description || noDescText;
+                document.getElementById('track-description').textContent = currentTrack.description || i18nNoDescription;
                 
                 document.getElementById('producer-name').textContent = currentTrack.artist;
                 const initials = currentTrack.artist.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -302,8 +303,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                     ).join('');
                     document.getElementById('track-tags').innerHTML = tags;
                 } else {
-                    const noTagsText = \`${t('track.no_tags', locale)}\`;
-                    document.getElementById('track-tags').innerHTML = '<span class="text-white/40">' + noTagsText + '</span>';
+                    document.getElementById('track-tags').innerHTML = '<span class="text-white/40">' + i18nNoTags + '</span>';
                 }
 
                 // Setup play button

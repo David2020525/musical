@@ -401,6 +401,11 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
+        const i18nDashboardTitle = '${_('dashboard.title')}';
+        const i18nProducer = '${_('dashboard.producer')}';
+        const i18nListener = '${_('dashboard.listener')}';
+        const i18nAdmin = '${_('dashboard.admin')}';
+        const i18nNetworkError = '${_('common.network_error')}';
         let currentUser = null;
         let userTracks = [];
         
@@ -437,10 +442,10 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
         function updateUserInfo() {
             if (!currentUser) return;
             
-            document.getElementById('userName').textContent = currentUser.name + "'s \`${_('dashboard.title')}\`";
+            document.getElementById('userName').textContent = currentUser.name + "'s " + i18nDashboardTitle;
             
-            let roleText = currentUser.is_producer ? \`${_('dashboard.producer')}\` : \`${_('dashboard.listener')}\`;
-            if (currentUser.role === 'admin') roleText = \`${_('dashboard.admin')}\`;
+            let roleText = currentUser.is_producer ? i18nProducer : i18nListener;
+            if (currentUser.role === 'admin') roleText = i18nAdmin;
             document.getElementById('userRole').textContent = roleText;
             
             // Show producer sections
@@ -914,7 +919,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
-                errorDiv.textContent = \`${_('common.network_error')}\`;
+                errorDiv.textContent = i18nNetworkError;
                 errorDiv.classList.remove('hidden');
             } finally {
                 submitText.classList.remove('hidden');
