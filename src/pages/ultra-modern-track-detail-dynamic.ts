@@ -280,14 +280,16 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 const durationSeconds = currentTrack.duration || 180;
                 const minutes = Math.floor(durationSeconds / 60);
                 const seconds = durationSeconds % 60;
-                document.getElementById('track-duration').textContent = \`\${minutes}:\${seconds.toString().padStart(2, '0')}\`;
+                document.getElementById('track-duration').textContent = minutes + ':' + seconds.toString().padStart(2, '0');
                 
                 document.getElementById('track-mood').textContent = currentTrack.mood || 'Unknown';
                 
                 const price = currentTrack.price || 0;
-                document.getElementById('track-price').textContent = price > 0 ? \`$\${price}\` : '${t('common.free', locale)}';
+                const freeText = '${t('common.free', locale)}';
+                document.getElementById('track-price').textContent = price > 0 ? '$' + price : freeText;
                 
-                document.getElementById('track-description').textContent = currentTrack.description || '${t('track.no_description', locale)}';
+                const noDescText = '${t('track.no_description', locale)}';
+                document.getElementById('track-description').textContent = currentTrack.description || noDescText;
                 
                 document.getElementById('producer-name').textContent = currentTrack.artist;
                 const initials = currentTrack.artist.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -296,11 +298,12 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 // Tags
                 if (currentTrack.tags) {
                     const tags = currentTrack.tags.split(',').map(tag => 
-                        \`<span class="px-4 py-2 glass rounded-full text-sm hover:bg-white/10 transition-all cursor-pointer">\${tag.trim()}</span>\`
+                        '<span class="px-4 py-2 glass rounded-full text-sm hover:bg-white/10 transition-all cursor-pointer">' + tag.trim() + '</span>'
                     ).join('');
                     document.getElementById('track-tags').innerHTML = tags;
                 } else {
-                    document.getElementById('track-tags').innerHTML = '<span class="text-white/40">${t('track.no_tags', locale)}</span>';
+                    const noTagsText = '${t('track.no_tags', locale)}';
+                    document.getElementById('track-tags').innerHTML = '<span class="text-white/40">' + noTagsText + '</span>';
                 }
 
                 // Setup play button
