@@ -296,6 +296,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.next': 'Next',
     'common.back': 'Back',
     'common.submit': 'Submit',
+    'common.free': 'Free',
     'common.submitting': 'Submitting...',
   },
   tr: {
@@ -593,6 +594,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.next': 'Sonraki',
     'common.back': 'Geri',
     'common.submit': 'Gönder',
+    'common.free': 'Ücretsiz',
     'common.submitting': 'Gönderiliyor...',
   },
 }
