@@ -24,8 +24,17 @@ jobs:
       - name: Build
         run: npm run build
         
+      - name: Check build output
+        run: |
+          echo "Checking if dist/_worker.js exists..."
+          ls -lh dist/
+          if [ ! -f "dist/_worker.js" ]; then
+            echo "Error: dist/_worker.js not found!"
+            exit 1
+          fi
+          echo "Build output verified!"
+        
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
