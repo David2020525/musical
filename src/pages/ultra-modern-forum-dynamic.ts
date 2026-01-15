@@ -407,7 +407,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
                     formError.classList.remove('hidden');
                 }
             } catch (error) {
-                formError.textContent = "${_('common.network_error')}";
+                formError.textContent = \`${_('common.network_error')}\`;
                 formError.classList.remove('hidden');
             } finally {
                 submitText.classList.remove('hidden');
