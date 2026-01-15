@@ -285,10 +285,10 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 document.getElementById('track-mood').textContent = currentTrack.mood || 'Unknown';
                 
                 const price = currentTrack.price || 0;
-                const freeText = '${t('common.free', locale)}';
+                const freeText = "${t('common.free', locale)}";
                 document.getElementById('track-price').textContent = price > 0 ? '$' + price : freeText;
                 
-                const noDescText = '${t('track.no_description', locale)}';
+                const noDescText = "${t('track.no_description', locale)}";
                 document.getElementById('track-description').textContent = currentTrack.description || noDescText;
                 
                 document.getElementById('producer-name').textContent = currentTrack.artist;
@@ -302,7 +302,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                     ).join('');
                     document.getElementById('track-tags').innerHTML = tags;
                 } else {
-                    const noTagsText = '${t('track.no_tags', locale)}';
+                    const noTagsText = "${t('track.no_tags', locale)}";
                     document.getElementById('track-tags').innerHTML = '<span class="text-white/40">' + noTagsText + '</span>';
                 }
 

@@ -439,8 +439,8 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             
             document.getElementById('userName').textContent = currentUser.name + "'s ${_('dashboard.title')}";
             
-            let roleText = currentUser.is_producer ? '${_('dashboard.producer')}' : '${_('dashboard.listener')}';
-            if (currentUser.role === 'admin') roleText = '${_('dashboard.admin')}';
+            let roleText = currentUser.is_producer ? "${_('dashboard.producer')}" : "${_('dashboard.listener')}";
+            if (currentUser.role === 'admin') roleText = "${_('dashboard.admin')}";
             document.getElementById('userRole').textContent = roleText;
             
             // Show producer sections
@@ -914,7 +914,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
-                errorDiv.textContent = '${_('common.network_error')}';
+                errorDiv.textContent = "${_('common.network_error')}";
                 errorDiv.classList.remove('hidden');
             } finally {
                 submitText.classList.remove('hidden');
