@@ -61,6 +61,32 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             background-size: 1000px 100%;
             animation: shimmer 2s infinite;
         }
+
+        /* Fix select dropdown styling */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 3rem;
+        }
+
+        /* Ensure proper text rendering in inputs */
+        input, select, textarea {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Fix checkbox styling */
+        input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: #a855f7;
+        }
+
+        /* Prevent layout shift */
+        * {
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body class="text-white pb-32">
@@ -102,7 +128,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         </div>
 
         <!-- Search & Filters -->
-        <div class="mb-8 flex flex-col md:flex-row gap-4">
+        <div class="mb-8 flex flex-col lg:flex-row gap-4">
             <!-- Search Bar -->
             <div class="flex-1 relative">
                 <input 
@@ -117,7 +143,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             <!-- Genre Filter -->
             <select 
                 id="genre-filter"
-                class="px-6 py-4 rounded-2xl glass-strong text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer"
+                class="min-w-[200px] px-6 py-4 rounded-2xl glass-strong text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer"
             >
                 <option value="">${t('browse.all_genres', locale)}</option>
                 <option value="Electronic">Electronic</option>
@@ -133,28 +159,29 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             <!-- Sort Filter -->
             <select 
                 id="sort-filter"
-                class="px-6 py-4 rounded-2xl glass-strong text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer"
+                class="min-w-[200px] px-6 py-4 rounded-2xl glass-strong text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all cursor-pointer"
             >
-                <option value="newest">Newest First</option>
-                <option value="popular">Most Popular</option>
-                <option value="trending">Trending</option>
-                <option value="oldest">Oldest First</option>
+                <option value="newest">${t('browse.sort_newest', locale)}</option>
+                <option value="popular">${t('browse.sort_popular', locale)}</option>
+                <option value="trending">${t('browse.sort_trending', locale)}</option>
+                <option value="oldest">Oldest</option>
             </select>
         </div>
 
         <!-- Advanced Filters -->
         <div class="mb-8 glass-strong rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold">Advanced Filters</h3>
-                <button id="reset-filters" class="text-sm text-purple-400 hover:text-purple-300">
-                    <i class="fas fa-redo mr-1"></i>Reset All
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-white">Advanced Filters</h3>
+                <button id="reset-filters" class="text-sm text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-2">
+                    <i class="fas fa-redo"></i>
+                    <span>Reset All</span>
                 </button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Price Range -->
-                <div>
-                    <label class="block text-sm text-gray-400 mb-3">
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-400">
                         <i class="fas fa-dollar-sign mr-2"></i>Price Range
                     </label>
                     <div class="flex items-center gap-3">
@@ -163,31 +190,31 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                             id="price-min" 
                             placeholder="Min" 
                             min="0"
-                            class="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                         />
-                        <span class="text-gray-500">-</span>
+                        <span class="text-gray-500 shrink-0">-</span>
                         <input 
                             type="number" 
                             id="price-max" 
                             placeholder="Max" 
                             min="0"
-                            class="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                            class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                         />
                     </div>
-                    <div class="flex items-center gap-2 mt-2">
-                        <input type="checkbox" id="free-only" class="rounded">
-                        <label for="free-only" class="text-sm text-gray-400">Free only</label>
+                    <div class="flex items-center gap-2 mt-3">
+                        <input type="checkbox" id="free-only" class="w-4 h-4 rounded border-white/10 text-purple-500 focus:ring-purple-500 focus:ring-offset-0 bg-white/5">
+                        <label for="free-only" class="text-sm text-gray-400 cursor-pointer">Free only</label>
                     </div>
                 </div>
 
                 <!-- Date Range -->
-                <div>
-                    <label class="block text-sm text-gray-400 mb-3">
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-400">
                         <i class="fas fa-calendar mr-2"></i>Upload Date
                     </label>
                     <select 
                         id="date-filter"
-                        class="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-purple-500"
+                        class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all cursor-pointer"
                     >
                         <option value="">All Time</option>
                         <option value="today">Today</option>
@@ -198,15 +225,15 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 </div>
 
                 <!-- Producer Filter -->
-                <div>
-                    <label class="block text-sm text-gray-400 mb-3">
+                <div class="space-y-3">
+                    <label class="block text-sm font-medium text-gray-400">
                         <i class="fas fa-user-music mr-2"></i>Producer
                     </label>
                     <input 
                         type="text" 
                         id="producer-filter" 
                         placeholder="Search by producer..." 
-                        class="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-purple-500"
+                        class="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     />
                 </div>
             </div>
