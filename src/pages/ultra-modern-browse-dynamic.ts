@@ -379,7 +379,8 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         // Create track card HTML
         function createTrackCard(track) {
             const coverUrl = track.cover_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop';
-            const price = track.price ? \`$\${track.price}\` : '${t('common.free', locale)}';
+            const freeText = '${t('common.free', locale)}';
+            const price = track.price ? '$' + track.price : freeText;
             
             return \`
                 <div class="card-3d glass rounded-2xl p-6 cursor-pointer hover:bg-white/5 transition-all group">
