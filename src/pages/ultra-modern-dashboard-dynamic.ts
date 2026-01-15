@@ -175,7 +175,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                             <button id="uploadBtnSidebar" class="w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left hidden">
                                 <i class="fas fa-upload mr-3"></i>${_('dashboard.upload_track')}
                             </button>
-                            <a href="/${locale}/dashboard/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                            <a href="/${locale}/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
                                 <i class="fas fa-user mr-3"></i>${_('dashboard.edit_profile')}
                             </a>
                             <a href="/${locale}/producer/apply" id="applyProducerBtn" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
@@ -284,7 +284,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                         <a href="/${locale}/browse" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
                             <i class="fas fa-search mr-3"></i>${_('dashboard.browse_tracks')}
                         </a>
-                        <a href="/${locale}/dashboard/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
+                        <a href="/${locale}/profile" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
                             <i class="fas fa-user mr-3"></i>${_('dashboard.edit_profile')}
                         </a>
                         <a href="/${locale}/producer/apply" id="applyProducerBtnListener" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
