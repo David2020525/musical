@@ -46,7 +46,6 @@ export function generatePlayButton(track: any, size: 'sm' | 'md' | 'lg' = 'md') 
 
 // Global function for playing tracks
 export const PlayButtonScript = `
-<script>
 function playTrack(button) {
     try {
         const trackData = button.getAttribute('data-track');
@@ -115,5 +114,4 @@ document.addEventListener('DOMContentLoaded', updatePlayButtons);
 
 // Update periodically (for cross-page sync)
 setInterval(updatePlayButtons, 1000);
-</script>
 `;
