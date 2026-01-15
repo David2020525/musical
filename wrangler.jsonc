@@ -1,5 +1,5 @@
 {
-  "name": "musichub-git",
+  "name": "musical",
   "compatibility_date": "2026-01-14",
   "pages_build_output_dir": "dist",
   "d1_databases": [
@@ -10,7 +10,7 @@
     }
   ],
   // Environment variables for production deployment
-  // Use: npx wrangler pages secret put <KEY_NAME> --project-name musichub
+  // Use: npx wrangler pages secret put <KEY_NAME> --project-name musical
   "vars": {
     "APP_URL": "https://607ce9da.musichub-4yq.pages.dev",
     "PLATFORM_COMMISSION_RATE": "0.15",
