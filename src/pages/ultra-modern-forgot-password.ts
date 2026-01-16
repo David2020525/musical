@@ -1,3 +1,4 @@
+import { Locale, t } from '../lib/i18n';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 
