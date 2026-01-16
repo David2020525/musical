@@ -190,7 +190,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <input 
                             type="text" 
                             id="navSearch"
-                            placeholder="Search tracks, artists..."
+                            placeholder="${t('home.search_placeholder', locale)}"
                             class="w-full px-4 py-2.5 pl-11 pr-4 glass-strong rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all border border-white/10 hover:border-purple-500/30 focus:border-purple-500/50 backdrop-blur-xl text-sm"
                         >
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
@@ -241,32 +241,32 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             <div class="text-center max-w-4xl mx-auto reveal active">
                 <div class="inline-block px-4 py-2 glass-strong rounded-full mb-6">
                     <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
-                        ✨ Now Playing: The Future of Music
+                        ${t('home.now_playing', locale)}
                     </span>
                 </div>
                 
                 <h1 class="text-6xl md:text-8xl font-black mb-8 leading-tight">
                     <span class="inline-block neon-text bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                        Discover Music
+                        ${t('home.hero_title_1', locale)}
                     </span>
                     <br/>
                     <span class="inline-block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                        Beyond Boundaries
+                        ${t('home.hero_title_2', locale)}
                     </span>
                 </h1>
                 
                 <p class="text-xl md:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto font-light">
-                    Experience a revolutionary platform where artists and fans connect through the universal language of sound
+                    ${t('home.hero_subtitle', locale)}
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button class="px-10 py-5 btn-micro bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-2xl font-bold text-lg neon-glow hover:shadow-2xl hover:shadow-purple-500/50 transition-all flex items-center space-x-3 bg-[length:200%_100%] hover:bg-right" style="transition: background-position 0.5s;">
                         <i class="fas fa-play"></i>
-                        <span>Start Listening</span>
+                        <span>${t('home.start_listening', locale)}</span>
                     </button>
                     <button class="px-10 py-5 btn-micro glass-strong rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center space-x-3">
                         <i class="fas fa-compass"></i>
-                        <span>Explore Genres</span>
+                        <span>${t('home.explore_genres', locale)}</span>
                     </button>
                 </div>
             </div>
@@ -281,28 +281,28 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     <div class="text-5xl font-black bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2" id="trackCount">
                         <div class="shimmer h-12 w-20 glass rounded-xl"></div>
                     </div>
-                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">Total Tracks</div>
+                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_tracks', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2">
                         150K+
                     </div>
-                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">Active Users</div>
+                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_users', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
                         5.2M+
                     </div>
-                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">Monthly Plays</div>
+                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_plays', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">
                         2.5K+
                     </div>
-                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">Artists</div>
+                    <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_artists', locale)}</div>
                 </div>
             </div>
         </div>
@@ -588,16 +588,16 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
                         <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                     </button>
-                    <div class="hidden group-hover:block absolute right-0 mt-2 w-36 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
-                        <a href="/en/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
-                            <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>Dashboard
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-28 glass-strong rounded-lg py-1 z-50 shadow-xl border border-white/10">
+                        <a href="/${locale}/dashboard" class="block px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-chart-line mr-1.5 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
                         </a>
-                        <a href="/en/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
-                            <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>Profile
+                        <a href="/${locale}/profile" class="block px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-user mr-1.5 text-blue-400 text-xs"></i>${t('home.profile', locale)}
                         </a>
-                        <div class="border-t border-white/10 my-1"></div>
-                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400">
-                            <i class="fas fa-sign-out-alt mr-2 text-xs"></i>Logout
+                        <div class="border-t border-white/10 my-0.5"></div>
+                        <button onclick="logout()" class="block w-full text-left px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-red-400">
+                            <i class="fas fa-sign-out-alt mr-1.5 text-xs"></i>${t('home.logout', locale)}
                         </button>
                     </div>
                 </div>
