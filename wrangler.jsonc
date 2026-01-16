@@ -26,12 +26,12 @@
   //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   //   }
   // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
+  "r2_buckets": [
+    {
+      "binding": "TRACKS_BUCKET",
+      "bucket_name": "musichub-tracks"
+    }
+  ],
   // "d1_databases": [
   //   {
   //     "binding": "MY_DB",

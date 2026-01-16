@@ -140,4 +140,5 @@ export interface ApiResponse<T = unknown> {
 // Cloudflare bindings
 export interface Bindings {
   DB: D1Database
+  TRACKS_BUCKET: R2Bucket
 }
