@@ -765,19 +765,14 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         const [featured, ...rest] = tracks;
         
-        // Build featured track HTML with card-level click
+        // Build featured track HTML with card-level click (no play button overlay)
         const trackJson = JSON.stringify(featured).replace(/'/g, '&apos;');
         let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
         html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
         html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
         
-        // Large play icon that appears on hover
-        html += '<div class="absolute inset-0 flex items-center justify-center z-10">';
-        html += '<div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 shadow-2xl">';
-        html += '<i class="fas fa-play text-2xl text-white ml-1"></i>';
-        html += '</div></div>';
-        
-        html += '<i class="fas fa-music text-6xl text-white/30 relative z-10"></i>';
+        // Just the music icon, no play button overlay
+        html += '<i class="fas fa-music text-6xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
         
         // Add DEMO badge if this is a demo track
         if (featured.is_demo) {
@@ -801,14 +796,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
             html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
             
-            // Play icon overlay that appears on hover
+            // Subtle hover effect on background, no play button
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
-            html += '<div class="absolute inset-0 flex items-center justify-center z-10">';
-            html += '<div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300">';
-            html += '<i class="fas fa-play text-sm text-white ml-0.5"></i>';
-            html += '</div></div>';
-            
-            html += '<i class="fas fa-music text-3xl text-white/30 relative z-0"></i>';
+            html += '<i class="fas fa-music text-3xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
             
             // Add DEMO badge if this is a demo track
             if (track.is_demo) {
@@ -842,14 +832,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center flex-shrink-0">' + (index + 1) + '</div>';
             html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative overflow-hidden">';
             
-            // Play icon overlay
+            // Subtle hover effect, no play button
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
-            html += '<div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity">';
-            html += '<div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">';
-            html += '<i class="fas fa-play text-xs text-white ml-0.5"></i>';
-            html += '</div></div>';
-            
-            html += '<i class="fas fa-music text-2xl text-white/30 relative z-0"></i>';
+            html += '<i class="fas fa-music text-2xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
             html += '</div>';
             html += '<div class="flex-1 min-w-0">';
             html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
