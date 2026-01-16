@@ -312,8 +312,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     <div class="px-6 mb-24 reveal">
         <div class="max-w-[1400px] mx-auto">
             <div class="mb-12">
-                <h2 class="text-4xl md:text-5xl font-black mb-2">Editor's Picks</h2>
-                <p class="text-gray-400">Handpicked by our music experts</p>
+                <h2 class="text-4xl md:text-5xl font-black mb-2">${t('home.editors_picks', locale)}</h2>
+                <p class="text-gray-400">${t('home.editors_picks_desc', locale)}</p>
             </div>
             
             <div id="editorsPicks" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -341,8 +341,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     <div class="px-6 mb-24 reveal">
         <div class="max-w-[1400px] mx-auto">
             <div class="mb-12">
-                <h2 class="text-4xl md:text-5xl font-black mb-2">Top 10 This Week</h2>
-                <p class="text-gray-400">The most popular tracks right now</p>
+                <h2 class="text-4xl md:text-5xl font-black mb-2">${t('home.top_10', locale)}</h2>
+                <p class="text-gray-400">${t('home.top_10_desc', locale)}</p>
             </div>
             
             <div class="glass-strong rounded-3xl p-8">
@@ -372,11 +372,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         <div class="max-w-[1400px] mx-auto">
             <div class="flex items-center justify-between mb-12">
                 <div>
-                    <h2 class="text-4xl md:text-5xl font-black mb-2">Latest from Blog</h2>
-                    <p class="text-gray-400">Music news, tips, and industry insights</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">${t('home.latest_blog', locale)}</h2>
+                    <p class="text-gray-400">${t('home.latest_blog_desc', locale)}</p>
                 </div>
-                <a href="/en/blog" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                    <span>View All</span>
+                <a href="/${locale}/blog" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
+                    <span>${t('home.view_all_blog', locale)}</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -588,16 +588,16 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
                         <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                     </button>
-                    <div class="hidden group-hover:block absolute right-0 mt-2 w-28 glass-strong rounded-lg py-1 z-50 shadow-xl border border-white/10">
-                        <a href="/${locale}/dashboard" class="block px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
-                            <i class="fas fa-chart-line mr-1.5 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-32 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
+                        <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
                         </a>
-                        <a href="/${locale}/profile" class="block px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
-                            <i class="fas fa-user mr-1.5 text-blue-400 text-xs"></i>${t('home.profile', locale)}
+                        <a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>${t('home.profile', locale)}
                         </a>
-                        <div class="border-t border-white/10 my-0.5"></div>
-                        <button onclick="logout()" class="block w-full text-left px-2.5 py-1.5 hover:bg-white/10 transition-all text-xs text-red-400">
-                            <i class="fas fa-sign-out-alt mr-1.5 text-xs"></i>${t('home.logout', locale)}
+                        <div class="border-t border-white/10 my-1"></div>
+                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400">
+                            <i class="fas fa-sign-out-alt mr-2 text-xs"></i>${t('home.logout', locale)}
                         </button>
                     </div>
                 </div>

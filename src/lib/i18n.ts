@@ -55,6 +55,13 @@ export const translations: Record<Locale, Record<string, string>> = {
     'home.search_placeholder': 'Search tracks, artists...',
     'home.profile': 'Profile',
     'home.logout': 'Logout',
+    'home.editors_picks': 'Editor\'s Picks',
+    'home.editors_picks_desc': 'Handpicked by our music experts',
+    'home.top_10': 'Top 10 This Week',
+    'home.top_10_desc': 'The most popular tracks right now',
+    'home.latest_blog': 'Latest from Blog',
+    'home.latest_blog_desc': 'Music news, tips, and industry insights',
+    'home.view_all_blog': 'View All',
 
     // Browse page
     'browse.title': 'Browse Music',
@@ -362,6 +369,13 @@ export const translations: Record<Locale, Record<string, string>> = {
     'home.search_placeholder': 'Parça, sanatçı ara...',
     'home.profile': 'Profil',
     'home.logout': 'Çıkış',
+    'home.editors_picks': 'Editörün Seçtikleri',
+    'home.editors_picks_desc': 'Müzik uzmanlarımız tarafından özenle seçildi',
+    'home.top_10': 'Haftanın İlk 10\'u',
+    'home.top_10_desc': 'Şu anda en popüler parçalar',
+    'home.latest_blog': 'Blog\'dan Son Yazılar',
+    'home.latest_blog_desc': 'Müzik haberleri, ipuçları ve sektör görüşleri',
+    'home.view_all_blog': 'Tümünü Gör',
 
     // Browse page
     'browse.title': 'Müzik Gözat',
