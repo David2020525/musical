@@ -31,11 +31,8 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
     <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
         <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
             <!-- Logo -->
-            <a href="/${locale}" class="flex items-center space-x-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <i class="fas fa-music text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MUSICAL</span>
+            <a href="/${locale}" class="flex items-center space-x-2 group">
+                <img src="/static/logo.svg" alt="MUSICAL" class="h-10 transition-transform group-hover:scale-105">
             </a>
             
             ${showSearch ? `

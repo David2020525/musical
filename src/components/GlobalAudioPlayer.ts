@@ -315,6 +315,7 @@ export const GlobalAudioPlayerHTML = `
                 </div>
             </div>
             <div class="player-metadata">
+                <span class="player-track-label" style="font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: rgba(147, 51, 234, 0.8); margin-bottom: 2px; display: block;">NOW PLAYING</span>
                 <h3 class="player-track-title" id="player-title">No track selected</h3>
                 <p class="player-track-artist" id="player-artist">Select a track to play</p>
             </div>

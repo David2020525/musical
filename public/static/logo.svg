@@ -1,0 +1,24 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9333EA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Music Note Icon -->
+  <circle cx="15" cy="20" r="12" fill="url(#logoGradient)" opacity="0.2"/>
+  <path d="M15 8 L15 26 M15 8 L23 6 L23 24 M15 26 C15 27.6569 13.6569 29 12 29 C10.3431 29 9 27.6569 9 26 C9 24.3431 10.3431 23 12 23 C13.6569 23 15 24.3431 15 26 Z M23 24 C23 25.6569 21.6569 27 20 27 C18.3431 27 17 25.6569 17 24 C17 22.3431 18.3431 21 20 21 C21.6569 21 23 22.3431 23 24 Z" 
+        stroke="url(#logoGradient)" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        fill="none"/>
+  
+  <!-- MUSICAL Text -->
+  <text x="36" y="26" font-family="Inter, -apple-system, sans-serif" font-size="18" font-weight="800" fill="url(#logoGradient)">
+    MUSICAL
+  </text>
+</svg>
