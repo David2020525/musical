@@ -101,6 +101,52 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             animation: float 6s ease-in-out infinite;
         }
         
+        /* Enhanced Card Hover Effects */
+        .group {
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .group::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, #9333EA, #EC4899, #3B82F6);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .group:hover::before {
+            opacity: 0.6;
+        }
+        
+        .group:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+        
+        .group::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 
+                0 20px 60px rgba(147, 51, 234, 0.3),
+                0 10px 30px rgba(236, 72, 153, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .group:hover::after {
+            opacity: 1;
+        }
+        
         /* Playing State - Cards */
         [data-track].playing {
             box-shadow: 0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(236, 72, 153, 0.3);
@@ -198,6 +244,60 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             100% { background-position: 1000px; }
         }
         
+        /* Fade In Up Animation for Content */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+        }
+        
+        /* Stagger animation delays for cards */
+        .animate-fade-in-up:nth-child(1) { animation-delay: 0.1s; }
+        .animate-fade-in-up:nth-child(2) { animation-delay: 0.2s; }
+        .animate-fade-in-up:nth-child(3) { animation-delay: 0.3s; }
+        .animate-fade-in-up:nth-child(4) { animation-delay: 0.4s; }
+        .animate-fade-in-up:nth-child(5) { animation-delay: 0.5s; }
+        .animate-fade-in-up:nth-child(6) { animation-delay: 0.6s; }
+        .animate-fade-in-up:nth-child(7) { animation-delay: 0.7s; }
+        .animate-fade-in-up:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* Pulse animation for loading */
+        @keyframes pulse-glow {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 40px rgba(236, 72, 153, 0.5);
+            }
+        }
+        
+        /* Animated Gradient Background */
+        @keyframes gradient {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .animate-gradient {
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
         .shimmer {
             background: linear-gradient(90deg, 
                 transparent 0%, 
@@ -265,6 +365,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     <!-- Hero Section with Gradient Mesh -->
     <div class="pt-32 pb-24 px-6 relative overflow-hidden">
+        <!-- Animated Gradient Background -->
+        <div class="absolute inset-0 -z-10">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20 animate-gradient"></div>
+        </div>
+        
         <!-- Floating Orbs -->
         <div class="absolute top-20 left-[10%] w-72 h-72 bg-purple-500/30 rounded-full blur-3xl float" style="animation-delay: 0s;"></div>
         <div class="absolute top-40 right-[15%] w-96 h-96 bg-pink-500/30 rounded-full blur-3xl float" style="animation-delay: 1s;"></div>

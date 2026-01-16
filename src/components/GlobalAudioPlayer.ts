@@ -15,8 +15,32 @@ export const GlobalAudioPlayerHTML = `
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Animated gradient border on top when playing */
+#global-audio-player::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #9333EA 0%, #EC4899 50%, #3B82F6 100%);
+    background-size: 200% 100%;
+    animation: gradientFlow 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#global-audio-player.visible::before {
+    opacity: 0.6;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
 }
 
 #global-audio-player.visible {
@@ -81,13 +105,31 @@ export const GlobalAudioPlayerHTML = `
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #9333EA 0%, #EC4899 50%, #3B82F6 100%);
+    background: conic-gradient(from 0deg, #9333EA 0%, #EC4899 25%, #3B82F6 50%, #EC4899 75%, #9333EA 100%);
     position: relative;
-    box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        0 0 20px rgba(147, 51, 234, 0.6),
+        0 0 40px rgba(236, 72, 153, 0.3),
+        inset 0 0 15px rgba(0, 0, 0, 0.7),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
 }
 
 .playing-animation .vinyl-disc.spinning {
-    animation: spin 3s linear infinite;
+    animation: spin 3s linear infinite, pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 
+        0 0 20px rgba(147, 51, 234, 0.6),
+        0 0 40px rgba(236, 72, 153, 0.3),
+        inset 0 0 15px rgba(0, 0, 0, 0.7);
+    }
+    100% { box-shadow: 
+        0 0 30px rgba(147, 51, 234, 0.8),
+        0 0 60px rgba(236, 72, 153, 0.5),
+        inset 0 0 15px rgba(0, 0, 0, 0.7);
+    }
 }
 
 .vinyl-disc::before {
@@ -96,7 +138,16 @@ export const GlobalAudioPlayerHTML = `
     inset: 8px;
     border-radius: 50%;
     background: #000;
-    box-shadow: 0 0 8px rgba(147, 51, 234, 0.8);
+    box-shadow: 
+        0 0 8px rgba(147, 51, 234, 0.8),
+        inset 0 0 10px rgba(147, 51, 234, 0.3);
+    /* Vinyl grooves effect */
+    background-image: 
+        repeating-radial-gradient(circle at center, 
+            transparent 0px, 
+            transparent 1px, 
+            rgba(255, 255, 255, 0.03) 1px, 
+            rgba(255, 255, 255, 0.03) 2px);
 }
 
 .vinyl-disc::after {
@@ -105,11 +156,13 @@ export const GlobalAudioPlayerHTML = `
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #9333EA, #EC4899);
-    box-shadow: 0 0 8px rgba(236, 72, 153, 0.8);
+    background: radial-gradient(circle, #EC4899 0%, #9333EA 100%);
+    box-shadow: 
+        0 0 10px rgba(236, 72, 153, 0.8),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 @keyframes spin {
@@ -166,11 +219,28 @@ export const GlobalAudioPlayerHTML = `
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.player-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.4) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .player-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.15);
     transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+}
+
+.player-btn:hover::before {
+    opacity: 1;
 }
 
 .player-btn:active {
@@ -184,8 +254,13 @@ export const GlobalAudioPlayerHTML = `
     box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
 }
 
+.player-btn-play::before {
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, transparent 70%);
+}
+
 .player-btn-play:hover {
-    box-shadow: 0 6px 24px rgba(147, 51, 234, 0.6);
+    box-shadow: 0 6px 24px rgba(147, 51, 234, 0.6), 0 0 40px rgba(236, 72, 153, 0.3);
+    transform: scale(1.15);
 }
 
 .player-progress {
