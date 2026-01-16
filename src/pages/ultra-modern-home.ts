@@ -207,19 +207,19 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 </div>
                 
                 <!-- Right Actions -->
-                <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-4">
                     <!-- Language Switcher -->
                     <a 
                         href="/${otherLocale}" 
-                        class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
+                        class="px-3 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2 text-sm"
                         title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
                     >
-                        <i class="fas fa-globe"></i>
-                        <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
+                        <i class="fas fa-globe text-sm"></i>
+                        <span>${otherLocale.toUpperCase()}</span>
                     </a>
                     
                     <div id="authSection" class="hidden lg:block">
-                        <a href="/${locale}/login" class="px-6 py-2.5 glass rounded-xl hover:bg-white/10">
+                        <a href="/${locale}/login" class="px-4 py-2 glass rounded-xl hover:bg-white/10 text-sm">
                             ${t('nav.login', locale)}
                         </a>
                     </div>
@@ -581,11 +581,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         if (token && user) {
             document.getElementById('authSection').innerHTML = \`
                 <div class="relative group">
-                    <button class="flex items-center space-x-3 px-4 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                        <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                    <button class="flex items-center space-x-2 px-3 py-2 glass-strong rounded-xl hover:bg-white/10 transition-all">
+                        <div class="w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">
                             \${user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span class="hidden md:block">\${user.name}</span>
+                        <span class="hidden md:block text-sm">\${user.name}</span>
                         <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div class="hidden group-hover:block absolute right-0 mt-2 w-48 glass-strong rounded-xl py-2 z-50 shadow-xl border border-white/10">
