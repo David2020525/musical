@@ -184,20 +184,17 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     </span>
                 </a>
                 
-                <!-- Center Search - Artistic Version -->
-                <div class="hidden lg:flex flex-1 max-w-2xl mx-12">
+                <!-- Center Search - Compact Version -->
+                <div class="hidden lg:flex flex-1 max-w-md mx-8">
                     <div class="relative w-full group">
                         <input 
                             type="text" 
                             id="navSearch"
-                            placeholder="Search tracks, artists, albums..."
-                            class="w-full px-6 py-4 pl-14 glass-strong rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all border border-white/10 hover:border-purple-500/30 focus:border-purple-500/50 backdrop-blur-xl"
+                            placeholder="Search tracks, artists..."
+                            class="w-full px-4 py-2.5 pl-11 pr-4 glass-strong rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all border border-white/10 hover:border-purple-500/30 focus:border-purple-500/50 backdrop-blur-xl text-sm"
                         >
-                        <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-purple-400 group-focus-within:text-pink-400 transition-colors"></i>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2">
-                            <kbd class="px-2.5 py-1.5 text-xs glass-strong rounded-lg border border-white/10 text-purple-300 font-mono shadow-lg">⌘K</kbd>
-                        </div>
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 group-focus-within:text-pink-400 transition-colors text-sm"></i>
                     </div>
                 </div>
                 
