@@ -588,16 +588,16 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
                         <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                     </button>
-                    <div class="hidden group-hover:block absolute right-0 mt-2 w-48 glass-strong rounded-xl py-2 z-50 shadow-xl border border-white/10">
-                        <a href="/en/dashboard" class="block px-4 py-3 hover:bg-white/10 transition-all text-white/90 hover:text-white">
-                            <i class="fas fa-chart-line mr-3 text-purple-400"></i>Dashboard
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-36 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
+                        <a href="/en/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>Dashboard
                         </a>
-                        <a href="/en/profile" class="block px-4 py-3 hover:bg-white/10 transition-all text-white/90 hover:text-white">
-                            <i class="fas fa-user mr-3 text-blue-400"></i>Profile
+                        <a href="/en/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                            <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>Profile
                         </a>
-                        <div class="border-t border-white/10 my-2"></div>
-                        <button onclick="logout()" class="block w-full text-left px-4 py-3 hover:bg-white/10 transition-all text-red-400">
-                            <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                        <div class="border-t border-white/10 my-1"></div>
+                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400">
+                            <i class="fas fa-sign-out-alt mr-2 text-xs"></i>Logout
                         </button>
                     </div>
                 </div>
