@@ -26,6 +26,7 @@ export const GlobalAudioPlayerHTML = `
 #global-audio-player.auto-hidden {
     transform: translateY(calc(100% - 8px));
     opacity: 0.3;
+    pointer-events: auto;
 }
 
 #global-audio-player.auto-hidden:hover {
@@ -691,23 +692,31 @@ export const GlobalAudioPlayerHTML = `
     const player = document.getElementById('global-audio-player');
     
     function showPlayer() {
-        if (player.classList.contains('visible')) {
+        if (player) {
             player.classList.remove('auto-hidden');
-            resetAutoHideTimer();
+            if (autoHideTimer) clearTimeout(autoHideTimer);
+            // Restart timer if playing
+            if (state.isPlaying && player.classList.contains('visible')) {
+                autoHideTimer = setTimeout(() => {
+                    hidePlayer();
+                }, 3000);
+            }
         }
     }
     
     function hidePlayer() {
-        if (player.classList.contains('visible') && !isPlayerHovered && state.isPlaying) {
+        if (player && player.classList.contains('visible') && !isPlayerHovered && state.isPlaying) {
             player.classList.add('auto-hidden');
         }
     }
     
     function resetAutoHideTimer() {
         if (autoHideTimer) clearTimeout(autoHideTimer);
-        autoHideTimer = setTimeout(() => {
-            hidePlayer();
-        }, 3000); // Hide after 3 seconds of inactivity
+        if (state.isPlaying && player.classList.contains('visible')) {
+            autoHideTimer = setTimeout(() => {
+                hidePlayer();
+            }, 3000);
+        }
     }
     
     // Show player when cursor moves to bottom of screen
