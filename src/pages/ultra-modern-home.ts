@@ -514,10 +514,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">
                         \${featured.title}
                     </h3>
-                    <p class="text-gray-400 line-clamp-1">\${featured.artist_name || 'Unknown Artist'}</p>
+                    <p class="text-gray-400 line-clamp-1">\${featured.artist || featured.producer_name || 'Unknown Artist'}</p>
                     <div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">
-                        <span><i class="fas fa-play mr-1"></i> \${featured.play_count || 0}</span>
-                        <span><i class="fas fa-heart mr-1"></i> \${featured.like_count || 0}</span>
+                        <span><i class="fas fa-play mr-1"></i> \${featured.plays_count || 0}</span>
+                        <span><i class="fas fa-heart mr-1"></i> \${featured.likes_count || 0}</span>
                     </div>
                 </div>
             </div>
@@ -536,9 +536,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                             <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
                                 \${track.title}
                             </h4>
-                            <p class="text-sm text-gray-400 line-clamp-1">\${track.artist_name || 'Unknown Artist'}</p>
+                            <p class="text-sm text-gray-400 line-clamp-1">\${track.artist || track.producer_name || 'Unknown Artist'}</p>
                             <div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">
-                                <span><i class="fas fa-play mr-1"></i> \${track.play_count || 0}</span>
+                                <span><i class="fas fa-play mr-1"></i> \${track.plays_count || 0}</span>
                             </div>
                         </div>
                     </div>
@@ -566,11 +566,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
                         \${track.title}
                     </h4>
-                    <p class="text-sm text-gray-400 line-clamp-1">\${track.artist_name || 'Unknown Artist'}</p>
+                    <p class="text-sm text-gray-400 line-clamp-1">\${track.artist || track.producer_name || 'Unknown Artist'}</p>
                 </div>
                 <div class="text-right text-gray-500 text-sm space-y-1">
-                    <div><i class="fas fa-play mr-2"></i>\${track.play_count || 0}</div>
-                    <div><i class="fas fa-heart mr-2"></i>\${track.like_count || 0}</div>
+                    <div><i class="fas fa-play mr-2"></i>\${track.plays_count || 0}</div>
+                    <div><i class="fas fa-heart mr-2"></i>\${track.likes_count || 0}</div>
                 </div>
             </div>
         \`).join('');
