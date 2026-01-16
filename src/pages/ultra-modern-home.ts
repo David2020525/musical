@@ -201,11 +201,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 </p>
                 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="/${locale}/browse" class="px-10 py-5 btn-micro bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-2xl font-bold text-lg neon-glow hover:shadow-2xl hover:shadow-purple-500/50 transition-all flex items-center space-x-3 bg-[length:200%_100%] hover:bg-right" style="transition: background-position 0.5s;">
+                    <button onclick="document.getElementById('trendingChart').scrollIntoView({behavior: 'smooth', block: 'center'})" class="px-10 py-5 btn-micro bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-2xl font-bold text-lg neon-glow hover:shadow-2xl hover:shadow-purple-500/50 transition-all flex items-center space-x-3 bg-[length:200%_100%] hover:bg-right cursor-pointer" style="transition: background-position 0.5s;">
                         <i class="fas fa-play"></i>
                         <span>${t('home.start_listening', locale)}</span>
-                    </a>
-                    <a href="/${locale}/browse?view=genres" class="px-10 py-5 btn-micro glass-strong rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center space-x-3">
+                    </button>
+                    <a href="/${locale}/browse" class="px-10 py-5 btn-micro glass-strong rounded-2xl font-bold text-lg hover:bg-white/10 transition-all flex items-center space-x-3">
                         <i class="fas fa-compass"></i>
                         <span>${t('home.explore_genres', locale)}</span>
                     </a>
