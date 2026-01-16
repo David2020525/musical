@@ -426,19 +426,6 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     </div>
                 </div>
                 `).join('')}
-                        </div>
-                        <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
-                            Music Licensing Guide for Beginners
-                        </h3>
-                        <p class="text-gray-400 text-sm mb-4">
-                            Everything you need to know about licensing your music...
-                        </p>
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span><i class="fas fa-user mr-2"></i>Admin</span>
-                            <span><i class="fas fa-eye mr-2"></i>1.5K views</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
