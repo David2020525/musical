@@ -824,8 +824,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         let html = '';
         tracks.forEach((track, index) => {
-            const isTop3 = index < 3;
-            const rankClass = isTop3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600';
+            // Gradient hierarchy for rankings
+            let rankClass;
+            if (index < 3) {
+                // Top 3: Gold gradient
+                rankClass = 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent';
+            } else if (index < 6) {
+                // 4-6: Purple-pink gradient
+                rankClass = 'bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent';
+            } else {
+                // 7-10: Subtle blue-purple gradient
+                rankClass = 'bg-gradient-to-br from-blue-400 to-purple-400 bg-clip-text text-transparent opacity-70';
+            }
             
             const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
             html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
