@@ -7,7 +7,7 @@ export const ultraModernProducerApplicationHTML = (locale: Locale = 'en') => `<!
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${t('producer.pageTitle', locale)} - MusicHub</title>
+    <title>${t('producer.pageTitle', locale)} - MUSICAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,7 +140,7 @@ export const ultraModernProducerApplicationHTML = (locale: Locale = 'en') => `<!
                         <i class="fas fa-music text-white text-xl"></i>
                     </div>
                     <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                        MusicHub
+                        MUSICAL
                     </span>
                 </a>
                 

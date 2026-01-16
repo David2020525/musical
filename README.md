@@ -1,4 +1,4 @@
-# MusicHub - Music Distribution Platform
+# MUSICAL - Music Distribution Platform
 
 ## ✅ Status: FULLY OPERATIONAL
 

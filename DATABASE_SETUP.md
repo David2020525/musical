@@ -1,7 +1,7 @@
 # Database Setup Complete ✅
 
 ## Overview
-MusicHub now has a fully functional **Cloudflare D1** (SQLite) database with comprehensive schema and test data.
+MUSICAL now has a fully functional **Cloudflare D1** (SQLite) database with comprehensive schema and test data.
 
 ## What Was Implemented
 

@@ -40,7 +40,7 @@ export function getProducerApplicationEmailTemplate(options: {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎉 Welcome to MusicHub Producers!</h1>
+                <h1>🎉 Welcome to MUSICAL Producers!</h1>
               </div>
               <div class="content">
                 <p>Hi ${userName},</p>
@@ -59,7 +59,7 @@ export function getProducerApplicationEmailTemplate(options: {
                 <p>We're excited to have you on board!</p>
               </div>
               <div class="footer">
-                <p>© 2026 MusicHub. All rights reserved.</p>
+                <p>© 2026 MUSICAL. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -82,7 +82,7 @@ Next Steps:
 
 We're excited to have you on board!
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
         `.trim(),
       },
       tr: {
@@ -104,7 +104,7 @@ We're excited to have you on board!
           <body>
             <div class="container">
               <div class="header">
-                <h1>🎉 MusicHub Prodüktörlerine Hoş Geldiniz!</h1>
+                <h1>🎉 MUSICAL Prodüktörlerine Hoş Geldiniz!</h1>
               </div>
               <div class="content">
                 <p>Merhaba ${userName},</p>
@@ -123,7 +123,7 @@ We're excited to have you on board!
                 <p>Ekibimize katıldığınız için heyecanlıyız!</p>
               </div>
               <div class="footer">
-                <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+                <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
               </div>
             </div>
           </body>
@@ -146,7 +146,7 @@ Sonraki Adımlar:
 
 Ekibimize katıldığınız için heyecanlıyız!
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
         `.trim(),
       },
     };
@@ -177,7 +177,7 @@ Ekibimize katıldığınız için heyecanlıyız!
               </div>
               <div class="content">
                 <p>Hi ${userName},</p>
-                <p>Thank you for your interest in becoming a MusicHub producer.</p>
+                <p>Thank you for your interest in becoming a MUSICAL producer.</p>
                 <p>After reviewing your application, we're unable to approve it at this time.</p>
                 ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ''}
                 <p>You're welcome to reapply in the future. Please ensure your application includes:</p>
@@ -191,7 +191,7 @@ Ekibimize katıldığınız için heyecanlıyız!
                 </p>
               </div>
               <div class="footer">
-                <p>© 2026 MusicHub. All rights reserved.</p>
+                <p>© 2026 MUSICAL. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -200,7 +200,7 @@ Ekibimize katıldığınız için heyecanlıyız!
         text: `
 Hi ${userName},
 
-Thank you for your interest in becoming a MusicHub producer.
+Thank you for your interest in becoming a MUSICAL producer.
 
 After reviewing your application, we're unable to approve it at this time.
 
@@ -213,7 +213,7 @@ You're welcome to reapply in the future. Please ensure your application includes
 
 Reapply: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/producer-application
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
         `.trim(),
       },
       tr: {
@@ -239,7 +239,7 @@ Reapply: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/producer-
               </div>
               <div class="content">
                 <p>Merhaba ${userName},</p>
-                <p>MusicHub prodüktörü olmak için gösterdiğiniz ilgi için teşekkür ederiz.</p>
+                <p>MUSICAL prodüktörü olmak için gösterdiğiniz ilgi için teşekkür ederiz.</p>
                 <p>Başvurunuzu inceledikten sonra, şu anda onaylayamıyoruz.</p>
                 ${reason ? `<p><strong>Sebep:</strong> ${reason}</p>` : ''}
                 <p>Gelecekte tekrar başvurabilirsiniz. Lütfen başvurunuzun şunları içerdiğinden emin olun:</p>
@@ -253,7 +253,7 @@ Reapply: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/producer-
                 </p>
               </div>
               <div class="footer">
-                <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+                <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
               </div>
             </div>
           </body>
@@ -262,7 +262,7 @@ Reapply: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/producer-
         text: `
 Merhaba ${userName},
 
-MusicHub prodüktörü olmak için gösterdiğiniz ilgi için teşekkür ederiz.
+MUSICAL prodüktörü olmak için gösterdiğiniz ilgi için teşekkür ederiz.
 
 Başvurunuzu inceledikten sonra, şu anda onaylayamıyoruz.
 
@@ -275,7 +275,7 @@ Gelecekte tekrar başvurabilirsiniz. Lütfen başvurunuzun şunları içerdiğin
 
 Tekrar Başvur: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/tr/producer-application
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
         `.trim(),
       },
     };
@@ -356,7 +356,7 @@ export function getTrackSoldEmailTemplate(options: {
               </p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -377,7 +377,7 @@ The earnings have been added to your wallet. You can request a withdrawal at any
 
 View Wallet: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/dashboard/wallet
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim(),
     },
     tr: {
@@ -438,7 +438,7 @@ View Wallet: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/en/dashb
               </p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </body>
@@ -459,7 +459,7 @@ Kazancınız cüzdanınıza eklendi. İstediğiniz zaman para çekme talebi olu�
 
 Cüzdanı Görüntüle: ${process.env.APP_URL || 'https://musichub-4yq.pages.dev'}/tr/dashboard/wallet
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim(),
     },
   };
@@ -521,7 +521,7 @@ export function getPurchaseConfirmationEmailTemplate(options: {
               <p><small><strong>Note:</strong> Download link expires in 1 hour. The track is available in your dashboard anytime.</small></p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -542,7 +542,7 @@ View Receipt: ${receiptUrl}
 
 Note: Download link expires in 1 hour. The track is available in your dashboard anytime.
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim(),
     },
     tr: {
@@ -584,7 +584,7 @@ Note: Download link expires in 1 hour. The track is available in your dashboard 
               <p><small><strong>Not:</strong> İndirme bağlantısı 1 saat içinde sona erer. Parça, istediğiniz zaman panonuzdan erişilebilir.</small></p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </body>
@@ -605,7 +605,7 @@ Fişi Görüntüle: ${receiptUrl}
 
 Not: İndirme bağlantısı 1 saat içinde sona erer. Parça, istediğiniz zaman panonuzdan erişilebilir.
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim(),
     },
   };
@@ -661,7 +661,7 @@ export function getWithdrawalEmailTemplate(options: {
               <p>If you have any questions, please contact our support team.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -681,7 +681,7 @@ The funds will be transferred to your bank account within 1-3 business days.
 
 If you have any questions, please contact our support team.
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim(),
     },
     tr: {
@@ -719,7 +719,7 @@ If you have any questions, please contact our support team.
               <p>Sorularınız varsa, lütfen destek ekibimizle iletişime geçin.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </body>
@@ -739,7 +739,7 @@ Tutar 1-3 iş günü içinde banka hesabınıza aktarılacaktır.
 
 Sorularınız varsa, lütfen destek ekibimizle iletişime geçin.
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim(),
     },
   };
@@ -795,7 +795,7 @@ export function getForumReplyEmailTemplate(options: {
               </p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
               <p><small><a href="#">Unsubscribe from forum notifications</a></small></p>
             </div>
           </div>
@@ -813,7 +813,7 @@ ${replyPreview}${replyPreview.length > 200 ? '...' : ''}
 
 View Reply: ${topicUrl}
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim(),
     },
     tr: {
@@ -850,7 +850,7 @@ View Reply: ${topicUrl}
               </p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
               <p><small><a href="#">Forum bildirimlerinden çık</a></small></p>
             </div>
           </div>
@@ -868,7 +868,7 @@ ${replyPreview}${replyPreview.length > 200 ? '...' : ''}
 
 Yanıtı Görüntüle: ${topicUrl}
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim(),
     },
   };

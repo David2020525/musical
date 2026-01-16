@@ -1,5 +1,5 @@
 /**
- * Database Types for MusicHub
+ * Database Types for MUSICAL
  * Auto-generated from Cloudflare D1 schema
  * 
  * These types match the actual database schema and are used across the application

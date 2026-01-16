@@ -60,7 +60,7 @@ function renderHTML(locale: Locale, page: string) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicHub - ${t('home.title', locale)}</title>
+    <title>MUSICAL - ${t('home.title', locale)}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -71,7 +71,7 @@ function renderHTML(locale: Locale, page: string) {
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <a href="/${locale}" class="flex items-center px-2 text-xl font-bold text-indigo-600">
-                        🎵 MusicHub
+                        🎵 MUSICAL
                     </a>
                     <div class="hidden md:ml-6 md:flex md:space-x-8">
                         <a href="/${locale}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">
@@ -132,7 +132,7 @@ function renderHTML(locale: Locale, page: string) {
     <footer class="bg-white border-t mt-20">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-gray-500 text-sm">
-                © 2024 MusicHub. All rights reserved.
+                © 2024 MUSICAL. All rights reserved.
             </p>
         </div>
     </footer>

@@ -10,7 +10,7 @@ export function ultraModernBlogDetailHTML(locale: Locale = 'en') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Article - MusicHub</title>
+    <title>Blog Article - MUSICAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -68,7 +68,7 @@ export function ultraModernBlogDetailHTML(locale: Locale = 'en') {
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <a href="/${locale}" class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    MusicHub
+                    MUSICAL
                 </a>
                 <div class="flex items-center gap-6">
                     <a href="/${locale}" class="text-white/60 hover:text-white transition-colors">${t('nav.home', locale)}</a>
@@ -255,7 +255,7 @@ export function ultraModernBlogDetailHTML(locale: Locale = 'en') {
                 document.getElementById('article-content').innerHTML = article.content.replace(/\\n/g, '<br>');
 
                 // Update page title
-                document.title = article.title + ' - MusicHub Blog';
+                document.title = article.title + ' - MUSICAL Blog';
 
                 // Load related content
                 loadRecentArticles();

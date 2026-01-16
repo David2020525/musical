@@ -18,7 +18,7 @@ export function SharedFooterHTML(locale: Locale, config: FooterConfig = {}) {
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                             <i class="fas fa-music text-white"></i>
                         </div>
-                        <span class="text-xl font-bold">MusicHub</span>
+                        <span class="text-xl font-bold">MUSICAL</span>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed">
                         ${t('footer.tagline', locale)}

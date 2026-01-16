@@ -35,7 +35,7 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
                     <i class="fas fa-music text-white text-xl"></i>
                 </div>
-                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MusicHub</span>
+                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MUSICAL</span>
             </a>
             
             ${showSearch ? `

@@ -1,5 +1,5 @@
 /**
- * Authentication Middleware for MusicHub
+ * Authentication Middleware for MUSICAL
  * 
  * Provides middleware functions for protecting API routes
  * and enforcing role-based access control.

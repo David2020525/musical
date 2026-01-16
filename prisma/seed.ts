@@ -203,9 +203,9 @@ async function main() {
       data: {
         category_id: generalCategory.id,
         user_id: admin.id,
-        title: 'Welcome to MusicHub Forum!',
+        title: 'Welcome to MUSICAL Forum!',
         slug: 'welcome-to-musichub-forum',
-        content: 'Welcome to the MusicHub community! This is a place to discuss music, share tips, and connect with other producers and music lovers. Feel free to introduce yourself!',
+        content: 'Welcome to the MUSICAL community! This is a place to discuss music, share tips, and connect with other producers and music lovers. Feel free to introduce yourself!',
         is_pinned: true,
       },
     })
@@ -217,16 +217,16 @@ async function main() {
   await prisma.blogPost.create({
     data: {
       author_id: admin.id,
-      title: 'Welcome to MusicHub',
+      title: 'Welcome to MUSICAL',
       slug: 'welcome-to-musichub',
       content: `
-# Welcome to MusicHub
+# Welcome to MUSICAL
 
-We're excited to launch MusicHub, the premier platform for buying and selling music tracks in Turkey!
+We're excited to launch MUSICAL, the premier platform for buying and selling music tracks in Turkey!
 
-## What is MusicHub?
+## What is MUSICAL?
 
-MusicHub is a marketplace where:
+MUSICAL is a marketplace where:
 - **Producers** can upload and sell their music
 - **Buyers** can discover and purchase high-quality tracks
 - **Everyone** can connect in our community forum
@@ -248,7 +248,7 @@ Want to sell your music? Apply to become a verified producer:
 
 Thank you for being part of our community!
       `,
-      excerpt: 'Welcome to MusicHub - the premier platform for buying and selling music tracks in Turkey!',
+      excerpt: 'Welcome to MUSICAL - the premier platform for buying and selling music tracks in Turkey!',
       published: true,
       published_at: new Date(),
     },

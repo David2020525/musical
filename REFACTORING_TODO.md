@@ -1,4 +1,4 @@
-# MusicHub Refactoring Progress
+# MUSICAL Refactoring Progress
 
 ## Goal: Create Consistent, Maintainable Codebase for M2 & M3
 

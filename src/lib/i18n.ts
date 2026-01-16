@@ -48,7 +48,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.updated': 'Updated successfully',
 
     // Home page
-    'home.title': 'Welcome to MusicHub',
+    'home.title': 'Welcome to MUSICAL',
     'home.subtitle': 'Discover, share, and discuss your favorite music',
     'home.hero': 'Discover Your Next Favorite Track',
     'home.hero_desc': 'Stream millions of songs from independent artists worldwide',
@@ -98,7 +98,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'footer.careers': 'Careers',
     'footer.contact': 'Contact',
     'footer.connect': 'Connect',
-    'footer.rights': '© 2026 MusicHub. All rights reserved.',
+    'footer.rights': '© 2026 MUSICAL. All rights reserved.',
     'footer.privacy': 'Privacy',
     'footer.terms': 'Terms',
     'footer.cookies': 'Cookies',
@@ -410,7 +410,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'producer.alreadyProducerText': 'You have been approved as a producer. You can upload tracks and manage your content from your dashboard.',
     'producer.uploadTrack': 'Upload Track',
     'producer.whatIsProducer': 'What is a Producer?',
-    'producer.whatIsProducerText': 'Producers are verified content creators who can upload and monetize their music on MusicHub. Join our community of talented artists!',
+    'producer.whatIsProducerText': 'Producers are verified content creators who can upload and monetize their music on MUSICAL. Join our community of talented artists!',
     'producer.benefits': 'Producer Benefits',
     'producer.benefit1': 'Upload unlimited tracks',
     'producer.benefit2': 'Monetize your music through sales',
@@ -481,7 +481,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'common.updated': 'Başarıyla güncellendi',
 
     // Home page
-    'home.title': 'MusicHub\'a Hoş Geldiniz',
+    'home.title': 'MUSICAL\'a Hoş Geldiniz',
     'home.subtitle': 'Favori müziklerinizi keşfedin, paylaşın ve tartışın',
     'home.hero': 'Bir Sonraki Favori Parçanızı Keşfedin',
     'home.hero_desc': 'Dünya çapında bağımsız sanatçılardan milyonlarca şarkı dinleyin',
@@ -531,7 +531,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'footer.careers': 'Kariyer',
     'footer.contact': 'İletişim',
     'footer.connect': 'Bağlantı',
-    'footer.rights': '© 2026 MusicHub. Tüm hakları saklıdır.',
+    'footer.rights': '© 2026 MUSICAL. Tüm hakları saklıdır.',
     'footer.privacy': 'Gizlilik',
     'footer.terms': 'Şartlar',
     'footer.cookies': 'Çerezler',
@@ -843,7 +843,7 @@ export const translations: Record<Locale, Record<string, string>> = {
     'producer.alreadyProducerText': 'Yapımcı olarak onaylandınız. Kontrol panelinizden parça yükleyebilir ve içeriğinizi yönetebilirsiniz.',
     'producer.uploadTrack': 'Parça Yükle',
     'producer.whatIsProducer': 'Yapımcı Nedir?',
-    'producer.whatIsProducerText': 'Yapımcılar, MusicHub\'da müziklerini yükleyip para kazanabilen doğrulanmış içerik oluşturuculardır. Yetenekli sanatçılar topluluğumuza katılın!',
+    'producer.whatIsProducerText': 'Yapımcılar, MUSICAL\'da müziklerini yükleyip para kazanabilen doğrulanmış içerik oluşturuculardır. Yetenekli sanatçılar topluluğumuza katılın!',
     'producer.benefits': 'Yapımcı Avantajları',
     'producer.benefit1': 'Sınırsız parça yükleme',
     'producer.benefit2': 'Müziğinizden satış yoluyla gelir elde etme',

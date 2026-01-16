@@ -1,4 +1,4 @@
-# 🎵 MusicHub API Documentation
+# 🎵 MUSICAL API Documentation
 
 **Version**: 1.0.0  
 **Base URL**: `https://your-domain.com/api`  

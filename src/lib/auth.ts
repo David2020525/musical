@@ -1,5 +1,5 @@
 /**
- * Authentication Utilities for MusicHub
+ * Authentication Utilities for MUSICAL
  * 
  * Provides password hashing, JWT token generation/validation,
  * and helper functions for user authentication.

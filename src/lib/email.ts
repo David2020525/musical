@@ -48,7 +48,7 @@ export function getEmailService(env: any): EmailService {
             'Authorization': `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            from: `MusicHub <${fromEmail}>`,
+            from: `MUSICAL <${fromEmail}>`,
             to: options.to,
             subject: options.subject,
             html: options.html,
@@ -85,7 +85,7 @@ export function getVerificationEmailTemplate(options: {
   const { userName: name, verificationLink: verificationUrl, locale = 'en' } = options
   const templates = {
     en: {
-      subject: 'Verify your MusicHub email address',
+      subject: 'Verify your MUSICAL email address',
       html: `
         <!DOCTYPE html>
         <html>
@@ -104,7 +104,7 @@ export function getVerificationEmailTemplate(options: {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎵 Welcome to MusicHub!</h1>
+              <h1>🎵 Welcome to MUSICAL!</h1>
             </div>
             <div class="content">
               <p>Hi ${name},</p>
@@ -118,7 +118,7 @@ export function getVerificationEmailTemplate(options: {
               <p>If you didn't create this account, you can safely ignore this email.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -127,7 +127,7 @@ export function getVerificationEmailTemplate(options: {
       text: `
 Hi ${name},
 
-Thanks for signing up for MusicHub!
+Thanks for signing up for MUSICAL!
 
 Please verify your email address by clicking the link below:
 ${verificationUrl}
@@ -136,11 +136,11 @@ This link expires in 24 hours.
 
 If you didn't create this account, you can safely ignore this email.
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim()
     },
     tr: {
-      subject: 'MusicHub e-posta adresinizi doğrulayın',
+      subject: 'MUSICAL e-posta adresinizi doğrulayın',
       html: `
         <!DOCTYPE html>
         <html>
@@ -159,7 +159,7 @@ If you didn't create this account, you can safely ignore this email.
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎵 MusicHub'a Hoş Geldiniz!</h1>
+              <h1>🎵 MUSICAL'a Hoş Geldiniz!</h1>
             </div>
             <div class="content">
               <p>Merhaba ${name},</p>
@@ -173,7 +173,7 @@ If you didn't create this account, you can safely ignore this email.
               <p>Bu hesabı siz oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </body>
@@ -182,7 +182,7 @@ If you didn't create this account, you can safely ignore this email.
       text: `
 Merhaba ${name},
 
-MusicHub'a kaydolduğunuz için teşekkürler!
+MUSICAL'a kaydolduğunuz için teşekkürler!
 
 Lütfen aşağıdaki bağlantıya tıklayarak e-posta adresinizi doğrulayın:
 ${verificationUrl}
@@ -191,7 +191,7 @@ Bu bağlantı 24 saat içinde geçerliliğini yitirecektir.
 
 Bu hesabı siz oluşturmadıysanız, bu e-postayı güvenle yok sayabilirsiniz.
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim()
     }
   }
@@ -206,7 +206,7 @@ export function getPasswordResetEmailTemplate(
   const name = 'User' // Generic name since we don't pass it from auth routes
   const templates = {
     en: {
-      subject: 'Reset your MusicHub password',
+      subject: 'Reset your MUSICAL password',
       html: `
         <!DOCTYPE html>
         <html>
@@ -230,7 +230,7 @@ export function getPasswordResetEmailTemplate(
             </div>
             <div class="content">
               <p>Hi ${name},</p>
-              <p>We received a request to reset your password for your MusicHub account.</p>
+              <p>We received a request to reset your password for your MUSICAL account.</p>
               <p style="text-align: center;">
                 <a href="${resetUrl}" class="button">Reset Password</a>
               </p>
@@ -242,7 +242,7 @@ export function getPasswordResetEmailTemplate(
               <p><strong>If you didn't request this password reset, please ignore this email.</strong> Your password will remain unchanged.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. All rights reserved.</p>
+              <p>© 2026 MUSICAL. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -251,7 +251,7 @@ export function getPasswordResetEmailTemplate(
       text: `
 Hi ${name},
 
-We received a request to reset your password for your MusicHub account.
+We received a request to reset your password for your MUSICAL account.
 
 Click the link below to reset your password:
 ${resetUrl}
@@ -260,11 +260,11 @@ This link expires in 1 hour for security reasons.
 
 If you didn't request this password reset, please ignore this email. Your password will remain unchanged.
 
-© 2026 MusicHub. All rights reserved.
+© 2026 MUSICAL. All rights reserved.
       `.trim()
     },
     tr: {
-      subject: 'MusicHub şifrenizi sıfırlayın',
+      subject: 'MUSICAL şifrenizi sıfırlayın',
       html: `
         <!DOCTYPE html>
         <html>
@@ -288,7 +288,7 @@ If you didn't request this password reset, please ignore this email. Your passwo
             </div>
             <div class="content">
               <p>Merhaba ${name},</p>
-              <p>MusicHub hesabınız için şifre sıfırlama talebi aldık.</p>
+              <p>MUSICAL hesabınız için şifre sıfırlama talebi aldık.</p>
               <p style="text-align: center;">
                 <a href="${resetUrl}" class="button">Şifreyi Sıfırla</a>
               </p>
@@ -300,7 +300,7 @@ If you didn't request this password reset, please ignore this email. Your passwo
               <p><strong>Bu şifre sıfırlama talebini siz yapmadıysanız, lütfen bu e-postayı yok sayın.</strong> Şifreniz değişmeden kalacaktır.</p>
             </div>
             <div class="footer">
-              <p>© 2026 MusicHub. Tüm hakları saklıdır.</p>
+              <p>© 2026 MUSICAL. Tüm hakları saklıdır.</p>
             </div>
           </div>
         </body>
@@ -309,7 +309,7 @@ If you didn't request this password reset, please ignore this email. Your passwo
       text: `
 Merhaba ${name},
 
-MusicHub hesabınız için şifre sıfırlama talebi aldık.
+MUSICAL hesabınız için şifre sıfırlama talebi aldık.
 
 Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:
 ${resetUrl}
@@ -318,7 +318,7 @@ Bu bağlantı güvenlik nedeniyle 1 saat içinde geçerliliğini yitirecektir.
 
 Bu şifre sıfırlama talebini siz yapmadıysanız, lütfen bu e-postayı yok sayın. Şifreniz değişmeden kalacaktır.
 
-© 2026 MusicHub. Tüm hakları saklıdır.
+© 2026 MUSICAL. Tüm hakları saklıdır.
       `.trim()
     }
   }
