@@ -33,6 +33,15 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             0%, 100% { opacity: 1; }
             50% { opacity: .5; }
         }
+        /* Fix grid responsiveness */
+        .grid {
+            display: grid;
+            width: 100%;
+        }
+        .grid > * {
+            min-width: 0;
+            max-width: 100%;
+        }
     </style>
 </head>
 <body class="text-white pb-32">
@@ -125,9 +134,9 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             </div>
             
             <!-- Main Content Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8 w-full auto-rows-auto">
                 <!-- My Tracks -->
-                <div class="lg:col-span-2 space-y-8 min-w-0">
+                <div class="lg:col-span-2 space-y-8 min-w-0 w-full max-w-full">
                     <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-2xl font-bold">${_('dashboard.my_tracks')}</h2>
@@ -167,7 +176,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 </div>
                 
                 <!-- Sidebar -->
-                <div class="space-y-8 min-w-0">
+                <div class="space-y-8 min-w-0 w-full max-w-full">
                     <!-- Quick Actions -->
                     <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                         <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
@@ -208,10 +217,10 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
     </div>
     
     <!-- Listener Section (shown only for non-producers) -->
-    <div id="listenerSection" class="hidden">
-        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
+    <div id="listenerSection" class="hidden w-full">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8 w-full auto-rows-auto">
             <!-- My Purchases -->
-            <div class="lg:col-span-2 min-w-0">
+            <div class="lg:col-span-2 min-w-0 w-full max-w-full">
                 <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.my_purchases')}</h2>
                     
@@ -245,7 +254,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 </div>
                 
                 <!-- Recently Played -->
-                <div class="glass-strong rounded-3xl p-8 mt-8">
+                <div class="glass-strong rounded-3xl p-8 mt-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.recently_played')}</h2>
                     
                     <!-- Recently Played Loading -->
@@ -276,7 +285,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             </div>
             
             <!-- Sidebar -->
-            <div class="space-y-8 min-w-0">
+            <div class="space-y-8 min-w-0 w-full max-w-full">
                 <!-- Quick Actions -->
                 <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
