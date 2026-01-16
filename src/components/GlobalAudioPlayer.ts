@@ -83,8 +83,11 @@ export const GlobalAudioPlayerHTML = `
     border-radius: 50%;
     background: linear-gradient(135deg, #9333EA 0%, #EC4899 50%, #3B82F6 100%);
     position: relative;
-    animation: spin 3s linear infinite;
     box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.playing-animation .vinyl-disc.spinning {
+    animation: spin 3s linear infinite;
 }
 
 .vinyl-disc::before {
@@ -476,12 +479,17 @@ export const GlobalAudioPlayerHTML = `
         
         // Play/Pause button
         const playIcon = btnPlay.querySelector('i');
+        const vinylDisc = playingAnimation.querySelector('.vinyl-disc');
+        
         if (state.isPlaying) {
             playIcon.className = 'fas fa-pause';
             playingAnimation.style.display = 'flex';
+            if (vinylDisc) vinylDisc.classList.add('spinning');
         } else {
             playIcon.className = 'fas fa-play';
-            playingAnimation.style.display = 'none';
+            // Always show vinyl disc, but don't spin when paused
+            playingAnimation.style.display = state.currentTrack ? 'flex' : 'none';
+            if (vinylDisc) vinylDisc.classList.remove('spinning');
         }
         
         // Shuffle button
