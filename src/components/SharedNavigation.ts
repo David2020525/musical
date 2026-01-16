@@ -4,13 +4,15 @@ export interface NavConfig {
     currentPage?: string;
     showSearch?: boolean;
     showAuth?: boolean;
+    showLogout?: boolean;  // For authenticated pages like dashboard
 }
 
 export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
     const {
         currentPage = 'home',
         showSearch = true,
-        showAuth = true
+        showAuth = true,
+        showLogout = false
     } = config;
     
     const otherLocale = locale === 'en' ? 'tr' : 'en';
@@ -75,6 +77,13 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
                         ${t('nav.login', locale)}
                     </a>
                 </div>
+                ` : ''}
+                
+                ${showLogout ? `
+                <!-- Logout Button (for authenticated pages) -->
+                <button onclick="logout()" class="px-6 py-2.5 glass-strong rounded-xl hover:bg-white/10 transition-all text-sm">
+                    ${t('nav.logout', locale)}
+                </button>
                 ` : ''}
             </div>
             
