@@ -500,86 +500,107 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     function displayDemoTracks() {
         // Demo tracks to show when database is empty
+        // These have demo audio URLs that show "Demo Track" when clicked
         const demoTracks = [
             {
                 id: 'demo-1',
-                title: 'Electronic Dreams',
-                artist: 'Demo Artist',
-                producer_name: 'Demo Artist',
+                title: locale === 'tr' ? 'Elektronik Rüyalar' : 'Electronic Dreams',
+                artist: locale === 'tr' ? 'Demo Sanatçı' : 'Demo Artist',
+                producer_name: locale === 'tr' ? 'Demo Sanatçı' : 'Demo Artist',
                 plays_count: 12543,
-                likes_count: 892
+                likes_count: 892,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-2',
-                title: 'Midnight Vibes',
-                artist: 'Sample Producer',
-                producer_name: 'Sample Producer',
+                title: locale === 'tr' ? 'Gece Vibes' : 'Midnight Vibes',
+                artist: locale === 'tr' ? 'Örnek Prodüktör' : 'Sample Producer',
+                producer_name: locale === 'tr' ? 'Örnek Prodüktör' : 'Sample Producer',
                 plays_count: 8921,
-                likes_count: 654
+                likes_count: 654,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-3',
-                title: 'Urban Rhythm',
-                artist: 'Beat Maker',
-                producer_name: 'Beat Maker',
+                title: locale === 'tr' ? 'Şehir Ritmi' : 'Urban Rhythm',
+                artist: locale === 'tr' ? 'Beat Yapımcısı' : 'Beat Maker',
+                producer_name: locale === 'tr' ? 'Beat Yapımcısı' : 'Beat Maker',
                 plays_count: 15234,
-                likes_count: 1123
+                likes_count: 1123,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-4',
-                title: 'Chill Waves',
-                artist: 'Ambient Sounds',
-                producer_name: 'Ambient Sounds',
+                title: locale === 'tr' ? 'Sakin Dalgalar' : 'Chill Waves',
+                artist: locale === 'tr' ? 'Ortam Sesleri' : 'Ambient Sounds',
+                producer_name: locale === 'tr' ? 'Ortam Sesleri' : 'Ambient Sounds',
                 plays_count: 6543,
-                likes_count: 432
+                likes_count: 432,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-5',
-                title: 'Bass Drop',
-                artist: 'EDM Producer',
-                producer_name: 'EDM Producer',
+                title: locale === 'tr' ? 'Bas Düşüşü' : 'Bass Drop',
+                artist: locale === 'tr' ? 'EDM Prodüktör' : 'EDM Producer',
+                producer_name: locale === 'tr' ? 'EDM Prodüktör' : 'EDM Producer',
                 plays_count: 21098,
-                likes_count: 1876
+                likes_count: 1876,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-6',
-                title: 'Acoustic Journey',
-                artist: 'Indie Artist',
-                producer_name: 'Indie Artist',
+                title: locale === 'tr' ? 'Akustik Yolculuk' : 'Acoustic Journey',
+                artist: locale === 'tr' ? 'Indie Sanatçı' : 'Indie Artist',
+                producer_name: locale === 'tr' ? 'Indie Sanatçı' : 'Indie Artist',
                 plays_count: 4321,
-                likes_count: 298
+                likes_count: 298,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-7',
-                title: 'Synth Paradise',
+                title: locale === 'tr' ? 'Synth Cenneti' : 'Synth Paradise',
                 artist: 'Retrowave',
                 producer_name: 'Retrowave',
                 plays_count: 9876,
-                likes_count: 743
+                likes_count: 743,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-8',
-                title: 'Lo-Fi Study',
-                artist: 'Chill Beats',
-                producer_name: 'Chill Beats',
+                title: locale === 'tr' ? 'Lo-Fi Çalışma' : 'Lo-Fi Study',
+                artist: locale === 'tr' ? 'Sakin Beats' : 'Chill Beats',
+                producer_name: locale === 'tr' ? 'Sakin Beats' : 'Chill Beats',
                 plays_count: 34567,
-                likes_count: 2543
+                likes_count: 2543,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-9',
-                title: 'Jazz Fusion',
-                artist: 'Smooth Jazz',
-                producer_name: 'Smooth Jazz',
+                title: locale === 'tr' ? 'Caz Füzyon' : 'Jazz Fusion',
+                artist: locale === 'tr' ? 'Yumuşak Caz' : 'Smooth Jazz',
+                producer_name: locale === 'tr' ? 'Yumuşak Caz' : 'Smooth Jazz',
                 plays_count: 7654,
-                likes_count: 567
+                likes_count: 567,
+                audio_url: '#demo',
+                is_demo: true
             },
             {
                 id: 'demo-10',
-                title: 'Hip Hop Beat',
-                artist: 'Street Producer',
-                producer_name: 'Street Producer',
+                title: locale === 'tr' ? 'Hip Hop Ritmi' : 'Hip Hop Beat',
+                artist: locale === 'tr' ? 'Sokak Prodüktörü' : 'Street Producer',
+                producer_name: locale === 'tr' ? 'Sokak Prodüktörü' : 'Street Producer',
                 plays_count: 18765,
-                likes_count: 1432
+                likes_count: 1432,
+                audio_url: '#demo',
+                is_demo: true
             }
         ];
         
@@ -607,6 +628,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
         html += '<div class="absolute inset-0 bg-black/40"></div>';
         html += '<i class="fas fa-music text-6xl text-white/30 relative z-10"></i>';
+        
+        // Add DEMO badge if this is a demo track
+        if (featured.is_demo) {
+            const demoBadge = locale === 'tr' ? 'DEMO' : 'DEMO';
+            html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + demoBadge + '</div>';
+        }
+        
         html += '<div class="absolute bottom-4 right-4 z-20">';
         html += window.generatePlayButton ? window.generatePlayButton(featured, 'lg') : '';
         html += '</div></div>';
@@ -624,6 +652,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4">';
             html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative">';
             html += '<i class="fas fa-music text-3xl text-white/30"></i>';
+            
+            // Add DEMO badge if this is a demo track
+            if (track.is_demo) {
+                html += '<div class="absolute top-1 left-1 px-2 py-0.5 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
+            }
+            
             html += '<div class="absolute inset-0 flex items-center justify-center">';
             html += window.generatePlayButton ? window.generatePlayButton(track, 'sm') : '';
             html += '</div></div>';
