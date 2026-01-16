@@ -778,7 +778,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 excerpt: locale === 'tr' ? 'Müziğinizi lisanslamak hakkında bilmeniz gereken her şey...' : 'Everything you need to know about licensing your music...',
                 content: locale === 'tr' 
                     ? 'Müzik lisanslama, müzisyenler için karmaşık ama önemli bir konudur. Bu rehberde, telif hakları, lisans türleri ve müziğinizi nasıl koruyacağınızı öğreneceksiniz...'
-                    : 'Music licensing is a complex but crucial topic for musicians. In this guide, you\'ll learn about copyrights, licensing types, and how to protect your music...',
+                    : 'Music licensing is a complex but crucial topic for musicians. In this guide, you will learn about copyrights, licensing types, and how to protect your music...',
                 author: 'Admin',
                 views: '1.5K',
                 date: '2024-01-15',
@@ -791,7 +791,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 excerpt: locale === 'tr' ? 'Profesyonel beatler oluşturmak için en iyi uygulamalar...' : 'Best practices for crafting professional beats...',
                 content: locale === 'tr'
                     ? 'Kaliteli beat üretimi, teknik bilgi ve yaratıcılığın birleşimidir. Bu makalede, profesyonel prodüktörlerden ipuçları ve püf noktaları bulacaksınız...'
-                    : 'Quality beat production is a combination of technical knowledge and creativity. In this article, you\'ll find tips and tricks from professional producers...',
+                    : 'Quality beat production is a combination of technical knowledge and creativity. In this article, you will find tips and tricks from professional producers...',
                 author: 'Producer Team',
                 views: '2.3K',
                 date: '2024-01-12',
