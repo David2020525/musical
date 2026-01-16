@@ -488,44 +488,112 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 // Display Trending Chart (first 10 tracks)
                 displayTrendingChart(tracks.slice(0, 10));
             } else {
-                // No tracks available - show placeholder message
-                console.log('No tracks available yet');
-                displayNoTracksMessage();
+                // No tracks available - show demo tracks
+                console.log('No tracks from API, displaying demo content');
+                displayDemoTracks();
             }
         } catch (error) {
             console.error('Error loading homepage data:', error);
-            displayNoTracksMessage();
+            displayDemoTracks();
         }
     }
     
-    function displayNoTracksMessage() {
+    function displayDemoTracks() {
+        // Demo tracks to show when database is empty
+        const demoTracks = [
+            {
+                id: 'demo-1',
+                title: 'Electronic Dreams',
+                artist: 'Demo Artist',
+                producer_name: 'Demo Artist',
+                plays_count: 12543,
+                likes_count: 892
+            },
+            {
+                id: 'demo-2',
+                title: 'Midnight Vibes',
+                artist: 'Sample Producer',
+                producer_name: 'Sample Producer',
+                plays_count: 8921,
+                likes_count: 654
+            },
+            {
+                id: 'demo-3',
+                title: 'Urban Rhythm',
+                artist: 'Beat Maker',
+                producer_name: 'Beat Maker',
+                plays_count: 15234,
+                likes_count: 1123
+            },
+            {
+                id: 'demo-4',
+                title: 'Chill Waves',
+                artist: 'Ambient Sounds',
+                producer_name: 'Ambient Sounds',
+                plays_count: 6543,
+                likes_count: 432
+            },
+            {
+                id: 'demo-5',
+                title: 'Bass Drop',
+                artist: 'EDM Producer',
+                producer_name: 'EDM Producer',
+                plays_count: 21098,
+                likes_count: 1876
+            },
+            {
+                id: 'demo-6',
+                title: 'Acoustic Journey',
+                artist: 'Indie Artist',
+                producer_name: 'Indie Artist',
+                plays_count: 4321,
+                likes_count: 298
+            },
+            {
+                id: 'demo-7',
+                title: 'Synth Paradise',
+                artist: 'Retrowave',
+                producer_name: 'Retrowave',
+                plays_count: 9876,
+                likes_count: 743
+            },
+            {
+                id: 'demo-8',
+                title: 'Lo-Fi Study',
+                artist: 'Chill Beats',
+                producer_name: 'Chill Beats',
+                plays_count: 34567,
+                likes_count: 2543
+            },
+            {
+                id: 'demo-9',
+                title: 'Jazz Fusion',
+                artist: 'Smooth Jazz',
+                producer_name: 'Smooth Jazz',
+                plays_count: 7654,
+                likes_count: 567
+            },
+            {
+                id: 'demo-10',
+                title: 'Hip Hop Beat',
+                artist: 'Street Producer',
+                producer_name: 'Street Producer',
+                plays_count: 18765,
+                likes_count: 1432
+            }
+        ];
+        
         // Update track count
         const trackCountEl = document.getElementById('trackCount');
         if (trackCountEl) {
-            trackCountEl.innerHTML = '0';
+            trackCountEl.innerHTML = demoTracks.length + '+';
         }
         
-        // Display message in Editor's Picks
-        const editorsContainer = document.getElementById('editorsPicks');
-        if (editorsContainer) {
-            editorsContainer.innerHTML = 
-                '<div class="col-span-full glass-strong rounded-3xl p-12 text-center">' +
-                '<i class="fas fa-music text-6xl text-gray-600 mb-4"></i>' +
-                '<h3 class="text-2xl font-bold mb-2 text-gray-400">No Tracks Yet</h3>' +
-                '<p class="text-gray-500">Check back soon for amazing music!</p>' +
-                '</div>';
-        }
+        // Display Editor's Picks (first 3 demo tracks)
+        displayEditorsPicks(demoTracks.slice(0, 3));
         
-        // Display message in Trending Chart
-        const trendingContainer = document.getElementById('trendingChart');
-        if (trendingContainer) {
-            trendingContainer.innerHTML = 
-                '<div class="glass rounded-2xl p-12 text-center">' +
-                '<i class="fas fa-chart-line text-6xl text-gray-600 mb-4"></i>' +
-                '<h3 class="text-xl font-bold mb-2 text-gray-400">No Trending Tracks</h3>' +
-                '<p class="text-gray-500">Be the first to upload!</p>' +
-                '</div>';
-        }
+        // Display Trending Chart (all 10 demo tracks)
+        displayTrendingChart(demoTracks);
     }
     
     function displayEditorsPicks(tracks) {
