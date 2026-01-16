@@ -464,6 +464,138 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     <script>
     // Play Button Functions
     ${PlayButtonScript}
+    
+    // Fetch and display tracks data
+    const locale = '${locale}';
+    
+    async function loadHomepageData() {
+        try {
+            // Fetch tracks
+            const response = await fetch('/api/tracks?limit=20');
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.length > 0) {
+                const tracks = data.data;
+                
+                // Update track count
+                const trackCountEl = document.getElementById('trackCount');
+                if (trackCountEl) {
+                    trackCountEl.innerHTML = tracks.length + '+';
+                }
+                
+                // Display Editor's Picks (first 3 tracks)
+                displayEditorsPicks(tracks.slice(0, 3));
+                
+                // Display Trending Chart (first 10 tracks)
+                displayTrendingChart(tracks.slice(0, 10));
+            }
+        } catch (error) {
+            console.error('Error loading homepage data:', error);
+        }
+    }
+    
+    function displayEditorsPicks(tracks) {
+        const container = document.getElementById('editorsPicks');
+        if (!container || tracks.length === 0) return;
+        
+        const [featured, ...rest] = tracks;
+        
+        container.innerHTML = \`
+            <!-- Featured Track (Large) -->
+            <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
+                <div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <i class="fas fa-music text-6xl text-white/30 relative z-10"></i>
+                    <div class="absolute bottom-4 right-4 z-20">
+                        \${window.generatePlayButton ? window.generatePlayButton(featured, 'lg') : ''}
+                    </div>
+                </div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">
+                        \${featured.title}
+                    </h3>
+                    <p class="text-gray-400 line-clamp-1">\${featured.artist_name || 'Unknown Artist'}</p>
+                    <div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">
+                        <span><i class="fas fa-play mr-1"></i> \${featured.play_count || 0}</span>
+                        <span><i class="fas fa-heart mr-1"></i> \${featured.like_count || 0}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other Picks (Small Cards) -->
+            <div class="grid grid-rows-2 gap-6">
+                \${rest.map(track => \`
+                    <div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4">
+                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative">
+                            <i class="fas fa-music text-3xl text-white/30"></i>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                \${window.generatePlayButton ? window.generatePlayButton(track, 'sm') : ''}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
+                                \${track.title}
+                            </h4>
+                            <p class="text-sm text-gray-400 line-clamp-1">\${track.artist_name || 'Unknown Artist'}</p>
+                            <div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">
+                                <span><i class="fas fa-play mr-1"></i> \${track.play_count || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+                \`).join('')}
+            </div>
+        \`;
+    }
+    
+    function displayTrendingChart(tracks) {
+        const container = document.getElementById('trendingChart');
+        if (!container || tracks.length === 0) return;
+        
+        container.innerHTML = tracks.map((track, index) => \`
+            <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer">
+                <div class="text-3xl font-black \${index < 3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600'} w-12 text-center">
+                    \${index + 1}
+                </div>
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative">
+                    <i class="fas fa-music text-2xl text-white/30"></i>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        \${window.generatePlayButton ? window.generatePlayButton(track, 'sm') : ''}
+                    </div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
+                        \${track.title}
+                    </h4>
+                    <p class="text-sm text-gray-400 line-clamp-1">\${track.artist_name || 'Unknown Artist'}</p>
+                </div>
+                <div class="text-right text-gray-500 text-sm space-y-1">
+                    <div><i class="fas fa-play mr-2"></i>\${track.play_count || 0}</div>
+                    <div><i class="fas fa-heart mr-2"></i>\${track.like_count || 0}</div>
+                </div>
+            </div>
+        \`).join('');
+    }
+    
+    // Scroll reveal animation
+    function revealOnScroll() {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            if (elementTop < windowHeight - 100) {
+                element.classList.add('active');
+            }
+        });
+    }
+    
+    // Load data when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+        loadHomepageData();
+        revealOnScroll();
+    });
+    
+    // Scroll reveal
+    window.addEventListener('scroll', revealOnScroll);
     </script>
 </body>
 </html>`;
