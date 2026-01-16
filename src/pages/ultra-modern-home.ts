@@ -766,8 +766,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const [featured, ...rest] = tracks;
         
         // Build featured track HTML with card-level click (no play button overlay)
-        const trackJson = JSON.stringify(featured).replace(/'/g, '&apos;');
-        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
+        const trackJson = JSON.stringify(featured).replace(/"/g, '&quot;');
+        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
         html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
         html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
         
@@ -792,8 +792,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // Build other tracks HTML with card-level click
         html += '<div class="grid grid-rows-2 gap-6">';
         rest.forEach(track => {
-            const trackJson = JSON.stringify(track).replace(/'/g, '&apos;');
-            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
+            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
             
             // Subtle hover effect on background, no play button
@@ -827,8 +827,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             const isTop3 = index < 3;
             const rankClass = isTop3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600';
             
-            const trackJson = JSON.stringify(track).replace(/'/g, '&apos;');
-            html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
+            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+            html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center flex-shrink-0">' + (index + 1) + '</div>';
             html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative overflow-hidden">';
             
