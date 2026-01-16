@@ -689,8 +689,6 @@ export const GlobalAudioPlayerHTML = `
     let autoHideTimer = null;
     let isPlayerHovered = false;
     
-    const player = document.getElementById('global-audio-player');
-    
     function showPlayer() {
         if (player) {
             player.classList.remove('auto-hidden');
