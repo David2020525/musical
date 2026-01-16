@@ -36,7 +36,7 @@ export async function requireAuth(c: Context<{ Bindings: Bindings }>, next: Next
     }, 401)
   }
 
-  const decoded = verifyToken(token)
+  const decoded = verifyToken(token, c.env)
 
   if (!decoded) {
     return c.json({
@@ -193,7 +193,7 @@ export async function optionalAuth(c: Context<{ Bindings: Bindings }>, next: Nex
   const token = extractTokenFromHeader(authHeader)
 
   if (token) {
-    const decoded = verifyToken(token)
+    const decoded = verifyToken(token, c.env)
 
     if (decoded) {
       // Get user data

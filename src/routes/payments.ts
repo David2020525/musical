@@ -24,8 +24,8 @@ payments.post('/checkout', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -50,7 +50,7 @@ payments.post('/checkout', async (c) => {
     const existingPurchase = await c.env.DB.prepare(
       'SELECT id FROM purchases WHERE user_id = ? AND track_id = ?'
     )
-      .bind(user.id, trackId)
+      .bind(decoded.userId, trackId)
       .first();
 
     if (existingPurchase) {
@@ -64,7 +64,7 @@ payments.post('/checkout', async (c) => {
     const { platform, artist } = iyzico.calculateCommissions(price);
 
     // Create payment request
-    const conversationId = `${user.id}-${trackId}-${Date.now()}`;
+    const conversationId = `${decoded.userId}-${trackId}-${Date.now()}`;
     const basketId = `basket-${conversationId}`;
 
     const callbackUrl = `${c.env.APP_URL || 'http://localhost:3000'}/api/payments/callback`;
@@ -80,10 +80,10 @@ payments.post('/checkout', async (c) => {
       callbackUrl,
       enabledInstallments: [1],
       buyer: {
-        id: user.id.toString(),
-        name: user.name?.split(' ')[0] || 'User',
-        surname: user.name?.split(' ').slice(1).join(' ') || 'User',
-        email: user.email,
+        id: decoded.userId.toString(),
+        name: decoded.username?.split(' ')[0] || 'User',
+        surname: decoded.username?.split(' ').slice(1).join(' ') || 'User',
+        email: decoded.email,
         identityNumber: '11111111111', // Test identity for sandbox
         registrationAddress: 'Address',
         city: 'Istanbul',
@@ -91,7 +91,7 @@ payments.post('/checkout', async (c) => {
         ip: c.req.header('CF-Connecting-IP') || '127.0.0.1',
       },
       billingAddress: {
-        contactName: user.name || 'User',
+        contactName: decoded.username || 'User',
         city: 'Istanbul',
         country: 'Turkey',
         address: 'Address',
@@ -118,7 +118,7 @@ payments.post('/checkout', async (c) => {
           status, payment_provider, payment_id, conversation_id, created_at
         ) VALUES (?, ?, ?, ?, ?, 'pending', 'iyzico', ?, ?, datetime('now'))`
       )
-        .bind(user.id, trackId, price, platform, artist, response.token, conversationId)
+        .bind(decoded.userId, trackId, price, platform, artist, response.token, conversationId)
         .run();
 
       return c.json({
@@ -314,8 +314,8 @@ payments.get('/purchase/:id', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -327,7 +327,7 @@ payments.get('/purchase/:id', async (c) => {
        JOIN tracks t ON p.track_id = t.id
        WHERE p.id = ? AND p.user_id = ?`
     )
-      .bind(purchaseId, user.id)
+      .bind(purchaseId, decoded.userId)
       .first();
 
     if (!purchase) {
@@ -352,8 +352,8 @@ payments.get('/download/:purchaseId', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -366,7 +366,7 @@ payments.get('/download/:purchaseId', async (c) => {
        JOIN tracks t ON p.track_id = t.id
        WHERE p.id = ? AND p.user_id = ? AND p.status = 'completed'`
     )
-      .bind(purchaseId, user.id)
+      .bind(purchaseId, decoded.userId)
       .first();
 
     if (!purchase) {

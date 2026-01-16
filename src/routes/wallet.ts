@@ -21,8 +21,8 @@ wallet.get('/', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -30,7 +30,7 @@ wallet.get('/', async (c) => {
     let walletData = await c.env.DB.prepare(
       'SELECT * FROM wallets WHERE user_id = ?'
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .first();
 
     if (!walletData) {
@@ -39,13 +39,13 @@ wallet.get('/', async (c) => {
         `INSERT INTO wallets (user_id, balance, total_earned, total_withdrawn, currency, updated_at)
          VALUES (?, 0, 0, 0, 'TRY', datetime('now'))`
       )
-        .bind(user.id)
+        .bind(decoded.userId)
         .run();
 
       walletData = await c.env.DB.prepare(
         'SELECT * FROM wallets WHERE user_id = ?'
       )
-        .bind(user.id)
+        .bind(decoded.userId)
         .first();
     }
 
@@ -53,7 +53,7 @@ wallet.get('/', async (c) => {
     const pendingWithdrawalsResult = await c.env.DB.prepare(
       'SELECT COALESCE(SUM(amount), 0) as total FROM withdrawal_requests WHERE user_id = ? AND status = ?'
     )
-      .bind(user.id, 'pending')
+      .bind(decoded.userId, 'pending')
       .first();
 
     const pendingAmount = parseFloat(pendingWithdrawalsResult?.total || '0');
@@ -87,8 +87,8 @@ wallet.get('/transactions', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -99,7 +99,7 @@ wallet.get('/transactions', async (c) => {
     const walletData = await c.env.DB.prepare(
       'SELECT id FROM wallets WHERE user_id = ?'
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .first();
 
     if (!walletData) {
@@ -110,9 +110,9 @@ wallet.get('/transactions', async (c) => {
     const transactions = await c.env.DB.prepare(
       `SELECT 
         p.id,
-        p.amount,
-        p.artist_payout as net_amount,
-        p.platform_commission as commission,
+        p.price as amount,
+        (p.price * 0.85) as net_amount,
+        (p.price * 0.15) as commission,
         p.created_at,
         t.title as track_title,
         'sale' as type,
@@ -120,19 +120,19 @@ wallet.get('/transactions', async (c) => {
        FROM purchases p
        JOIN tracks t ON p.track_id = t.id
        JOIN users u ON p.user_id = u.id
-       WHERE t.user_id = ? AND p.status = 'completed'
+       WHERE t.user_id = ? AND p.payment_status = 'completed'
        ORDER BY p.created_at DESC
        LIMIT ? OFFSET ?`
     )
-      .bind(user.id, limit, offset)
+      .bind(decoded.userId, limit, offset)
       .all();
 
     const total = await c.env.DB.prepare(
       `SELECT COUNT(*) as count FROM purchases p
        JOIN tracks t ON p.track_id = t.id
-       WHERE t.user_id = ? AND p.status = 'completed'`
+       WHERE t.user_id = ? AND p.payment_status = 'completed'`
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .first();
 
     return c.json({
@@ -167,13 +167,13 @@ wallet.post('/withdraw', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
     // Check if user is a producer
-    if (user.role !== 'producer' && user.role !== 'admin') {
+    if (decoded.role !== 'producer' && decoded.role !== 'admin') {
       return c.json({ success: false, error: 'Only producers can request withdrawals' }, 403);
     }
 
@@ -194,7 +194,7 @@ wallet.post('/withdraw', async (c) => {
     const walletData = await c.env.DB.prepare(
       'SELECT * FROM wallets WHERE user_id = ?'
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .first();
 
     if (!walletData) {
@@ -233,7 +233,7 @@ wallet.post('/withdraw', async (c) => {
         user_id, amount, bank_name, iban, account_holder, note, status, created_at
       ) VALUES (?, ?, ?, ?, ?, ?, 'pending', datetime('now'))`
     )
-      .bind(user.id, amount, bankName, iban, accountHolder, note || null)
+      .bind(decoded.userId, amount, bankName, iban, accountHolder, note || null)
       .run();
 
     return c.json({
@@ -258,8 +258,8 @@ wallet.get('/withdrawals', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -268,7 +268,7 @@ wallet.get('/withdrawals', async (c) => {
        WHERE user_id = ?
        ORDER BY created_at DESC`
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .all();
 
     return c.json({
@@ -292,8 +292,8 @@ wallet.get('/earnings-chart', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const user = await verifyToken(authHeader.replace('Bearer ', ''), c.env);
-    if (!user) {
+    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401);
     }
 
@@ -311,7 +311,7 @@ wallet.get('/earnings-chart', async (c) => {
        GROUP BY strftime('%Y-%m', p.created_at)
        ORDER BY month DESC`
     )
-      .bind(user.id)
+      .bind(decoded.userId)
       .all();
 
     return c.json({

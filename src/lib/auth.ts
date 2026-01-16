@@ -13,9 +13,11 @@ import type { User } from '../types/database';
 // CONFIGURATION
 // ============================================================================
 
-const JWT_SECRET = process.env.JWT_SECRET || 'musichub-dev-secret-change-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const JWT_EXPIRES_IN = '7d';
 const BCRYPT_SALT_ROUNDS = 10;
+
+// Default JWT secret for development (override with env.JWT_SECRET in production)
+const DEFAULT_JWT_SECRET = 'musichub-dev-secret-change-in-production-min-32-chars';
 
 // ============================================================================
 // PASSWORD HASHING
@@ -60,9 +62,10 @@ export interface JWTPayload {
 /**
  * Generate a JWT token for a user
  * @param user - User object from database
+ * @param env - Environment bindings (optional, uses default secret if not provided)
  * @returns JWT token string
  */
-export function generateToken(user: User): string {
+export function generateToken(user: User, env?: any): string {
   const payload: JWTPayload = {
     userId: user.id,
     email: user.email,
@@ -71,7 +74,9 @@ export function generateToken(user: User): string {
     isProducer: user.is_producer === 1,
   };
 
-  return jwt.sign(payload, JWT_SECRET, {
+  const secret = env?.JWT_SECRET || DEFAULT_JWT_SECRET;
+  
+  return jwt.sign(payload, secret, {
     expiresIn: JWT_EXPIRES_IN,
   });
 }
@@ -79,11 +84,13 @@ export function generateToken(user: User): string {
 /**
  * Verify and decode a JWT token
  * @param token - JWT token string
+ * @param env - Environment bindings (optional, uses default secret if not provided)
  * @returns Decoded payload or null if invalid
  */
-export function verifyToken(token: string): JWTPayload | null {
+export function verifyToken(token: string, env?: any): JWTPayload | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    const secret = env?.JWT_SECRET || DEFAULT_JWT_SECRET;
+    const decoded = jwt.verify(token, secret) as JWTPayload;
     return decoded;
   } catch (error) {
     return null;

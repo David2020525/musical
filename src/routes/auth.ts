@@ -99,7 +99,7 @@ auth.post('/register', async (c) => {
     `).bind(user.id, verificationToken, tokenExpiration).run()
 
     // Generate JWT token
-    const token = generateToken(user)
+    const token = generateToken(user, c.env)
 
     // Return sanitized user (without password)
     const userWithoutPassword = sanitizeUser(user)
@@ -166,7 +166,7 @@ auth.post('/login', async (c) => {
     // Frontend can check email_verified and show a banner
 
     // Generate JWT token
-    const token = generateToken(user)
+    const token = generateToken(user, c.env)
 
     // Create session in database
     const sessionToken = generateVerificationToken(64)
@@ -213,7 +213,7 @@ auth.get('/me', async (c) => {
       }, 401)
     }
 
-    const decoded = verifyToken(token)
+    const decoded = verifyToken(token, c.env)
 
     if (!decoded) {
       return c.json({ 
@@ -330,7 +330,7 @@ auth.post('/logout', async (c) => {
       }, 401)
     }
 
-    const decoded = verifyToken(token)
+    const decoded = verifyToken(token, c.env)
 
     if (decoded) {
       // Delete user's sessions
