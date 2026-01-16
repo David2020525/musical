@@ -581,12 +581,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         if (token && user) {
             document.getElementById('authSection').innerHTML = \`
                 <div class="relative group">
-                    <button class="flex items-center space-x-2 px-3 py-2 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                        <div class="w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">
+                    <button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">
+                        <div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">
                             \${user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span class="hidden md:block text-sm">\${user.name}</span>
-                        <i class="fas fa-chevron-down text-xs"></i>
+                        <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                     </button>
                     <div class="hidden group-hover:block absolute right-0 mt-2 w-48 glass-strong rounded-xl py-2 z-50 shadow-xl border border-white/10">
                         <a href="/en/dashboard" class="block px-4 py-3 hover:bg-white/10 transition-all text-white/90 hover:text-white">
