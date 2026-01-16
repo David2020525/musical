@@ -416,11 +416,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         <div class="max-w-[1400px] mx-auto">
             <div class="flex items-center justify-between mb-12">
                 <div>
-                    <h2 class="text-4xl md:text-5xl font-black mb-2">All Tracks</h2>
-                    <p class="text-gray-400">Browse our complete catalog</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-2">${t('home.all_tracks', locale)}</h2>
+                    <p class="text-gray-400">${t('home.all_tracks_desc', locale)}</p>
                 </div>
-                <a href="/en/browse" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                    <span>View All</span>
+                <a href="/${locale}/browse" class="hidden md:flex items-center space-x-2 px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
+                    <span>${t('home.view_all_tracks', locale)}</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -443,7 +443,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     <!-- Genre Explorer - Bento Layout -->
     <div class="px-6 mb-24">
         <div class="max-w-[1400px] mx-auto">
-            <h2 class="text-4xl md:text-5xl font-black mb-12">Explore by Vibe</h2>
+            <h2 class="text-4xl md:text-5xl font-black mb-12">${t('home.explore_vibe', locale)}</h2>
             
             <div class="bento-grid">
                 <!-- Large Featured Genre -->
@@ -451,8 +451,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-all"></div>
                     <div class="relative z-10">
                         <i class="fas fa-fire text-6xl mb-6 text-orange-400"></i>
-                        <h3 class="text-3xl font-bold mb-2">Electronic</h3>
-                        <p class="text-gray-400">2.3K tracks</p>
+                        <h3 class="text-3xl font-bold mb-2">${t('genre.electronic', locale)}</h3>
+                        <p class="text-gray-400">2.3K ${t('home.tracks_count', locale)}</p>
                     </div>
                 </div>
                 
@@ -460,33 +460,33 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     <div class="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-all"></div>
                     <div class="relative z-10">
                         <i class="fas fa-heart text-6xl mb-6 text-pink-400"></i>
-                        <h3 class="text-3xl font-bold mb-2">Pop Hits</h3>
-                        <p class="text-gray-400">1.8K tracks</p>
+                        <h3 class="text-3xl font-bold mb-2">${t('genre.pop', locale)}</h3>
+                        <p class="text-gray-400">1.8K ${t('home.tracks_count', locale)}</p>
                     </div>
                 </div>
                 
                 <div class="bento-item-3 glass-strong rounded-3xl p-8 card-3d cursor-pointer group">
                     <i class="fas fa-drum text-4xl mb-4 text-blue-400"></i>
-                    <h3 class="text-xl font-bold">Hip Hop</h3>
-                    <p class="text-gray-400 text-sm">956 tracks</p>
+                    <h3 class="text-xl font-bold">${t('genre.hiphop', locale)}</h3>
+                    <p class="text-gray-400 text-sm">956 ${t('home.tracks_count', locale)}</p>
                 </div>
                 
                 <div class="bento-item-3 glass-strong rounded-3xl p-8 card-3d cursor-pointer group">
                     <i class="fas fa-guitar text-4xl mb-4 text-yellow-400"></i>
-                    <h3 class="text-xl font-bold">Rock</h3>
-                    <p class="text-gray-400 text-sm">1.2K tracks</p>
+                    <h3 class="text-xl font-bold">${t('genre.rock', locale)}</h3>
+                    <p class="text-gray-400 text-sm">1.2K ${t('home.tracks_count', locale)}</p>
                 </div>
                 
                 <div class="bento-item-3 glass-strong rounded-3xl p-8 card-3d cursor-pointer group">
                     <i class="fas fa-leaf text-4xl mb-4 text-green-400"></i>
-                    <h3 class="text-xl font-bold">Ambient</h3>
-                    <p class="text-gray-400 text-sm">687 tracks</p>
+                    <h3 class="text-xl font-bold">${t('genre.ambient', locale)}</h3>
+                    <p class="text-gray-400 text-sm">687 ${t('home.tracks_count', locale)}</p>
                 </div>
                 
                 <div class="bento-item-3 glass-strong rounded-3xl p-8 card-3d cursor-pointer group">
                     <i class="fas fa-compact-disc text-4xl mb-4 text-purple-400"></i>
-                    <h3 class="text-xl font-bold">Jazz</h3>
-                    <p class="text-gray-400 text-sm">543 tracks</p>
+                    <h3 class="text-xl font-bold">${t('genre.jazz', locale)}</h3>
+                    <p class="text-gray-400 text-sm">543 ${t('home.tracks_count', locale)}</p>
                 </div>
             </div>
         </div>
@@ -499,13 +499,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 <div class="absolute inset-0 gradient-mesh opacity-20"></div>
                 <div class="relative z-10 text-center max-w-3xl mx-auto">
                     <i class="fas fa-microphone-alt text-6xl mb-8 text-purple-400"></i>
-                    <h2 class="text-4xl md:text-6xl font-black mb-6">Ready to Share Your Sound?</h2>
+                    <h2 class="text-4xl md:text-6xl font-black mb-6">${t('home.cta_title', locale)}</h2>
                     <p class="text-xl text-gray-300 mb-12">
-                        Join thousands of artists earning from their passion. Apply to become a producer today.
+                        ${t('home.cta_desc', locale)}
                     </p>
-                    <a href="/en/producer/apply" class="inline-flex items-center space-x-3 px-12 py-6 btn-micro bg-white text-black rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-white/20 transition-all">
+                    <a href="/${locale}/producer/apply" class="inline-flex items-center space-x-3 px-12 py-6 btn-micro bg-white text-black rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-white/20 transition-all">
                         <i class="fas fa-rocket"></i>
-                        <span>Become a Producer</span>
+                        <span>${t('home.cta_button', locale)}</span>
                     </a>
                 </div>
             </div>
@@ -524,30 +524,30 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <span class="text-xl font-bold">MusicHub</span>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed">
-                        Discover, stream, and support independent artists from around the world.
+                        ${t('footer.tagline', locale)}
                     </p>
                 </div>
                 
                 <div>
-                    <h3 class="font-bold mb-4">Platform</h3>
+                    <h3 class="font-bold mb-4">${t('footer.platform', locale)}</h3>
                     <ul class="space-y-3 text-sm text-gray-400">
-                        <li><a href="/en/browse" class="hover:text-white transition">Browse Music</a></li>
-                        <li><a href="/en/producer/apply" class="hover:text-white transition">For Artists</a></li>
-                        <li><a href="#" class="hover:text-white transition">Pricing</a></li>
+                        <li><a href="/${locale}/browse" class="hover:text-white transition">${t('footer.browse_music', locale)}</a></li>
+                        <li><a href="/${locale}/producer/apply" class="hover:text-white transition">${t('footer.for_artists', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.pricing', locale)}</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h3 class="font-bold mb-4">Company</h3>
+                    <h3 class="font-bold mb-4">${t('footer.company', locale)}</h3>
                     <ul class="space-y-3 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
-                        <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.about', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.careers', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.contact', locale)}</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h3 class="font-bold mb-4">Connect</h3>
+                    <h3 class="font-bold mb-4">${t('footer.connect', locale)}</h3>
                     <div class="flex space-x-3">
                         <a href="#" class="w-10 h-10 glass-strong rounded-xl flex items-center justify-center hover:bg-white/10 transition">
                             <i class="fab fa-twitter"></i>
@@ -563,11 +563,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             </div>
             
             <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
-                <p>© 2026 MusicHub. All rights reserved.</p>
+                <p>${t('footer.rights', locale)}</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white transition">Privacy</a>
-                    <a href="#" class="hover:text-white transition">Terms</a>
-                    <a href="#" class="hover:text-white transition">Cookies</a>
+                    <a href="#" class="hover:text-white transition">${t('footer.privacy', locale)}</a>
+                    <a href="#" class="hover:text-white transition">${t('footer.terms', locale)}</a>
+                    <a href="#" class="hover:text-white transition">${t('footer.cookies', locale)}</a>
                 </div>
             </div>
         </div>
@@ -588,15 +588,15 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                         <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
                         <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                     </button>
-                    <div class="hidden group-hover:block absolute right-0 mt-2 w-32 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
-                        <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-36 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
+                        <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
                             <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
                         </a>
-                        <a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white">
+                        <a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
                             <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>${t('home.profile', locale)}
                         </a>
                         <div class="border-t border-white/10 my-1"></div>
-                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400">
+                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400 whitespace-nowrap">
                             <i class="fas fa-sign-out-alt mr-2 text-xs"></i>${t('home.logout', locale)}
                         </button>
                     </div>
