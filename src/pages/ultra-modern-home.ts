@@ -488,9 +488,46 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 
                 // Display Trending Chart (first 10 tracks)
                 displayTrendingChart(tracks.slice(0, 10));
+            } else {
+                // No tracks available - show placeholder message
+                console.log('No tracks available yet');
+                displayNoTracksMessage();
             }
         } catch (error) {
             console.error('Error loading homepage data:', error);
+            displayNoTracksMessage();
+        }
+    }
+    
+    function displayNoTracksMessage() {
+        // Update track count
+        const trackCountEl = document.getElementById('trackCount');
+        if (trackCountEl) {
+            trackCountEl.innerHTML = '0';
+        }
+        
+        // Display message in Editor's Picks
+        const editorsContainer = document.getElementById('editorsPicks');
+        if (editorsContainer) {
+            editorsContainer.innerHTML = \`
+                <div class="col-span-full glass-strong rounded-3xl p-12 text-center">
+                    <i class="fas fa-music text-6xl text-gray-600 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-400">No Tracks Yet</h3>
+                    <p class="text-gray-500">Check back soon for amazing music!</p>
+                </div>
+            \`;
+        }
+        
+        // Display message in Trending Chart
+        const trendingContainer = document.getElementById('trendingChart');
+        if (trendingContainer) {
+            trendingContainer.innerHTML = \`
+                <div class="glass rounded-2xl p-12 text-center">
+                    <i class="fas fa-chart-line text-6xl text-gray-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2 text-gray-400">No Trending Tracks</h3>
+                    <p class="text-gray-500">Be the first to upload!</p>
+                </div>
+            \`;
         }
     }
     
