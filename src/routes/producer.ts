@@ -2,6 +2,8 @@ import { Hono } from 'hono'
 import type { Bindings } from '../types'
 import { verifyToken } from '../lib/auth'
 import { producerApplicationSchema } from '../lib/validations/producerApplication'
+import { getEmailService } from '../lib/email'
+import { getProducerApplicationEmailTemplate } from '../lib/email-templates'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -255,12 +257,21 @@ app.post('/admin/applications/:id/review', async (c) => {
       return c.json({ success: false, error: 'Invalid status' }, 400)
     }
 
-    // Get application
+    // Get application with user details
     const application = await c.env.DB.prepare(
-      `SELECT * FROM producer_applications WHERE id = ?`
+      `SELECT pa.*, u.email, u.name, u.username 
+       FROM producer_applications pa
+       JOIN users u ON pa.user_id = u.id
+       WHERE pa.id = ?`
     )
       .bind(applicationId)
-      .first<{ user_id: number; status: string }>()
+      .first<{ 
+        user_id: number; 
+        status: string; 
+        email: string; 
+        name: string;
+        username: string;
+      }>()
 
     if (!application) {
       return c.json({ success: false, error: 'Application not found' }, 404)
@@ -286,6 +297,29 @@ app.post('/admin/applications/:id/review', async (c) => {
       )
         .bind(application.user_id)
         .run()
+    }
+
+    // Send email notification
+    try {
+      const emailService = getEmailService(c.env)
+      const emailTemplate = getProducerApplicationEmailTemplate({
+        userName: application.name || application.username,
+        status: status as 'approved' | 'rejected',
+        reason: admin_notes,
+        locale: 'en', // Could be from user preferences
+      })
+
+      await emailService.send({
+        to: application.email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        text: emailTemplate.text,
+      })
+
+      console.log(`✅ Application ${status} email sent to ${application.email}`)
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError)
+      // Don't fail the request if email fails
     }
 
     return c.json({
