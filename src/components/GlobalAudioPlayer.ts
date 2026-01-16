@@ -23,6 +23,16 @@ export const GlobalAudioPlayerHTML = `
     transform: translateY(0);
 }
 
+#global-audio-player.auto-hidden {
+    transform: translateY(calc(100% - 8px));
+    opacity: 0.3;
+}
+
+#global-audio-player.auto-hidden:hover {
+    transform: translateY(0);
+    opacity: 1;
+}
+
 .player-content {
     max-width: 1400px;
     margin: 0 auto;
@@ -673,6 +683,64 @@ export const GlobalAudioPlayerHTML = `
     if (state.currentTrack) {
         updateUI();
     }
+    
+    // Auto-hide functionality
+    let autoHideTimer = null;
+    let isPlayerHovered = false;
+    
+    const player = document.getElementById('global-audio-player');
+    
+    function showPlayer() {
+        if (player.classList.contains('visible')) {
+            player.classList.remove('auto-hidden');
+            resetAutoHideTimer();
+        }
+    }
+    
+    function hidePlayer() {
+        if (player.classList.contains('visible') && !isPlayerHovered && state.isPlaying) {
+            player.classList.add('auto-hidden');
+        }
+    }
+    
+    function resetAutoHideTimer() {
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        autoHideTimer = setTimeout(() => {
+            hidePlayer();
+        }, 3000); // Hide after 3 seconds of inactivity
+    }
+    
+    // Show player when cursor moves to bottom of screen
+    document.addEventListener('mousemove', (e) => {
+        const windowHeight = window.innerHeight;
+        const bottomThreshold = 100; // Show when within 100px of bottom
+        
+        if (windowHeight - e.clientY < bottomThreshold) {
+            showPlayer();
+        }
+    });
+    
+    // Show player when hovering over it
+    player.addEventListener('mouseenter', () => {
+        isPlayerHovered = true;
+        showPlayer();
+    });
+    
+    player.addEventListener('mouseleave', () => {
+        isPlayerHovered = false;
+        resetAutoHideTimer();
+    });
+    
+    // Start auto-hide timer when playback starts
+    audio.addEventListener('play', () => {
+        resetAutoHideTimer();
+    });
+    
+    // Show player when paused
+    audio.addEventListener('pause', () => {
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        showPlayer();
+    });
     
     // Update UI on visibility change
     document.addEventListener('visibilitychange', () => {
