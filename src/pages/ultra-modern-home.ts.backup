@@ -453,10 +453,360 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         </div>
     </div>
     
+    <!-- Footer -->
+    <footer class="px-6 py-16 border-t border-white/5">
+        <div class="max-w-[1400px] mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-wave-square text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">MusicHub</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        ${t('footer.tagline', locale)}
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">${t('footer.platform', locale)}</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="/${locale}/browse" class="hover:text-white transition">${t('footer.browse_music', locale)}</a></li>
+                        <li><a href="/${locale}/producer/apply" class="hover:text-white transition">${t('footer.for_artists', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.pricing', locale)}</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">${t('footer.company', locale)}</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">${t('footer.about', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.careers', locale)}</a></li>
+                        <li><a href="#" class="hover:text-white transition">${t('footer.contact', locale)}</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">${t('footer.connect', locale)}</h3>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 glass-strong rounded-xl flex items-center justify-center hover:bg-white/10 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 glass-strong rounded-xl flex items-center justify-center hover:bg-white/10 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 glass-strong rounded-xl flex items-center justify-center hover:bg-white/10 transition">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
+                <p>${t('footer.rights', locale)}</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition">${t('footer.privacy', locale)}</a>
+                    <a href="#" class="hover:text-white transition">${t('footer.terms', locale)}</a>
+                    <a href="#" class="hover:text-white transition">${t('footer.cookies', locale)}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     
-    ${SharedFooterHTML(locale, { showNewsletter: true })}
-    
-    ${SharedNavigationScript(locale)}
+    <script>
+        // Authentication Check
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        if (token && user) {
+            document.getElementById('authSection').innerHTML = \`
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">
+                        <div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">
+                            \${user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
+                        <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
+                    </button>
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-36 glass-strong rounded-lg py-1.5 z-50 shadow-xl border border-white/10">
+                        <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
+                            <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
+                        </a>
+                        <a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
+                            <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>${t('home.profile', locale)}
+                        </a>
+                        <div class="border-t border-white/10 my-1"></div>
+                        <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400 whitespace-nowrap">
+                            <i class="fas fa-sign-out-alt mr-2 text-xs"></i>${t('home.logout', locale)}
+                        </button>
+                    </div>
+                </div>
+            \`;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.reload();
+        }
+        
+        // Load Blog Posts
+        async function loadBlogPosts() {
+            try {
+                const response = await fetch('/api/blog/posts?limit=3');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const gradients = [
+                        'from-orange-500/20 to-red-500/20',
+                        'from-blue-500/20 to-purple-500/20',
+                        'from-green-500/20 to-cyan-500/20'
+                    ];
+                    
+                    const html = data.data.map((post, i) => {
+                        const date = new Date(post.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                        
+                        return \`
+                            <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/${locale}/blog/\${post.slug}'">
+                                <div class="aspect-video bg-gradient-to-br \${gradients[i]} flex items-center justify-center">
+                                    <i class="fas fa-newspaper text-6xl text-white/20"></i>
+                                </div>
+                                <div class="p-6">
+                                    <div class="text-xs text-gray-500 mb-2">
+                                        <i class="fas fa-calendar mr-2"></i>\${date}
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">
+                                        \${post.title}
+                                    </h3>
+                                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+                                        \${post.excerpt || post.content.substring(0, 100) + '...'}
+                                    </p>
+                                    <div class="flex items-center justify-between text-sm text-gray-500">
+                                        <span><i class="fas fa-user mr-2"></i>\${post.author_name}</span>
+                                        <span><i class="fas fa-eye mr-2"></i>\${(post.views_count || 0).toLocaleString()} views</span>
+                                    </div>
+                                </div>
+                            </div>
+                        \`;
+                    }).join('');
+                    
+                    document.getElementById('blogPreview').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load blog posts:', error);
+            }
+        }
+        
+        // Load Editor's Picks
+        async function loadEditorsPicks() {
+            try {
+                const response = await fetch('/api/tracks?featured=true&limit=6');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const tracks = data.data;
+                    const gradients = [
+                        'from-purple-500/30 to-pink-500/30',
+                        'from-blue-500/30 to-cyan-500/30',
+                        'from-green-500/30 to-emerald-500/30',
+                        'from-orange-500/30 to-red-500/30',
+                        'from-indigo-500/30 to-purple-500/30',
+                        'from-pink-500/30 to-rose-500/30'
+                    ];
+                    
+                    const mainTrack = tracks[0];
+                    const sideTracksHTML = tracks.slice(1, 3).map((track, i) => \`
+                        <div class="glass-strong rounded-3xl p-6 flex items-center space-x-4 card-3d group cursor-pointer hover:bg-white/10 transition-all" onclick="window.location.href='/${locale}/tracks/\${track.id}'">
+                            <div class="w-24 h-24 rounded-2xl bg-gradient-to-br \${gradients[i + 1]} flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-music text-3xl text-white/40"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-bold mb-1 truncate">\${track.title}</h4>
+                                <p class="text-sm text-gray-400 mb-2 truncate">\${track.artist}</p>
+                                <span class="text-xs text-gray-500"><i class="fas fa-play mr-1"></i>\${(track.plays_count || 0).toLocaleString()} plays</span>
+                            </div>
+                            <button 
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all play-btn"
+                                data-track-id="\${track.id}"
+                                data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                onclick="event.stopPropagation(); playTrack(this);"
+                            >
+                                <i class="fas fa-play text-sm ml-1 play-icon"></i>
+                                <i class="fas fa-pause text-sm pause-icon hidden"></i>
+                            </button>
+                        </div>
+                    \`).join('');
+                    
+                    const html = \`
+                        <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer" onclick="window.location.href='/${locale}/tracks/\${mainTrack.id}'">
+                            <div class="aspect-video bg-gradient-to-br \${gradients[0]} relative flex items-center justify-center">
+                                <i class="fas fa-music text-8xl text-white/20"></i>
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                                    <button 
+                                        class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center neon-glow play-btn"
+                                        data-track-id="\${mainTrack.id}"
+                                        data-track='\${JSON.stringify(mainTrack).replace(/'/g, "&apos;")}'
+                                        onclick="event.stopPropagation(); playTrack(this);"
+                                    >
+                                        <i class="fas fa-play text-2xl ml-2 text-white play-icon"></i>
+                                        <i class="fas fa-pause text-2xl pause-icon hidden"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute top-4 left-4 px-4 py-2 glass-strong rounded-full text-sm font-bold">
+                                    <i class="fas fa-star text-yellow-400 mr-2"></i>Editor's Choice
+                                </div>
+                            </div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold mb-2 truncate">\${mainTrack.title}</h3>
+                                <p class="text-gray-400 mb-4 truncate">\${mainTrack.description || mainTrack.genre || 'Featured track'}</p>
+                                <div class="flex items-center justify-between text-sm text-gray-500">
+                                    <span><i class="fas fa-user mr-2"></i>\${mainTrack.artist}</span>
+                                    <span><i class="fas fa-play mr-2"></i>\${(mainTrack.plays_count || 0).toLocaleString()} plays</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-rows-2 gap-6">
+                            \${sideTracksHTML}
+                        </div>
+                    \`;
+                    
+                    document.getElementById('editorsPicks').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load editor picks:', error);
+            }
+        }
+        
+        // Load Trending Tracks
+        async function loadTrending() {
+            try {
+                const response = await fetch('/api/tracks?sort=trending&limit=10');
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const html = data.data.map((track, i) => \`
+                        <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/10 transition-all cursor-pointer group" onclick="window.location.href='/${locale}/tracks/\${track.id}'">
+                            <div class="text-3xl font-black \${i < 3 ? 'bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent' : 'text-gray-500'} w-12 text-center">
+                                \${i + 1}
+                            </div>
+                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-music text-xl text-white/40"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-bold truncate">\${track.title}</h4>
+                                <p class="text-sm text-gray-400 truncate">\${track.artist}</p>
+                            </div>
+                            <div class="hidden md:block text-sm text-gray-500">
+                                \${(track.plays_count || 0).toLocaleString()} plays
+                            </div>
+                            <button 
+                                class="w-10 h-10 rounded-full glass hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all play-btn"
+                                data-track-id="\${track.id}"
+                                data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                onclick="event.stopPropagation(); playTrack(this);"
+                            >
+                                <i class="fas fa-play text-sm play-icon"></i>
+                                <i class="fas fa-pause text-sm pause-icon hidden"></i>
+                            </button>
+                        </div>
+                    \`).join('');
+                    
+                    document.getElementById('trendingChart').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Failed to load trending:', error);
+            }
+        }
+        
+        // Load Tracks
+        async function loadTracks() {
+            try {
+                const response = await fetch('/api/tracks');
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    document.getElementById('trackCount').innerHTML = \`
+                        <div class="text-5xl font-black bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            \${data.data.length}+
+                        </div>
+                    \`;
+                    
+                    const tracksHTML = data.data.slice(0, 8).map(track => \`
+                        <div class="glass-strong rounded-3xl overflow-hidden card-3d group relative">
+                            <div class="relative aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden cursor-pointer" onclick="window.location.href='/en/tracks/\${track.id}'">
+                                <i class="fas fa-music text-6xl text-white/20"></i>
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                                    <button 
+                                        class="play-btn w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 relative overflow-hidden z-10"
+                                        data-track-id="\${track.id}"
+                                        data-track='\${JSON.stringify(track).replace(/'/g, "&apos;")}'
+                                        onclick="event.stopPropagation(); playTrack(this);"
+                                    >
+                                        <i class="fas fa-play text-xl ml-1 play-icon"></i>
+                                        <i class="fas fa-pause text-xl pause-icon hidden"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute top-4 right-4 px-3 py-1 glass-strong rounded-full text-xs">
+                                    \${track.genre || 'Music'}
+                                </div>
+                            </div>
+                            <div class="p-6 cursor-pointer" onclick="window.location.href='/en/tracks/\${track.id}'">
+                                <h3 class="font-bold text-lg mb-1 truncate">\${track.title}</h3>
+                                <p class="text-gray-400 text-sm truncate mb-4">\${track.artist}</p>
+                                <div class="flex items-center justify-between text-xs text-gray-500">
+                                    <span><i class="fas fa-play mr-1"></i>\${(track.plays_count || 0).toLocaleString()}</span>
+                                    <span><i class="fas fa-heart mr-1"></i>\${(track.likes_count || 0).toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                    \`).join('');
+                    
+                    document.getElementById('trackGrid').innerHTML = tracksHTML;
+                }
+            } catch (error) {
+                console.error('Failed to load tracks:', error);
+            }
+        }
+        
+        // Search Functionality
+        document.getElementById('navSearch')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value;
+                window.location.href = \`/en/browse?q=\${encodeURIComponent(query)}\`;
+            }
+        });
+        
+        // Keyboard Shortcut (Cmd/Ctrl + K)
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('navSearch')?.focus();
+            }
+        });
+        
+        // Scroll Reveal Animation
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        reveals.forEach(el => revealObserver.observe(el));
+        
+        // Load all homepage data
+        loadBlogPosts();
+        loadEditorsPicks();
+        loadTrending();
+        loadTracks();
+    </script>
     
     <!-- Global Audio Player -->
     ${GlobalAudioPlayerHTML}
