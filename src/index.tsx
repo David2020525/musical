@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { serveStatic } from 'hono/cloudflare-workers'
 import { Bindings } from './types'
 import { getLocaleFromPath, localizedPath, Locale, t } from './lib/i18n'
 import { ultraModernHomeHTML } from './pages/ultra-modern-home'
@@ -39,7 +38,6 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 // Middleware
 app.use('/api/*', cors())
-app.use('/static/*', serveStatic({ root: './' }))
 
 // API Routes
 app.route('/api/auth', authRoutes)

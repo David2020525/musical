@@ -32,7 +32,7 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
         <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
             <!-- Logo -->
             <a href="/${locale}" class="flex items-center space-x-2 group">
-                <img src="/static/logo.svg" alt="MUSICAL" class="h-10 transition-transform group-hover:scale-105">
+                <img src="/logo.svg" alt="MUSICAL" class="h-10 transition-transform group-hover:scale-105">
             </a>
             
             ${showSearch ? `
