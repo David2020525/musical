@@ -400,7 +400,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     </div>
     
     <!-- Latest Blog Posts -->
-    <div class="px-6 mb-24 reveal">
+    <div class="px-6 mb-32 reveal">
         <div class="max-w-[1400px] mx-auto">
             <div class="flex items-center justify-between mb-12">
                 <div>
@@ -444,7 +444,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     </div>
     
     <!-- Featured Tracks - Advanced Grid -->
-    <div class="px-6 mb-24">
+    <div class="px-6 mb-24 mt-32">
         <div class="max-w-[1400px] mx-auto">
             <div class="flex items-center justify-between mb-12">
                 <div>
