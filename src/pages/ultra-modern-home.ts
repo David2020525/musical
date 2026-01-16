@@ -461,10 +461,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     <!-- Global Audio Player -->
     ${GlobalAudioPlayerHTML}
     
-    <script>
-    // Play Button Functions
     ${PlayButtonScript}
     
+    <script>
     // Fetch and display tracks data
     const locale = '${locale}';
     
