@@ -1,6 +1,7 @@
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 import { t } from '../lib/i18n';
+import { SharedNavigationHTML, SharedNavigationScript } from '../components/SharedNavigation';
 
 export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: string = 'en') {
     const otherLocale = locale === 'en' ? 'tr' : 'en';
@@ -64,31 +65,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
 </head>
 <body class="text-white pb-32">
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
-        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="/${locale}" class="text-2xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform">
-                MusicHub
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="/${locale}" class="text-white/60 hover:text-white transition-colors">${t('nav.home', locale)}</a>
-                <a href="/${locale}/browse" class="text-white/60 hover:text-white transition-colors">${t('nav.browse', locale)}</a>
-                <a href="/${locale}/forum" class="text-white/60 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
-                <a href="/${locale}/blog" class="text-white/60 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
-                <a href="/${locale}/dashboard" class="text-white/60 hover:text-white transition-colors">${t('nav.dashboard', locale)}</a>
-                <!-- Language Switcher -->
-                <a 
-                    href="/${otherLocale}/tracks/${trackId}" 
-                    class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
-                    title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
-                >
-                    <i class="fas fa-globe"></i>
-                    <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
-                </a>
-                <a href="/${locale}/login" class="px-6 py-2.5 rounded-xl glass hover:glass-strong transition-all">${t('nav.login', locale)}</a>
-                <a href="/${locale}/register" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all font-semibold">${t('nav.register', locale)}</a>
-            </div>
-        </div>
-    </nav>
+    ${SharedNavigationHTML(locale, { currentPage: 'track-detail', showSearch: false, showAuth: true, showLogout: false })}
 
     <!-- Loading State -->
     <div id="loading-state" class="pt-32 px-6 pb-32 max-w-[1400px] mx-auto">

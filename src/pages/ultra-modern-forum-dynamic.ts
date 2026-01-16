@@ -1,4 +1,5 @@
 import { Locale, t } from '../lib/i18n';
+import { SharedNavigationHTML, SharedNavigationScript } from '../components/SharedNavigation';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 
@@ -36,32 +37,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
     </style>
 </head>
 <body class="text-white pb-32">
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
-        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="/${locale}" class="flex items-center space-x-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <i class="fas fa-music text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MusicHub</span>
-            </a>
-            <div class="flex items-center space-x-6">
-                <a href="/${locale}" class="text-gray-300 hover:text-white">${_('nav.home')}</a>
-                <a href="/${locale}/browse" class="text-gray-300 hover:text-white">${_('nav.browse')}</a>
-                <a href="/${locale}/forum" class="text-white font-semibold">${_('nav.forum')}</a>
-                <a href="/${locale}/blog" class="text-gray-300 hover:text-white">${_('nav.blog')}</a>
-                <a href="/${locale}/dashboard" class="text-gray-300 hover:text-white" id="dashboardLink">${_('nav.dashboard')}</a>
-                <!-- Language Switcher -->
-                <a 
-                    href="/${otherLocale}/forum" 
-                    class="px-4 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2"
-                    title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
-                >
-                    <i class="fas fa-globe"></i>
-                    <span class="hidden sm:inline">${otherLocale.toUpperCase()}</span>
-                </a>
-            </div>
-        </div>
-    </nav>
+    ${SharedNavigationHTML(locale, { currentPage: 'forum', showSearch: false, showAuth: true, showLogout: false })}
     
     <div class="pt-28 px-6 pb-32">
         <div class="max-w-[1400px] mx-auto">
