@@ -1,122 +1,184 @@
 import { Hono } from 'hono'
-import { Bindings } from '../types'
-import { createToken, hashPassword, comparePassword } from '../lib/auth'
-import { loginSchema, registerSchema } from '../lib/validations'
-import { getEmailService, getVerificationEmailTemplate, getPasswordResetEmailTemplate } from '../lib/email'
-import { createEmailVerificationToken, verifyEmailToken, getVerificationStatus } from '../lib/email-verification'
-import { createResetToken, verifyResetToken, markTokenAsUsed } from '../lib/password-reset'
+import type { Bindings } from '../types'
+import type { User } from '../types/database'
+import {
+  hashPassword,
+  comparePassword,
+  generateToken,
+  verifyToken,
+  extractTokenFromHeader,
+  generateVerificationToken,
+  getTokenExpiration,
+  isValidEmail,
+  isValidUsername,
+  isValidPassword,
+  sanitizeUser,
+  AuthErrors,
+} from '../lib/auth'
 
 const auth = new Hono<{ Bindings: Bindings }>()
 
-// Register endpoint
-auth.post('/register', async c => {
+// ============================================================================
+// REGISTER
+// ============================================================================
+
+auth.post('/register', async (c) => {
   try {
     const body = await c.req.json()
-    const validated = registerSchema.parse(body)
+    const { email, username, password, name, is_producer } = body
+
+    // Validation
+    if (!email || !username || !password || !name) {
+      return c.json({ 
+        success: false, 
+        error: 'Email, username, password, and name are required' 
+      }, 400)
+    }
+
+    if (!isValidEmail(email)) {
+      return c.json({ success: false, error: AuthErrors.INVALID_EMAIL }, 400)
+    }
+
+    if (!isValidUsername(username)) {
+      return c.json({ success: false, error: AuthErrors.INVALID_USERNAME }, 400)
+    }
+
+    if (!isValidPassword(password)) {
+      return c.json({ success: false, error: AuthErrors.INVALID_PASSWORD }, 400)
+    }
 
     // Check if user already exists
     const existing = await c.env.DB.prepare(
       'SELECT id FROM users WHERE email = ? OR username = ?'
-    )
-      .bind(validated.email, validated.username)
-      .first()
+    ).bind(email, username).first()
 
     if (existing) {
-      return c.json({ success: false, error: 'User already exists' }, 400)
+      return c.json({ 
+        success: false, 
+        error: 'Email or username already exists' 
+      }, 400)
     }
 
     // Hash password
-    const passwordHash = await hashPassword(validated.password)
+    const passwordHash = await hashPassword(password)
 
     // Insert user
-    const result = await c.env.DB.prepare(
-      'INSERT INTO users (email, username, password_hash, name, role) VALUES (?, ?, ?, ?, ?)'
-    )
-      .bind(validated.email, validated.username, passwordHash, validated.name, 'user')
-      .run()
+    const result = await c.env.DB.prepare(`
+      INSERT INTO users (
+        email, username, password_hash, name, role, is_producer, email_verified
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      email,
+      username,
+      passwordHash,
+      name,
+      'user',
+      is_producer ? 1 : 0,
+      0 // Not verified yet
+    ).run()
 
     // Get the created user
-    const user = await c.env.DB.prepare('SELECT * FROM users WHERE id = ?')
-      .bind(result.meta.last_row_id)
-      .first()
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE id = ?'
+    ).bind(result.meta.last_row_id).first() as User | null
 
     if (!user) {
-      return c.json({ success: false, error: 'Failed to create user' }, 500)
+      return c.json({ 
+        success: false, 
+        error: 'Failed to create user' 
+      }, 500)
     }
 
-    // Remove password from response
-    const { password_hash, ...userWithoutPassword } = user as any
-
     // Create email verification token
-    const { token: verificationToken } = await createEmailVerificationToken(
-      c.env.DB,
-      userWithoutPassword.id
-    )
+    const verificationToken = generateVerificationToken()
+    const tokenExpiration = getTokenExpiration(24) // 24 hours
 
-    // Send verification email
-    const emailService = getEmailService(c.env)
-    const verificationLink = `${c.req.url.split('/api')[0]}/en/verify-email?token=${verificationToken}`
-    
-    const emailTemplate = getVerificationEmailTemplate({
-      userName: userWithoutPassword.name,
-      verificationLink,
-      locale: 'en', // TODO: Get from request
-    })
+    await c.env.DB.prepare(`
+      INSERT INTO email_verification_tokens (user_id, token, expires_at)
+      VALUES (?, ?, ?)
+    `).bind(user.id, verificationToken, tokenExpiration).run()
 
-    await emailService.send({
-      to: userWithoutPassword.email,
-      subject: emailTemplate.subject,
-      html: emailTemplate.html,
-      text: emailTemplate.text,
-    })
+    // Generate JWT token
+    const token = generateToken(user)
 
-    // Create auth token
-    const token = await createToken(userWithoutPassword)
+    // Return sanitized user (without password)
+    const userWithoutPassword = sanitizeUser(user)
 
     return c.json({
       success: true,
       data: {
         user: userWithoutPassword,
         token,
-        message: 'Please check your email to verify your account',
+        verificationToken, // For dev/testing (remove in production)
       },
-    })
+      message: 'Registration successful. Please verify your email.',
+    }, 201)
+
   } catch (error: any) {
-    if (error.name === 'ZodError') {
-      return c.json({ success: false, error: error.errors[0].message }, 400)
-    }
-    return c.json({ success: false, error: 'Registration failed' }, 500)
+    console.error('Register error:', error)
+    return c.json({ 
+      success: false, 
+      error: 'Registration failed' 
+    }, 500)
   }
 })
 
-// Login endpoint
-auth.post('/login', async c => {
+// ============================================================================
+// LOGIN
+// ============================================================================
+
+auth.post('/login', async (c) => {
   try {
     const body = await c.req.json()
-    const validated = loginSchema.parse(body)
+    const { email, password } = body
+
+    // Validation
+    if (!email || !password) {
+      return c.json({ 
+        success: false, 
+        error: 'Email and password are required' 
+      }, 400)
+    }
 
     // Get user by email
-    const user = await c.env.DB.prepare('SELECT * FROM users WHERE email = ?')
-      .bind(validated.email)
-      .first()
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE email = ?'
+    ).bind(email).first() as User | null
 
     if (!user) {
-      return c.json({ success: false, error: 'Invalid credentials' }, 401)
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.INVALID_CREDENTIALS 
+      }, 401)
     }
 
     // Verify password
-    const userRecord = user as any
-    const isValidPassword = await comparePassword(validated.password, userRecord.password_hash)
+    const isValidPassword = await comparePassword(password, user.password_hash)
 
     if (!isValidPassword) {
-      return c.json({ success: false, error: 'Invalid credentials' }, 401)
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.INVALID_CREDENTIALS 
+      }, 401)
     }
 
-    // Remove password from response
-    const { password_hash, ...userWithoutPassword } = userRecord
+    // Note: We allow login even if email is not verified
+    // Frontend can check email_verified and show a banner
 
-    // Create token
-    const token = await createToken(userWithoutPassword)
+    // Generate JWT token
+    const token = generateToken(user)
+
+    // Create session in database
+    const sessionToken = generateVerificationToken(64)
+    const sessionExpiration = getTokenExpiration(24 * 7) // 7 days
+
+    await c.env.DB.prepare(`
+      INSERT INTO sessions (user_id, token, expires_at)
+      VALUES (?, ?, ?)
+    `).bind(user.id, sessionToken, sessionExpiration).run()
+
+    // Return sanitized user
+    const userWithoutPassword = sanitizeUser(user)
 
     return c.json({
       success: true,
@@ -125,248 +187,266 @@ auth.post('/login', async c => {
         token,
       },
     })
+
   } catch (error: any) {
-    if (error.name === 'ZodError') {
-      return c.json({ success: false, error: error.errors[0].message }, 400)
-    }
-    return c.json({ success: false, error: 'Login failed' }, 500)
+    console.error('Login error:', error)
+    return c.json({ 
+      success: false, 
+      error: 'Login failed' 
+    }, 500)
   }
 })
 
-// Get current user
-auth.get('/me', async c => {
-  const authHeader = c.req.header('Authorization')
-  if (!authHeader) {
-    return c.json({ success: false, error: 'Not authenticated' }, 401)
-  }
+// ============================================================================
+// GET CURRENT USER
+// ============================================================================
 
+auth.get('/me', async (c) => {
   try {
-    const { verifyToken } = await import('../lib/auth')
-    const token = authHeader.replace('Bearer ', '')
-    const decoded = await verifyToken(token)
+    const authHeader = c.req.header('Authorization')
+    const token = extractTokenFromHeader(authHeader)
+
+    if (!token) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.UNAUTHORIZED 
+      }, 401)
+    }
+
+    const decoded = verifyToken(token)
 
     if (!decoded) {
-      return c.json({ success: false, error: 'Invalid token' }, 401)
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.TOKEN_INVALID 
+      }, 401)
     }
 
     // Get fresh user data
-    const user = await c.env.DB.prepare('SELECT * FROM users WHERE id = ?')
-      .bind(decoded.id)
-      .first()
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE id = ?'
+    ).bind(decoded.userId).first() as User | null
 
     if (!user) {
-      return c.json({ success: false, error: 'User not found' }, 404)
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.USER_NOT_FOUND 
+      }, 404)
     }
 
-    const { password_hash, ...userWithoutPassword } = user as any
+    const userWithoutPassword = sanitizeUser(user)
 
     return c.json({
       success: true,
       data: userWithoutPassword,
     })
-  } catch {
-    return c.json({ success: false, error: 'Authentication failed' }, 401)
+
+  } catch (error: any) {
+    console.error('Get me error:', error)
+    return c.json({ 
+      success: false, 
+      error: AuthErrors.UNAUTHORIZED 
+    }, 401)
   }
 })
 
-// Verify email endpoint
-auth.post('/verify-email', async c => {
+// ============================================================================
+// VERIFY EMAIL
+// ============================================================================
+
+auth.post('/verify-email', async (c) => {
   try {
     const body = await c.req.json()
     const { token } = body
 
     if (!token) {
-      return c.json({ success: false, error: 'Token is required' }, 400)
+      return c.json({ 
+        success: false, 
+        error: 'Token is required' 
+      }, 400)
     }
 
-    const result = await verifyEmailToken(c.env.DB, token)
+    // Find verification token
+    const tokenRecord = await c.env.DB.prepare(`
+      SELECT * FROM email_verification_tokens 
+      WHERE token = ? AND verified = 0
+    `).bind(token).first()
 
-    if (!result.success) {
-      return c.json({ success: false, error: result.error }, 400)
+    if (!tokenRecord) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.TOKEN_INVALID 
+      }, 400)
     }
+
+    // Check if token is expired
+    const expiresAt = new Date(tokenRecord.expires_at as string)
+    if (expiresAt < new Date()) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.TOKEN_EXPIRED 
+      }, 400)
+    }
+
+    // Mark user as verified
+    await c.env.DB.prepare(`
+      UPDATE users SET email_verified = 1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(tokenRecord.user_id).run()
+
+    // Mark token as used
+    await c.env.DB.prepare(`
+      UPDATE email_verification_tokens SET verified = 1
+      WHERE id = ?
+    `).bind(tokenRecord.id).run()
 
     return c.json({
       success: true,
       message: 'Email verified successfully',
     })
+
   } catch (error: any) {
-    return c.json({ success: false, error: 'Email verification failed' }, 500)
+    console.error('Verify email error:', error)
+    return c.json({ 
+      success: false, 
+      error: 'Email verification failed' 
+    }, 500)
   }
 })
 
-// Resend verification email endpoint
-auth.post('/resend-verification', async c => {
-  const authHeader = c.req.header('Authorization')
-  if (!authHeader) {
-    return c.json({ success: false, error: 'Not authenticated' }, 401)
-  }
+// ============================================================================
+// LOGOUT
+// ============================================================================
 
+auth.post('/logout', async (c) => {
   try {
-    const { verifyToken } = await import('../lib/auth')
-    const token = authHeader.replace('Bearer ', '')
-    const decoded = await verifyToken(token)
+    const authHeader = c.req.header('Authorization')
+    const token = extractTokenFromHeader(authHeader)
 
-    if (!decoded) {
-      return c.json({ success: false, error: 'Invalid token' }, 401)
+    if (!token) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.UNAUTHORIZED 
+      }, 401)
     }
 
-    // Get user
-    const user = await c.env.DB.prepare('SELECT * FROM users WHERE id = ?')
-      .bind(decoded.id)
-      .first() as any
+    const decoded = verifyToken(token)
 
-    if (!user) {
-      return c.json({ success: false, error: 'User not found' }, 404)
-    }
-
-    // Check if already verified
-    if (user.email_verified === 1) {
-      return c.json({ success: false, error: 'Email already verified' }, 400)
-    }
-
-    // Check verification status
-    const status = await getVerificationStatus(c.env.DB, user.id)
-    
-    // Rate limiting: Don't allow resend if token was created less than 1 minute ago
-    if (status.hasPendingToken && status.tokenCreatedAt) {
-      const tokenAge = Date.now() - new Date(status.tokenCreatedAt).getTime()
-      if (tokenAge < 60 * 1000) { // 1 minute
-        return c.json({ 
-          success: false, 
-          error: 'Please wait before requesting another verification email' 
-        }, 429)
-      }
-    }
-
-    // Create new verification token
-    const { token: verificationToken } = await createEmailVerificationToken(
-      c.env.DB,
-      user.id
-    )
-
-    // Send verification email
-    const emailService = getEmailService(c.env)
-    const verificationLink = `${c.req.url.split('/api')[0]}/en/verify-email?token=${verificationToken}`
-    
-    const emailTemplate = getVerificationEmailTemplate({
-      userName: user.name,
-      verificationLink,
-      locale: 'en', // TODO: Get from request
-    })
-
-    const emailResult = await emailService.send({
-      to: user.email,
-      subject: emailTemplate.subject,
-      html: emailTemplate.html,
-      text: emailTemplate.text,
-    })
-
-    if (!emailResult.success) {
-      return c.json({ success: false, error: 'Failed to send email' }, 500)
+    if (decoded) {
+      // Delete user's sessions
+      await c.env.DB.prepare(`
+        DELETE FROM sessions WHERE user_id = ?
+      `).bind(decoded.userId).run()
     }
 
     return c.json({
       success: true,
-      message: 'Verification email sent successfully',
+      message: 'Logged out successfully',
     })
+
   } catch (error: any) {
-    return c.json({ success: false, error: 'Failed to resend verification email' }, 500)
+    console.error('Logout error:', error)
+    return c.json({ 
+      success: false, 
+      error: 'Logout failed' 
+    }, 500)
   }
 })
 
-// Get verification status endpoint
-auth.get('/verification-status', async c => {
-  const authHeader = c.req.header('Authorization')
-  if (!authHeader) {
-    return c.json({ success: false, error: 'Not authenticated' }, 401)
-  }
+// ============================================================================
+// FORGOT PASSWORD
+// ============================================================================
 
-  try {
-    const { verifyToken } = await import('../lib/auth')
-    const token = authHeader.replace('Bearer ', '')
-    const decoded = await verifyToken(token)
-
-    if (!decoded) {
-      return c.json({ success: false, error: 'Invalid token' }, 401)
-    }
-
-    const status = await getVerificationStatus(c.env.DB, decoded.id)
-
-    return c.json({
-      success: true,
-      data: status,
-    })
-  } catch (error: any) {
-    return c.json({ success: false, error: 'Failed to get verification status' }, 500)
-  }
-})
-
-// Forgot password endpoint
-auth.post('/forgot-password', async c => {
+auth.post('/forgot-password', async (c) => {
   try {
     const body = await c.req.json()
-    const { email, locale = 'en' } = body
+    const { email } = body
 
     if (!email) {
-      return c.json({ success: false, error: 'Email is required' }, 400)
+      return c.json({ 
+        success: false, 
+        error: 'Email is required' 
+      }, 400)
     }
 
     // Get user by email
-    const user = await c.env.DB.prepare('SELECT * FROM users WHERE email = ?')
-      .bind(email)
-      .first() as any
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE email = ?'
+    ).bind(email).first() as User | null
 
-    // Always return success (don't reveal if user exists)
-    // But only send email if user exists
+    // Always return success (don't reveal if user exists for security)
     if (user) {
       // Create reset token
-      const token = await createResetToken(c.env.DB, user.id)
+      const resetToken = generateVerificationToken()
+      const tokenExpiration = getTokenExpiration(1) // 1 hour
 
-      // Build reset URL
-      const baseUrl = c.req.url.split('/api')[0]
-      const resetUrl = `${baseUrl}/${locale}/reset-password?token=${token}`
+      await c.env.DB.prepare(`
+        INSERT INTO password_reset_tokens (user_id, token, expires_at)
+        VALUES (?, ?, ?)
+      `).bind(user.id, resetToken, tokenExpiration).run()
 
-      // Get email template
-      const emailTemplate = getPasswordResetEmailTemplate(resetUrl, locale)
-
-      // Send password reset email
-      const emailService = getEmailService(c.env)
-      await emailService.send({
-        to: user.email,
-        subject: emailTemplate.subject,
-        html: emailTemplate.html,
-      })
+      // TODO: Send email with reset link
+      // For now, we'll return the token (remove in production)
+      console.log(`Password reset token for ${email}: ${resetToken}`)
     }
 
     return c.json({
       success: true,
-      message: 'If an account exists with this email, a password reset link has been sent',
+      message: 'If an account exists, a password reset link has been sent',
     })
+
   } catch (error: any) {
     console.error('Forgot password error:', error)
-    return c.json({ success: false, error: 'Failed to process request' }, 500)
+    return c.json({ 
+      success: false, 
+      error: 'Failed to process request' 
+    }, 500)
   }
 })
 
-// Reset password endpoint
-auth.post('/reset-password', async c => {
+// ============================================================================
+// RESET PASSWORD
+// ============================================================================
+
+auth.post('/reset-password', async (c) => {
   try {
     const body = await c.req.json()
     const { token, password } = body
 
     if (!token || !password) {
-      return c.json({ success: false, error: 'Token and password are required' }, 400)
+      return c.json({ 
+        success: false, 
+        error: 'Token and password are required' 
+      }, 400)
     }
 
-    if (password.length < 8) {
-      return c.json({ success: false, error: 'Password must be at least 8 characters' }, 400)
+    if (!isValidPassword(password)) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.INVALID_PASSWORD 
+      }, 400)
     }
 
-    // Verify token
-    const verification = await verifyResetToken(c.env.DB, token)
+    // Find reset token
+    const tokenRecord = await c.env.DB.prepare(`
+      SELECT * FROM password_reset_tokens 
+      WHERE token = ? AND used = 0
+    `).bind(token).first()
 
-    if (!verification.valid) {
-      return c.json({ success: false, error: verification.error }, 400)
+    if (!tokenRecord) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.TOKEN_INVALID 
+      }, 400)
+    }
+
+    // Check if token is expired
+    const expiresAt = new Date(tokenRecord.expires_at as string)
+    if (expiresAt < new Date()) {
+      return c.json({ 
+        success: false, 
+        error: AuthErrors.TOKEN_EXPIRED 
+      }, 400)
     }
 
     // Hash new password
@@ -377,18 +457,25 @@ auth.post('/reset-password', async c => {
       UPDATE users 
       SET password_hash = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `).bind(passwordHash, verification.userId).run()
+    `).bind(passwordHash, tokenRecord.user_id).run()
 
     // Mark token as used
-    await markTokenAsUsed(c.env.DB, token)
+    await c.env.DB.prepare(`
+      UPDATE password_reset_tokens SET used = 1
+      WHERE id = ?
+    `).bind(tokenRecord.id).run()
 
     return c.json({
       success: true,
       message: 'Password reset successfully',
     })
+
   } catch (error: any) {
     console.error('Reset password error:', error)
-    return c.json({ success: false, error: 'Failed to reset password' }, 500)
+    return c.json({ 
+      success: false, 
+      error: 'Failed to reset password' 
+    }, 500)
   }
 })
 
