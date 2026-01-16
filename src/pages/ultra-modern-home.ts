@@ -598,21 +598,25 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         if (token && user) {
             document.getElementById('authSection').innerHTML = \`
-                <div class="flex items-center space-x-4">
-                    <a href="/en/dashboard" class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                        Dashboard
-                    </a>
-                    <div class="relative group">
-                        <button class="flex items-center space-x-3 px-4 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
-                            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-sm">
-                                \${user.name.charAt(0).toUpperCase()}
-                            </div>
-                            <span class="hidden md:block">\${user.name}</span>
-                        </button>
-                        <div class="hidden group-hover:block absolute right-0 mt-2 w-48 glass-strong rounded-xl py-2 z-50">
-                            <a href="/en/dashboard" class="block px-4 py-2 hover:bg-white/10 transition"><i class="fas fa-user mr-2"></i>Profile</a>
-                            <button onclick="logout()" class="block w-full text-left px-4 py-2 hover:bg-white/10 transition text-red-400"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
+                <div class="relative group">
+                    <button class="flex items-center space-x-3 px-4 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all">
+                        <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-sm">
+                            \${user.name.charAt(0).toUpperCase()}
                         </div>
+                        <span class="hidden md:block">\${user.name}</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="hidden group-hover:block absolute right-0 mt-2 w-48 glass-strong rounded-xl py-2 z-50 shadow-xl border border-white/10">
+                        <a href="/en/dashboard" class="block px-4 py-3 hover:bg-white/10 transition-all text-white/90 hover:text-white">
+                            <i class="fas fa-chart-line mr-3 text-purple-400"></i>Dashboard
+                        </a>
+                        <a href="/en/profile" class="block px-4 py-3 hover:bg-white/10 transition-all text-white/90 hover:text-white">
+                            <i class="fas fa-user mr-3 text-blue-400"></i>Profile
+                        </a>
+                        <div class="border-t border-white/10 my-2"></div>
+                        <button onclick="logout()" class="block w-full text-left px-4 py-3 hover:bg-white/10 transition-all text-red-400">
+                            <i class="fas fa-sign-out-alt mr-3"></i>Logout
+                        </button>
                     </div>
                 </div>
             \`;
