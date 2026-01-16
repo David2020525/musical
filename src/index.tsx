@@ -238,17 +238,20 @@ app.get('/:locale/blog/:slug', c => {
 
 // Admin page
 app.get('/:locale/admin', c => {
-  return c.html(ultraModernAdminHTML)
+  const locale = (c.req.param('locale') as Locale) || 'en'
+  return c.html(ultraModernAdminHTML(locale))
 })
 
 // Admin producer applications page
 app.get('/:locale/admin/producers', c => {
-  return c.html(ultraModernAdminProducersHTML)
+  const locale = (c.req.param('locale') as Locale) || 'en'
+  return c.html(ultraModernAdminProducersHTML(locale))
 })
 
 // Admin users management page
 app.get('/:locale/admin/users', c => {
-  return c.html(ultraModernAdminUsersHTML)
+  const locale = (c.req.param('locale') as Locale) || 'en'
+  return c.html(ultraModernAdminUsersHTML(locale))
 })
 
 // Catch-all for other pages (fallback to basic template)

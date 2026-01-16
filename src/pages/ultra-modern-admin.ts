@@ -1,12 +1,13 @@
+import { Locale, t } from '../lib/i18n';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 
-export const ultraModernAdminHTML = `<!DOCTYPE html>
-<html lang="en">
+export const ultraModernAdminHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
+<html lang="${locale}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - MusicHub</title>
+    <title>${t('admin.title', locale)} - MusicHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -50,23 +51,23 @@ export const ultraModernAdminHTML = `<!DOCTYPE html>
                         Admin Panel
                     </h1>
                     <div class="hidden md:flex gap-6 text-sm">
-                        <a href="/en/admin" class="text-white hover:text-purple-400 transition-colors">
-                            <i class="fas fa-th-large mr-2"></i>Dashboard
+                        <a href="/${locale}/admin" class="text-white hover:text-purple-400 transition-colors">
+                            <i class="fas fa-th-large mr-2"></i>${t('admin.dashboard', locale)}
                         </a>
-                        <a href="/en/admin/users" class="text-gray-400 hover:text-purple-400 transition-colors">
-                            <i class="fas fa-users mr-2"></i>Users
+                        <a href="/${locale}/admin/users" class="text-gray-400 hover:text-purple-400 transition-colors">
+                            <i class="fas fa-users mr-2"></i>${t('admin.users', locale)}
                         </a>
-                        <a href="/en/admin/producers" class="text-gray-400 hover:text-purple-400 transition-colors">
-                            <i class="fas fa-user-music mr-2"></i>Producer Applications
+                        <a href="/${locale}/admin/producers" class="text-gray-400 hover:text-purple-400 transition-colors">
+                            <i class="fas fa-user-music mr-2"></i>${t('admin.applications', locale)}
                         </a>
-                        <a href="/en/admin/content" class="text-gray-400 hover:text-purple-400 transition-colors">
-                            <i class="fas fa-layer-group mr-2"></i>Content
+                        <a href="/${locale}/admin/content" class="text-gray-400 hover:text-purple-400 transition-colors">
+                            <i class="fas fa-layer-group mr-2"></i>${t('admin.content', locale)}
                         </a>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-sm text-gray-400" id="admin-name">Admin</span>
-                    <a href="/en" class="text-sm text-gray-400 hover:text-white transition-colors">
+                    <a href="/${locale}" class="text-sm text-gray-400 hover:text-white transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>Back to Site
                     </a>
                 </div>
