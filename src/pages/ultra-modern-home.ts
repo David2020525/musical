@@ -499,8 +499,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     }
     
     function displayDemoTracks() {
-        // Demo tracks to show when database is empty
-        // These have demo audio URLs that show "Demo Track" when clicked
+        // Demo tracks with real playable audio URLs
+        // Using royalty-free music from various sources
         const demoTracks = [
             {
                 id: 'demo-1',
@@ -509,7 +509,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Demo Sanatçı' : 'Demo Artist',
                 plays_count: 12543,
                 likes_count: 892,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                cover_url: '',
+                duration: 210,
+                genre: 'Electronic',
                 is_demo: true
             },
             {
@@ -519,7 +522,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Örnek Prodüktör' : 'Sample Producer',
                 plays_count: 8921,
                 likes_count: 654,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+                cover_url: '',
+                duration: 195,
+                genre: 'Ambient',
                 is_demo: true
             },
             {
@@ -529,7 +535,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Beat Yapımcısı' : 'Beat Maker',
                 plays_count: 15234,
                 likes_count: 1123,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+                cover_url: '',
+                duration: 225,
+                genre: 'Hip Hop',
                 is_demo: true
             },
             {
@@ -539,7 +548,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Ortam Sesleri' : 'Ambient Sounds',
                 plays_count: 6543,
                 likes_count: 432,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+                cover_url: '',
+                duration: 180,
+                genre: 'Ambient',
                 is_demo: true
             },
             {
@@ -549,7 +561,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'EDM Prodüktör' : 'EDM Producer',
                 plays_count: 21098,
                 likes_count: 1876,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+                cover_url: '',
+                duration: 240,
+                genre: 'Electronic',
                 is_demo: true
             },
             {
@@ -559,7 +574,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Indie Sanatçı' : 'Indie Artist',
                 plays_count: 4321,
                 likes_count: 298,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+                cover_url: '',
+                duration: 205,
+                genre: 'Acoustic',
                 is_demo: true
             },
             {
@@ -569,7 +587,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: 'Retrowave',
                 plays_count: 9876,
                 likes_count: 743,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
+                cover_url: '',
+                duration: 215,
+                genre: 'Electronic',
                 is_demo: true
             },
             {
@@ -579,7 +600,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Sakin Beats' : 'Chill Beats',
                 plays_count: 34567,
                 likes_count: 2543,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+                cover_url: '',
+                duration: 190,
+                genre: 'Lo-Fi',
                 is_demo: true
             },
             {
@@ -589,7 +613,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Yumuşak Caz' : 'Smooth Jazz',
                 plays_count: 7654,
                 likes_count: 567,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+                cover_url: '',
+                duration: 230,
+                genre: 'Jazz',
                 is_demo: true
             },
             {
@@ -599,7 +626,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 producer_name: locale === 'tr' ? 'Sokak Prodüktörü' : 'Street Producer',
                 plays_count: 18765,
                 likes_count: 1432,
-                audio_url: '#demo',
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+                cover_url: '',
+                duration: 220,
+                genre: 'Hip Hop',
                 is_demo: true
             }
         ];
