@@ -106,6 +106,91 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             border: 1px solid rgba(147, 51, 234, 0.4) !important;
         }
         
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #9333EA, #EC4899);
+            border-radius: 4px;
+        }
+        
         /* Shimmer Effect */
         @keyframes shimmer {
             0% { background-position: -1000px; }
@@ -579,6 +664,255 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         });
     };
     
+    // Modal functions
+    window.showTrackModal = function(track) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        
+        const trackData = typeof track === 'string' ? JSON.parse(track) : track;
+        
+        modal.innerHTML = \`
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="p-8">
+                    <!-- Track Header -->
+                    <div class="flex items-start space-x-6 mb-8">
+                        <div class="w-48 h-48 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-music text-6xl text-white/30"></i>
+                        </div>
+                        <div class="flex-1">
+                            \${trackData.is_demo ? '<span class="inline-block px-3 py-1 bg-purple-500/80 rounded-full text-xs font-bold mb-3">DEMO</span>' : ''}
+                            <h2 class="text-4xl font-black mb-2">\${trackData.title}</h2>
+                            <p class="text-xl text-gray-400 mb-4">\${trackData.artist || trackData.producer_name || 'Unknown Artist'}</p>
+                            <div class="flex items-center space-x-6 text-sm text-gray-500 mb-6">
+                                <span><i class="fas fa-play mr-2"></i>\${trackData.plays_count || 0} plays</span>
+                                <span><i class="fas fa-heart mr-2"></i>\${trackData.likes_count || 0} likes</span>
+                                <span><i class="fas fa-clock mr-2"></i>\${Math.floor((trackData.duration || 0) / 60)}:\${String((trackData.duration || 0) % 60).padStart(2, '0')}</span>
+                            </div>
+                            <button onclick="playTrackFromCard(this)" data-track='\${JSON.stringify(trackData).replace(/'/g, '&apos;')}' class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold hover:shadow-xl hover:shadow-purple-500/50 transition-all flex items-center space-x-2">
+                                <i class="fas fa-play"></i>
+                                <span>Play Track</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Track Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="glass p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3"><i class="fas fa-info-circle mr-2 text-purple-400"></i>Track Information</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Genre:</span>
+                                    <span class="font-semibold">\${trackData.genre || 'Unknown'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Duration:</span>
+                                    <span class="font-semibold">\${Math.floor((trackData.duration || 0) / 60)}:\${String((trackData.duration || 0) % 60).padStart(2, '0')}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">BPM:</span>
+                                    <span class="font-semibold">120</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Key:</span>
+                                    <span class="font-semibold">C Minor</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="glass p-6 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3"><i class="fas fa-user mr-2 text-purple-400"></i>Producer</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Name:</span>
+                                    <span class="font-semibold">\${trackData.producer_name || trackData.artist || 'Unknown'}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Tracks:</span>
+                                    <span class="font-semibold">15</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Followers:</span>
+                                    <span class="font-semibold">1.2K</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="glass p-6 rounded-xl mb-8">
+                        <h3 class="text-lg font-bold mb-3"><i class="fas fa-align-left mr-2 text-purple-400"></i>Description</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            This is a demo track showcasing the MUSICAL platform's capabilities. 
+                            In production, this section would contain the producer's detailed track description, 
+                            usage rights, licensing information, and any special notes about the production.
+                        </p>
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold mb-3"><i class="fas fa-tags mr-2 text-purple-400"></i>Tags</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm">\${trackData.genre || 'Electronic'}</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm">Chill</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm">Ambient</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm">Instrumental</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        \`;
+        
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.showBlogModal = function(postIndex) {
+        const demoPosts = [
+            {
+                title: locale === 'tr' ? 'Müzik Lisanslama Rehberi' : 'Music Licensing Guide for Beginners',
+                excerpt: locale === 'tr' ? 'Müziğinizi lisanslamak hakkında bilmeniz gereken her şey...' : 'Everything you need to know about licensing your music...',
+                content: locale === 'tr' 
+                    ? 'Müzik lisanslama, müzisyenler için karmaşık ama önemli bir konudur. Bu rehberde, telif hakları, lisans türleri ve müziğinizi nasıl koruyacağınızı öğreneceksiniz...'
+                    : 'Music licensing is a complex but crucial topic for musicians. In this guide, you\'ll learn about copyrights, licensing types, and how to protect your music...',
+                author: 'Admin',
+                views: '1.5K',
+                date: '2024-01-15',
+                readTime: '5 min',
+                category: locale === 'tr' ? 'Rehber' : 'Guide',
+                icon: 'fa-book'
+            },
+            {
+                title: locale === 'tr' ? 'Kaliteli Beat Yapım İpuçları' : 'Tips for Creating Quality Beats',
+                excerpt: locale === 'tr' ? 'Profesyonel beatler oluşturmak için en iyi uygulamalar...' : 'Best practices for crafting professional beats...',
+                content: locale === 'tr'
+                    ? 'Kaliteli beat üretimi, teknik bilgi ve yaratıcılığın birleşimidir. Bu makalede, profesyonel prodüktörlerden ipuçları ve püf noktaları bulacaksınız...'
+                    : 'Quality beat production is a combination of technical knowledge and creativity. In this article, you\'ll find tips and tricks from professional producers...',
+                author: 'Producer Team',
+                views: '2.3K',
+                date: '2024-01-12',
+                readTime: '7 min',
+                category: locale === 'tr' ? 'Prodüksiyon' : 'Production',
+                icon: 'fa-music'
+            },
+            {
+                title: locale === 'tr' ? 'Müzik Pazarlaması 101' : 'Music Marketing 101',
+                excerpt: locale === 'tr' ? 'Müziğinizi etkili bir şekilde tanıtma stratejileri...' : 'Strategies for promoting your music effectively...',
+                content: locale === 'tr'
+                    ? 'Dijital çağda müzik pazarlaması, başarının anahtarıdır. Sosyal medya, streaming platformları ve diğer kanalları kullanarak kitlenizi nasıl büyütebileceğinizi keşfedin...'
+                    : 'In the digital age, music marketing is key to success. Discover how to grow your audience using social media, streaming platforms, and other channels...',
+                author: 'Marketing Team',
+                views: '1.8K',
+                date: '2024-01-10',
+                readTime: '6 min',
+                category: locale === 'tr' ? 'Pazarlama' : 'Marketing',
+                icon: 'fa-chart-line'
+            }
+        ];
+        
+        const post = demoPosts[postIndex];
+        if (!post) return;
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        
+        modal.innerHTML = \`
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="p-8">
+                    <!-- Blog Header -->
+                    <div class="mb-8">
+                        <span class="inline-block px-3 py-1 bg-blue-500/80 rounded-full text-xs font-bold mb-4">\${post.category}</span>
+                        <h2 class="text-4xl font-black mb-4">\${post.title}</h2>
+                        <div class="flex items-center space-x-6 text-sm text-gray-400 mb-6">
+                            <span><i class="fas fa-user mr-2"></i>\${post.author}</span>
+                            <span><i class="fas fa-calendar mr-2"></i>\${post.date}</span>
+                            <span><i class="fas fa-clock mr-2"></i>\${post.readTime} read</span>
+                            <span><i class="fas fa-eye mr-2"></i>\${post.views} views</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Featured Image -->
+                    <div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/40"></div>
+                        <i class="fas \${post.icon} text-6xl text-white/30 relative z-10"></i>
+                    </div>
+                    
+                    <!-- Blog Content -->
+                    <div class="prose prose-invert max-w-none">
+                        <p class="text-lg text-gray-300 leading-relaxed mb-6">
+                            \${post.content}
+                        </p>
+                        
+                        <p class="text-gray-400 leading-relaxed mb-6">
+                            This is demo content. In production, this would be the full blog post with rich text formatting, 
+                            images, code snippets, embedded media, and more. The blog system would support markdown or a 
+                            rich text editor for content creation.
+                        </p>
+                        
+                        <h3 class="text-2xl font-bold mb-4 mt-8">Key Takeaways</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-6">
+                            <li>Professional advice from industry experts</li>
+                            <li>Practical tips you can apply immediately</li>
+                            <li>Step-by-step guidance for beginners</li>
+                            <li>Real-world examples and case studies</li>
+                        </ul>
+                        
+                        <p class="text-gray-400 leading-relaxed">
+                            Continue reading on the full blog page for more detailed information, 
+                            downloadable resources, and community discussions.
+                        </p>
+                    </div>
+                    
+                    <!-- Share & Actions -->
+                    <div class="flex items-center space-x-4 mt-8 pt-8 border-t border-white/10">
+                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
+                            <i class="fas fa-heart"></i>
+                            <span>Like</span>
+                        </button>
+                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
+                            <i class="fas fa-bookmark"></i>
+                            <span>Save</span>
+                        </button>
+                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
+                            <i class="fas fa-share"></i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        \`;
+        
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+    };
+    
+    window.closeModal = function() {
+        const modal = document.querySelector('.modal-overlay');
+        if (modal) {
+            modal.style.animation = 'fadeOut 0.3s forwards';
+            setTimeout(() => {
+                modal.remove();
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    };
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
     async function loadHomepageData() {
         try {
             // Fetch tracks
@@ -872,8 +1206,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         let html = '';
         tracks.forEach(track => {
             const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
-            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
-            html += '<div class="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
+            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10 relative">';
+            html += '<div class="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden cursor-pointer" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
             html += '<i class="fas fa-music text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
             
@@ -881,6 +1215,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             if (track.is_demo) {
                 html += '<div class="absolute top-3 left-3 px-2 py-1 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
             }
+            
+            // Info button overlay
+            html += '<button onclick="event.stopPropagation(); showTrackModal(' + "'" + trackJson.replace(/"/g, '\\"') + "'" + ')" class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 z-20">';
+            html += '<i class="fas fa-info text-sm"></i>';
+            html += '</button>';
             
             html += '</div>';
             html += '<div class="p-4">';
@@ -927,8 +1266,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         ];
         
         let html = '';
-        demoPosts.forEach(post => {
-            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">';
+        demoPosts.forEach((post, index) => {
+            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="showBlogModal(' + index + ')">';
             html += '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
             html += '<i class="fas ' + post.icon + ' text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
