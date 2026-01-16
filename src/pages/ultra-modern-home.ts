@@ -201,31 +201,16 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     </div>
                 </div>
                 
-                <!-- Navigation Links - Artistic Version -->
-                <div class="hidden lg:flex items-center space-x-3">
-                    <a href="/${locale}/browse" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
-                        <span class="relative z-10">${t('nav.browse', locale)}</span>
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
-                    </a>
-                    <a href="/${locale}/forum" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
-                        <span class="relative z-10">${t('nav.forum', locale)}</span>
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
-                    </a>
-                    <a href="/${locale}/blog" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
-                        <span class="relative z-10">${t('nav.blog', locale)}</span>
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
-                    </a>
-                    <a href="/${locale}/dashboard" class="px-5 py-2.5 rounded-xl glass-strong border border-purple-500/30 text-white font-semibold hover:border-purple-500/50 transition-all relative group overflow-hidden shadow-lg shadow-purple-500/20">
-                        <span class="relative z-10 flex items-center gap-2">
-                            <i class="fas fa-chart-line text-purple-400"></i>
-                            ${t('nav.dashboard', locale)}
-                        </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                    </a>
+                <!-- Navigation Links - Match Dashboard Style -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="/${locale}/browse" class="text-white/70 hover:text-white transition-colors">${t('nav.browse', locale)}</a>
+                    <a href="/${locale}/forum" class="text-white/70 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
+                    <a href="/${locale}/blog" class="text-white/70 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
+                    <a href="/${locale}/dashboard" class="text-white font-semibold">${t('nav.dashboard', locale)}</a>
                 </div>
                 
                 <!-- Right Actions -->
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-6">
                     <!-- Language Switcher -->
                     <a 
                         href="/${otherLocale}" 
@@ -237,7 +222,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     </a>
                     
                     <div id="authSection" class="hidden lg:block">
-                        <a href="/${locale}/login" class="px-6 py-3 btn-micro bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                        <a href="/${locale}/login" class="px-6 py-2.5 glass rounded-xl hover:bg-white/10">
                             ${t('nav.login', locale)}
                         </a>
                     </div>
