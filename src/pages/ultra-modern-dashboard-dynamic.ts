@@ -64,8 +64,8 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
         </div>
     </nav>
     
-    <div class="pt-28 px-6 pb-32">
-        <div class="max-w-[1400px] mx-auto">
+    <div class="pt-28 px-6 pb-32 w-full">
+        <div class="max-w-[1400px] mx-auto w-full">
             <!-- User Info -->
             <div class="mb-12">
                 <h1 class="text-6xl font-black mb-2" id="userName">${_('dashboard.title')}</h1>
@@ -125,10 +125,10 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             </div>
             
             <!-- Main Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- My Tracks -->
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="glass-strong rounded-3xl p-8">
+                <div class="lg:col-span-2 space-y-8 min-w-0">
+                    <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-2xl font-bold">${_('dashboard.my_tracks')}</h2>
                             <button id="uploadBtn" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg hidden">
@@ -167,9 +167,9 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 </div>
                 
                 <!-- Sidebar -->
-                <div class="space-y-8">
+                <div class="space-y-8 min-w-0">
                     <!-- Quick Actions -->
-                    <div class="glass-strong rounded-3xl p-8">
+                    <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                         <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
                         <div class="space-y-3">
                             <button id="uploadBtnSidebar" class="w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left hidden">
@@ -209,10 +209,10 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
     
     <!-- Listener Section (shown only for non-producers) -->
     <div id="listenerSection" class="hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- My Purchases -->
-            <div class="lg:col-span-2">
-                <div class="glass-strong rounded-3xl p-8">
+            <div class="lg:col-span-2 min-w-0">
+                <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.my_purchases')}</h2>
                     
                     <!-- Purchases Loading -->
@@ -276,9 +276,9 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             </div>
             
             <!-- Sidebar -->
-            <div class="space-y-8">
+            <div class="space-y-8 min-w-0">
                 <!-- Quick Actions -->
-                <div class="glass-strong rounded-3xl p-8">
+                <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.quick_actions')}</h2>
                     <div class="space-y-3">
                         <a href="/${locale}/browse" class="block w-full px-6 py-3 glass rounded-xl hover:bg-white/10 text-left">
@@ -294,7 +294,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 </div>
                 
                 <!-- Listener Stats -->
-                <div class="glass-strong rounded-3xl p-8">
+                <div class="glass-strong rounded-3xl p-8 w-full overflow-hidden">
                     <h2 class="text-2xl font-bold mb-6">${_('dashboard.your_stats')}</h2>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
