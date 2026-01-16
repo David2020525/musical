@@ -14,8 +14,14 @@
     "APP_URL": "https://musical.david2020524.workers.dev",
     "PLATFORM_COMMISSION_RATE": "0.15",
     "R2_ACCOUNT_ID": "8acb02437032e44576dc364343c04059",
-    "R2_BUCKET_NAME": "musichub-tracks",
+    "R2_BUCKET_NAME": "musical",
     "R2_PUBLIC_URL": "https://8acb02437032e44576dc364343c04059.r2.cloudflarestorage.com",
     "IYZICO_BASE_URL": "https://sandbox-api.iyzipay.com"
-  }
+  },
+  "r2_buckets": [
+    {
+      "binding": "TRACKS_BUCKET",
+      "bucket_name": "musical"
+    }
+  ]
 }

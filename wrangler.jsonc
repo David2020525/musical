@@ -1,8 +1,8 @@
 {
   "name": "musical",
+  "main": "dist/_worker.js",
   "compatibility_date": "2026-01-14",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "dist",
   "d1_databases": [
     {
       "binding": "DB",
@@ -13,7 +13,7 @@
   // Environment variables for production deployment
   // Use: npx wrangler pages secret put <KEY_NAME> --project-name musical
   "vars": {
-    "APP_URL": "https://607ce9da.musichub-4yq.pages.dev",
+    "APP_URL": "https://musical.david2020524.workers.dev",
     "PLATFORM_COMMISSION_RATE": "0.15",
     "R2_ACCOUNT_ID": "8acb02437032e44576dc364343c04059",
     "R2_BUCKET_NAME": "musical",
