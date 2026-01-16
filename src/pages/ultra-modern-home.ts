@@ -100,6 +100,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             animation: float 6s ease-in-out infinite;
         }
         
+        /* Playing State - Cards */
+        [data-track].playing {
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.5), 0 0 60px rgba(236, 72, 153, 0.3);
+            border: 1px solid rgba(147, 51, 234, 0.4) !important;
+        }
+        
         /* Shimmer Effect */
         @keyframes shimmer {
             0% { background-position: -1000px; }
@@ -514,6 +520,65 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     // Fetch and display tracks data
     const locale = '${locale}';
     
+    // Play track from card click (replaces individual play buttons)
+    window.playTrackFromCard = function(card) {
+        try {
+            const trackData = card.getAttribute('data-track');
+            if (!trackData) return;
+            
+            const track = JSON.parse(trackData);
+            
+            // Check if Global Audio Player exists
+            if (typeof window.GlobalAudioPlayer === 'undefined') {
+                console.error('Global Audio Player not initialized');
+                return;
+            }
+            
+            // Get current state
+            const currentTrack = window.GlobalAudioPlayer.getCurrentTrack();
+            const isPlaying = window.GlobalAudioPlayer.isPlaying();
+            
+            // If same track, toggle play/pause
+            if (currentTrack && currentTrack.id === track.id) {
+                window.GlobalAudioPlayer.toggle();
+            } else {
+                // Play new track
+                window.GlobalAudioPlayer.play(track);
+            }
+            
+            // Update visual state
+            updateCardStates();
+        } catch (error) {
+            console.error('Error playing track from card:', error);
+        }
+    };
+    
+    // Update all cards to show playing state
+    window.updateCardStates = function() {
+        if (typeof window.GlobalAudioPlayer === 'undefined') return;
+        
+        const currentTrack = window.GlobalAudioPlayer.getCurrentTrack();
+        const isPlaying = window.GlobalAudioPlayer.isPlaying();
+        
+        // Update all track cards
+        document.querySelectorAll('[data-track]').forEach(card => {
+            try {
+                const trackData = card.getAttribute('data-track');
+                if (!trackData) return;
+                
+                const track = JSON.parse(trackData);
+                
+                if (currentTrack && track.id === currentTrack.id && isPlaying) {
+                    card.classList.add('playing');
+                } else {
+                    card.classList.remove('playing');
+                }
+            } catch (e) {
+                // Skip invalid cards
+            }
+        });
+    };
+    
     async function loadHomepageData() {
         try {
             // Fetch tracks
@@ -700,10 +765,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         const [featured, ...rest] = tracks;
         
-        // Build featured track HTML
-        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">';
+        // Build featured track HTML with card-level click
+        const trackJson = JSON.stringify(featured).replace(/'/g, '&apos;');
+        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
         html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
-        html += '<div class="absolute inset-0 bg-black/40"></div>';
+        html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+        
+        // Large play icon that appears on hover
+        html += '<div class="absolute inset-0 flex items-center justify-center z-10">';
+        html += '<div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 shadow-2xl">';
+        html += '<i class="fas fa-play text-2xl text-white ml-1"></i>';
+        html += '</div></div>';
+        
         html += '<i class="fas fa-music text-6xl text-white/30 relative z-10"></i>';
         
         // Add DEMO badge if this is a demo track
@@ -712,9 +785,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + demoBadge + '</div>';
         }
         
-        html += '<div class="absolute bottom-4 right-4 z-20">';
-        html += window.generatePlayButton ? window.generatePlayButton(featured, 'lg') : '';
-        html += '</div></div>';
+        html += '</div>';
         html += '<div class="p-8">';
         html += '<h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">' + featured.title + '</h3>';
         html += '<p class="text-gray-400 line-clamp-1">' + (featured.artist || featured.producer_name || 'Unknown Artist') + '</p>';
@@ -723,21 +794,28 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         html += '<span><i class="fas fa-heart mr-1"></i> ' + (featured.likes_count || 0) + '</span>';
         html += '</div></div></div>';
         
-        // Build other tracks HTML
+        // Build other tracks HTML with card-level click
         html += '<div class="grid grid-rows-2 gap-6">';
         rest.forEach(track => {
-            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4">';
-            html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative">';
-            html += '<i class="fas fa-music text-3xl text-white/30"></i>';
+            const trackJson = JSON.stringify(track).replace(/'/g, '&apos;');
+            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
+            html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
+            
+            // Play icon overlay that appears on hover
+            html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+            html += '<div class="absolute inset-0 flex items-center justify-center z-10">';
+            html += '<div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300">';
+            html += '<i class="fas fa-play text-sm text-white ml-0.5"></i>';
+            html += '</div></div>';
+            
+            html += '<i class="fas fa-music text-3xl text-white/30 relative z-0"></i>';
             
             // Add DEMO badge if this is a demo track
             if (track.is_demo) {
                 html += '<div class="absolute top-1 left-1 px-2 py-0.5 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
             }
             
-            html += '<div class="absolute inset-0 flex items-center justify-center">';
-            html += window.generatePlayButton ? window.generatePlayButton(track, 'sm') : '';
-            html += '</div></div>';
+            html += '</div>';
             html += '<div class="flex-1 min-w-0">';
             html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
             html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
@@ -759,18 +837,25 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             const isTop3 = index < 3;
             const rankClass = isTop3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600';
             
-            html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer">';
-            html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center">' + (index + 1) + '</div>';
-            html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative">';
-            html += '<i class="fas fa-music text-2xl text-white/30"></i>';
-            html += '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">';
-            html += window.generatePlayButton ? window.generatePlayButton(track, 'sm') : '';
+            const trackJson = JSON.stringify(track).replace(/'/g, '&apos;');
+            html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\'>';
+            html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center flex-shrink-0">' + (index + 1) + '</div>';
+            html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative overflow-hidden">';
+            
+            // Play icon overlay
+            html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+            html += '<div class="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity">';
+            html += '<div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">';
+            html += '<i class="fas fa-play text-xs text-white ml-0.5"></i>';
             html += '</div></div>';
+            
+            html += '<i class="fas fa-music text-2xl text-white/30 relative z-0"></i>';
+            html += '</div>';
             html += '<div class="flex-1 min-w-0">';
             html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
             html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
             html += '</div>';
-            html += '<div class="text-right text-gray-500 text-sm space-y-1">';
+            html += '<div class="text-right text-gray-500 text-sm space-y-1 flex-shrink-0">';
             html += '<div><i class="fas fa-play mr-2"></i>' + (track.plays_count || 0) + '</div>';
             html += '<div><i class="fas fa-heart mr-2"></i>' + (track.likes_count || 0) + '</div>';
             html += '</div></div>';
@@ -795,6 +880,33 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     window.addEventListener('DOMContentLoaded', () => {
         loadHomepageData();
         revealOnScroll();
+        
+        // Listen for audio events to update card states
+        const audio = document.getElementById('global-audio-element');
+        if (audio) {
+            audio.addEventListener('play', () => {
+                if (typeof window.updateCardStates === 'function') {
+                    window.updateCardStates();
+                }
+            });
+            audio.addEventListener('pause', () => {
+                if (typeof window.updateCardStates === 'function') {
+                    window.updateCardStates();
+                }
+            });
+            audio.addEventListener('ended', () => {
+                if (typeof window.updateCardStates === 'function') {
+                    window.updateCardStates();
+                }
+            });
+        }
+        
+        // Update periodically (for cross-page sync)
+        setInterval(() => {
+            if (typeof window.updateCardStates === 'function') {
+                window.updateCardStates();
+            }
+        }, 1000);
     });
     
     // Scroll reveal
