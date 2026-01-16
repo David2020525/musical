@@ -184,28 +184,44 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     </span>
                 </a>
                 
-                <!-- Center Search -->
+                <!-- Center Search - Artistic Version -->
                 <div class="hidden lg:flex flex-1 max-w-2xl mx-12">
-                    <div class="relative w-full">
+                    <div class="relative w-full group">
                         <input 
                             type="text" 
                             id="navSearch"
                             placeholder="Search tracks, artists, albums..."
-                            class="w-full px-6 py-4 pl-14 glass-strong rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                            class="w-full px-6 py-4 pl-14 glass-strong rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all border border-white/10 hover:border-purple-500/30 focus:border-purple-500/50 backdrop-blur-xl"
                         >
-                        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                        <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-purple-400 group-focus-within:text-pink-400 transition-colors"></i>
                         <div class="absolute right-4 top-1/2 -translate-y-1/2">
-                            <kbd class="px-2 py-1 text-xs glass rounded-lg">⌘K</kbd>
+                            <kbd class="px-2.5 py-1.5 text-xs glass-strong rounded-lg border border-white/10 text-purple-300 font-mono shadow-lg">⌘K</kbd>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Navigation Links -->
-                <div class="hidden lg:flex items-center space-x-6">
-                    <a href="/${locale}/browse" class="text-white/60 hover:text-white transition-colors">${t('nav.browse', locale)}</a>
-                    <a href="/${locale}/forum" class="text-white/60 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
-                    <a href="/${locale}/blog" class="text-white/60 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
-                    <a href="/${locale}/dashboard" class="text-white/60 hover:text-white transition-colors">${t('nav.dashboard', locale)}</a>
+                <!-- Navigation Links - Artistic Version -->
+                <div class="hidden lg:flex items-center space-x-3">
+                    <a href="/${locale}/browse" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
+                        <span class="relative z-10">${t('nav.browse', locale)}</span>
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
+                    </a>
+                    <a href="/${locale}/forum" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
+                        <span class="relative z-10">${t('nav.forum', locale)}</span>
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
+                    </a>
+                    <a href="/${locale}/blog" class="px-4 py-2 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all relative group">
+                        <span class="relative z-10">${t('nav.blog', locale)}</span>
+                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all"></div>
+                    </a>
+                    <a href="/${locale}/dashboard" class="px-5 py-2.5 rounded-xl glass-strong border border-purple-500/30 text-white font-semibold hover:border-purple-500/50 transition-all relative group overflow-hidden shadow-lg shadow-purple-500/20">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-purple-400"></i>
+                            ${t('nav.dashboard', locale)}
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                    </a>
                 </div>
                 
                 <!-- Right Actions -->
