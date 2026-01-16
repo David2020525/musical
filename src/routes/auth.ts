@@ -385,9 +385,25 @@ auth.post('/forgot-password', async (c) => {
         VALUES (?, ?, ?)
       `).bind(user.id, resetToken, tokenExpiration).run()
 
-      // TODO: Send email with reset link
-      // For now, we'll return the token (remove in production)
-      console.log(`Password reset token for ${email}: ${resetToken}`)
+      // Send password reset email
+      const { getEmailService, getPasswordResetEmailTemplate } = await import('../lib/email')
+      const emailService = getEmailService(c.env)
+      
+      const resetUrl = `${c.env.APP_URL || 'https://musical.david2020524.workers.dev'}/en/reset-password?token=${resetToken}`
+      const emailTemplate = getPasswordResetEmailTemplate({
+        userName: user.name || user.username,
+        resetUrl,
+        locale: 'en'
+      })
+
+      await emailService.send({
+        to: user.email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        text: emailTemplate.text,
+      })
+
+      console.log(`✅ Password reset email sent to ${email}`)
     }
 
     return c.json({
