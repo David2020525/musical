@@ -509,25 +509,23 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // Display message in Editor's Picks
         const editorsContainer = document.getElementById('editorsPicks');
         if (editorsContainer) {
-            editorsContainer.innerHTML = \`
-                <div class="col-span-full glass-strong rounded-3xl p-12 text-center">
-                    <i class="fas fa-music text-6xl text-gray-600 mb-4"></i>
-                    <h3 class="text-2xl font-bold mb-2 text-gray-400">No Tracks Yet</h3>
-                    <p class="text-gray-500">Check back soon for amazing music!</p>
-                </div>
-            \`;
+            editorsContainer.innerHTML = 
+                '<div class="col-span-full glass-strong rounded-3xl p-12 text-center">' +
+                '<i class="fas fa-music text-6xl text-gray-600 mb-4"></i>' +
+                '<h3 class="text-2xl font-bold mb-2 text-gray-400">No Tracks Yet</h3>' +
+                '<p class="text-gray-500">Check back soon for amazing music!</p>' +
+                '</div>';
         }
         
         // Display message in Trending Chart
         const trendingContainer = document.getElementById('trendingChart');
         if (trendingContainer) {
-            trendingContainer.innerHTML = \`
-                <div class="glass rounded-2xl p-12 text-center">
-                    <i class="fas fa-chart-line text-6xl text-gray-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2 text-gray-400">No Trending Tracks</h3>
-                    <p class="text-gray-500">Be the first to upload!</p>
-                </div>
-            \`;
+            trendingContainer.innerHTML = 
+                '<div class="glass rounded-2xl p-12 text-center">' +
+                '<i class="fas fa-chart-line text-6xl text-gray-600 mb-4"></i>' +
+                '<h3 class="text-xl font-bold mb-2 text-gray-400">No Trending Tracks</h3>' +
+                '<p class="text-gray-500">Be the first to upload!</p>' +
+                '</div>';
         }
     }
     
@@ -537,80 +535,70 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         const [featured, ...rest] = tracks;
         
-        container.innerHTML = \`
-            <!-- Featured Track (Large) -->
-            <div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">
-                <div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">
-                    <div class="absolute inset-0 bg-black/40"></div>
-                    <i class="fas fa-music text-6xl text-white/30 relative z-10"></i>
-                    <div class="absolute bottom-4 right-4 z-20">
-                        \${window.generatePlayButton ? window.generatePlayButton(featured, 'lg') : ''}
-                    </div>
-                </div>
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">
-                        \${featured.title}
-                    </h3>
-                    <p class="text-gray-400 line-clamp-1">\${featured.artist || featured.producer_name || 'Unknown Artist'}</p>
-                    <div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">
-                        <span><i class="fas fa-play mr-1"></i> \${featured.plays_count || 0}</span>
-                        <span><i class="fas fa-heart mr-1"></i> \${featured.likes_count || 0}</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Other Picks (Small Cards) -->
-            <div class="grid grid-rows-2 gap-6">
-                \${rest.map(track => \`
-                    <div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4">
-                        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative">
-                            <i class="fas fa-music text-3xl text-white/30"></i>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                \${window.generatePlayButton ? window.generatePlayButton(track, 'sm') : ''}
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
-                                \${track.title}
-                            </h4>
-                            <p class="text-sm text-gray-400 line-clamp-1">\${track.artist || track.producer_name || 'Unknown Artist'}</p>
-                            <div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">
-                                <span><i class="fas fa-play mr-1"></i> \${track.plays_count || 0}</span>
-                            </div>
-                        </div>
-                    </div>
-                \`).join('')}
-            </div>
-        \`;
+        // Build featured track HTML
+        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer">';
+        html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
+        html += '<div class="absolute inset-0 bg-black/40"></div>';
+        html += '<i class="fas fa-music text-6xl text-white/30 relative z-10"></i>';
+        html += '<div class="absolute bottom-4 right-4 z-20">';
+        html += window.generatePlayButton ? window.generatePlayButton(featured, 'lg') : '';
+        html += '</div></div>';
+        html += '<div class="p-8">';
+        html += '<h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">' + featured.title + '</h3>';
+        html += '<p class="text-gray-400 line-clamp-1">' + (featured.artist || featured.producer_name || 'Unknown Artist') + '</p>';
+        html += '<div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">';
+        html += '<span><i class="fas fa-play mr-1"></i> ' + (featured.plays_count || 0) + '</span>';
+        html += '<span><i class="fas fa-heart mr-1"></i> ' + (featured.likes_count || 0) + '</span>';
+        html += '</div></div></div>';
+        
+        // Build other tracks HTML
+        html += '<div class="grid grid-rows-2 gap-6">';
+        rest.forEach(track => {
+            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4">';
+            html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative">';
+            html += '<i class="fas fa-music text-3xl text-white/30"></i>';
+            html += '<div class="absolute inset-0 flex items-center justify-center">';
+            html += window.generatePlayButton ? window.generatePlayButton(track, 'sm') : '';
+            html += '</div></div>';
+            html += '<div class="flex-1 min-w-0">';
+            html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
+            html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+            html += '<div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">';
+            html += '<span><i class="fas fa-play mr-1"></i> ' + (track.plays_count || 0) + '</span>';
+            html += '</div></div></div>';
+        });
+        html += '</div>';
+        
+        container.innerHTML = html;
     }
     
     function displayTrendingChart(tracks) {
         const container = document.getElementById('trendingChart');
         if (!container || tracks.length === 0) return;
         
-        container.innerHTML = tracks.map((track, index) => \`
-            <div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer">
-                <div class="text-3xl font-black \${index < 3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600'} w-12 text-center">
-                    \${index + 1}
-                </div>
-                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative">
-                    <i class="fas fa-music text-2xl text-white/30"></i>
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        \${window.generatePlayButton ? window.generatePlayButton(track, 'sm') : ''}
-                    </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">
-                        \${track.title}
-                    </h4>
-                    <p class="text-sm text-gray-400 line-clamp-1">\${track.artist || track.producer_name || 'Unknown Artist'}</p>
-                </div>
-                <div class="text-right text-gray-500 text-sm space-y-1">
-                    <div><i class="fas fa-play mr-2"></i>\${track.plays_count || 0}</div>
-                    <div><i class="fas fa-heart mr-2"></i>\${track.likes_count || 0}</div>
-                </div>
-            </div>
-        \`).join('');
+        let html = '';
+        tracks.forEach((track, index) => {
+            const isTop3 = index < 3;
+            const rankClass = isTop3 ? 'bg-gradient-to-br from-yellow-400 to-orange-400 bg-clip-text text-transparent' : 'text-gray-600';
+            
+            html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer">';
+            html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center">' + (index + 1) + '</div>';
+            html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative">';
+            html += '<i class="fas fa-music text-2xl text-white/30"></i>';
+            html += '<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">';
+            html += window.generatePlayButton ? window.generatePlayButton(track, 'sm') : '';
+            html += '</div></div>';
+            html += '<div class="flex-1 min-w-0">';
+            html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
+            html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+            html += '</div>';
+            html += '<div class="text-right text-gray-500 text-sm space-y-1">';
+            html += '<div><i class="fas fa-play mr-2"></i>' + (track.plays_count || 0) + '</div>';
+            html += '<div><i class="fas fa-heart mr-2"></i>' + (track.likes_count || 0) + '</div>';
+            html += '</div></div>';
+        });
+        
+        container.innerHTML = html;
     }
     
     // Scroll reveal animation
