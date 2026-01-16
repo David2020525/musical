@@ -14,15 +14,15 @@ app.get('/application', async (c) => {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    const payload = await verifyToken(token)
-    if (!payload) {
+    const decoded = verifyToken(token, c.env)
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401)
     }
 
     const application = await c.env.DB.prepare(
       `SELECT * FROM producer_applications WHERE user_id = ?`
     )
-      .bind(payload.id)
+      .bind(decoded.userId)
       .first()
 
     return c.json({
@@ -44,8 +44,8 @@ app.post('/application', async (c) => {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    const payload = await verifyToken(token)
-    if (!payload) {
+    const decoded = verifyToken(token, c.env)
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401)
     }
 
@@ -81,7 +81,7 @@ app.post('/application', async (c) => {
     const existingApplication = await c.env.DB.prepare(
       `SELECT id, status FROM producer_applications WHERE user_id = ?`
     )
-      .bind(payload.id)
+      .bind(decoded.userId)
       .first()
 
     if (existingApplication) {
@@ -103,7 +103,7 @@ app.post('/application', async (c) => {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
     )
       .bind(
-        payload.id,
+        decoded.userId,
         cleanedData.real_name,
         cleanedData.turkish_id,
         cleanedData.phone,
@@ -123,7 +123,7 @@ app.post('/application', async (c) => {
     await c.env.DB.prepare(
       `UPDATE users SET producer_application_id = ? WHERE id = ?`
     )
-      .bind(result.meta.last_row_id, payload.id)
+      .bind(result.meta.last_row_id, decoded.userId)
       .run()
 
     return c.json({
@@ -149,8 +149,8 @@ app.get('/admin/applications', async (c) => {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    const payload = await verifyToken(token)
-    if (!payload) {
+    const decoded = verifyToken(token, c.env)
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401)
     }
 
@@ -158,7 +158,7 @@ app.get('/admin/applications', async (c) => {
     const user = await c.env.DB.prepare(
       `SELECT role FROM users WHERE id = ?`
     )
-      .bind(payload.id)
+      .bind(decoded.userId)
       .first<{ role: string }>()
 
     if (!user || user.role !== 'admin') {
@@ -232,8 +232,8 @@ app.post('/admin/applications/:id/review', async (c) => {
     }
 
     const token = authHeader.replace('Bearer ', '')
-    const payload = await verifyToken(token)
-    if (!payload) {
+    const decoded = verifyToken(token, c.env)
+    if (!decoded) {
       return c.json({ success: false, error: 'Invalid token' }, 401)
     }
 
@@ -241,7 +241,7 @@ app.post('/admin/applications/:id/review', async (c) => {
     const user = await c.env.DB.prepare(
       `SELECT role FROM users WHERE id = ?`
     )
-      .bind(payload.id)
+      .bind(decoded.userId)
       .first<{ role: string }>()
 
     if (!user || user.role !== 'admin') {
@@ -276,7 +276,7 @@ app.post('/admin/applications/:id/review', async (c) => {
        SET status = ?, admin_notes = ?, reviewed_by = ?, reviewed_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`
     )
-      .bind(status, admin_notes || null, payload.id, applicationId)
+      .bind(status, admin_notes || null, decoded.userId, applicationId)
       .run()
 
     // If approved, update user's is_producer flag
