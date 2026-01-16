@@ -86,6 +86,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     'footer.privacy': 'Privacy',
     'footer.terms': 'Terms',
     'footer.cookies': 'Cookies',
+    'footer.newsletter_title': 'Stay Updated',
+    'footer.newsletter_desc': 'Get the latest tracks, tips, and industry news delivered to your inbox',
+    'footer.newsletter_placeholder': 'Enter your email',
+    'footer.newsletter_button': 'Subscribe',
     
     // Genres
     'genre.electronic': 'Electronic',
@@ -432,6 +436,10 @@ export const translations: Record<Locale, Record<string, string>> = {
     'footer.privacy': 'Gizlilik',
     'footer.terms': 'Şartlar',
     'footer.cookies': 'Çerezler',
+    'footer.newsletter_title': 'Güncel Kalın',
+    'footer.newsletter_desc': 'En yeni parçaları, ipuçlarını ve sektör haberlerini e-postanızdan alın',
+    'footer.newsletter_placeholder': 'E-posta adresiniz',
+    'footer.newsletter_button': 'Abone Ol',
     
     // Genres (Turkish - keeping English names as commonly used)
     'genre.electronic': 'Electronic',
