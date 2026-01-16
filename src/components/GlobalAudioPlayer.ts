@@ -69,29 +69,49 @@ export const GlobalAudioPlayerHTML = `
 
 .player-artwork .playing-animation {
     position: absolute;
-    bottom: 4px;
-    left: 4px;
-    right: 4px;
+    inset: 0;
     display: flex;
-    gap: 2px;
-    align-items: flex-end;
-    height: 16px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
 }
 
-.playing-animation .bar {
-    flex: 1;
-    background: linear-gradient(to top, #9333EA, #EC4899);
-    animation: audioBar 0.8s ease-in-out infinite;
-    border-radius: 2px;
+.playing-animation .vinyl-disc {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9333EA 0%, #EC4899 50%, #3B82F6 100%);
+    position: relative;
+    animation: spin 3s linear infinite;
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.playing-animation .bar:nth-child(2) { animation-delay: 0.1s; }
-.playing-animation .bar:nth-child(3) { animation-delay: 0.2s; }
-.playing-animation .bar:nth-child(4) { animation-delay: 0.3s; }
+.vinyl-disc::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 8px rgba(147, 51, 234, 0.8);
+}
 
-@keyframes audioBar {
-    0%, 100% { height: 20%; }
-    50% { height: 80%; }
+.vinyl-disc::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9333EA, #EC4899);
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.8);
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .player-metadata {
@@ -308,10 +328,7 @@ export const GlobalAudioPlayerHTML = `
             <div class="player-artwork">
                 <img id="player-artwork" src="" alt="Track artwork">
                 <div class="playing-animation" id="playing-animation" style="display: none;">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
+                    <div class="vinyl-disc"></div>
                 </div>
             </div>
             <div class="player-metadata">
