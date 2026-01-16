@@ -7,7 +7,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${locale === 'tr' ? 'Şifre Sıfırla - MusicHub' : 'Reset Password - MusicHub'}</title>
+    <title>${t('auth.reset_password', locale)} - MusicHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -60,12 +60,10 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                     🔑
                 </div>
                 <h1 class="text-3xl font-bold text-white mb-2">
-                    ${locale === 'tr' ? 'Yeni Şifre Oluştur' : 'Create New Password'}
+                    ${t('auth.set_new_password', locale)}
                 </h1>
                 <p class="text-white text-opacity-90">
-                    ${locale === 'tr' 
-                        ? 'Hesabınız için güçlü bir şifre seçin' 
-                        : 'Choose a strong password for your account'}
+                    ${t('auth.choose_strong_password', locale)}
                 </p>
             </div>
 
@@ -78,7 +76,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                         <i class="fas fa-check-circle text-green-500 text-xl mr-3 mt-0.5"></i>
                         <div>
                             <h3 class="font-semibold text-green-900 mb-1">
-                                ${locale === 'tr' ? 'Şifre Değiştirildi!' : 'Password Changed!'}
+                                ${t('auth.verification_success', locale)}
                             </h3>
                             <p class="text-green-700 text-sm">
                                 ${locale === 'tr' 
@@ -109,7 +107,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">
                             <i class="fas fa-lock mr-2 text-purple-600"></i>
-                            ${locale === 'tr' ? 'Yeni Şifre' : 'New Password'}
+                            ${t('auth.new_password', locale)}
                         </label>
                         <div class="relative">
                             <input 
@@ -139,7 +137,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">
                             <i class="fas fa-lock mr-2 text-purple-600"></i>
-                            ${locale === 'tr' ? 'Şifre Tekrar' : 'Confirm Password'}
+                            ${t('auth.confirm_password', locale)}
                         </label>
                         <input 
                             type="password" 
@@ -158,7 +156,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                     >
                         <i class="fas fa-check mr-2"></i>
                         <span id="btnText">
-                            ${locale === 'tr' ? 'Şifreyi Değiştir' : 'Change Password'}
+                            ${t('auth.reset_password', locale)}
                         </span>
                     </button>
 
@@ -168,7 +166,7 @@ export const ultraModernResetPasswordHTML = (locale: string = 'en') => `
                 <div class="mt-6 text-center">
                     <a href="/${locale}/login" class="text-purple-600 hover:text-purple-700 font-medium">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        ${locale === 'tr' ? 'Giriş Sayfasına Dön' : 'Back to Login'}
+                        ${t('auth.back_to_login', locale)}
                     </a>
                 </div>
 

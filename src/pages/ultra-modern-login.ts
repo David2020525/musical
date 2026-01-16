@@ -108,8 +108,8 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
             
             <!-- Login Form -->
             <div class="glass-strong rounded-3xl p-8 neon-glow">
-                <h2 class="text-3xl font-bold mb-2">${locale === 'tr' ? 'Tekrar Hoş Geldiniz' : 'Welcome Back'}</h2>
-                <p class="text-gray-400 mb-8">${locale === 'tr' ? 'Hesabınıza giriş yapın' : 'Login to your account'}</p>
+                <h2 class="text-3xl font-bold mb-2">${t('auth.welcome_back', locale)}</h2>
+                <p class="text-gray-400 mb-8">${t('auth.login_to_account', locale)}</p>
                 
                 <!-- Error/Success Messages -->
                 <div id="error-message" class="hidden error-message mb-6">
@@ -137,7 +137,7 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
                             id="email" 
                             required
                             class="w-full px-4 py-3 modern-input rounded-xl"
-                            placeholder="${locale === 'tr' ? 'eposta@ornek.com' : 'your@email.com'}"
+                            placeholder="${t('auth.email_placeholder', locale)}"
                         >
                     </div>
                     
@@ -173,7 +173,7 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
                     
                     <!-- Register Link -->
                     <p class="text-center text-sm text-gray-400">
-                        ${locale === 'tr' ? 'Hesabınız yok mu?' : "Don't have an account?"}
+                        ${t('auth.dont_have_account', locale)}
                         <a href="/${locale}/register" class="text-purple-400 hover:text-purple-300 font-semibold">
                             ${t('auth.register', locale)}
                         </a>
@@ -184,13 +184,13 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
                 <div class="mt-8 pt-6 border-t border-white/10">
                     <p class="text-xs text-gray-500 text-center mb-3">
                         <i class="fas fa-info-circle mr-1"></i>
-                        ${locale === 'tr' ? 'Test Hesapları' : 'Test Accounts'}
+                        ${t('auth.test_accounts', locale)}
                     </p>
                     <div class="space-y-2 text-xs text-gray-400">
                         <div class="glass-strong rounded-lg p-3">
                             <p class="font-semibold text-purple-300 mb-1">
                                 <i class="fas fa-user mr-1"></i>
-                                ${locale === 'tr' ? 'Kullanıcı' : 'User'}
+                                ${t('auth.test_user', locale)}
                             </p>
                             <p>📧 john@example.com</p>
                             <p>🔑 password123</p>
@@ -198,7 +198,7 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
                         <div class="glass-strong rounded-lg p-3">
                             <p class="font-semibold text-pink-300 mb-1">
                                 <i class="fas fa-crown mr-1"></i>
-                                ${locale === 'tr' ? 'Yönetici' : 'Admin'}
+                                ${t('auth.test_admin', locale)}
                             </p>
                             <p>📧 admin@webapp.com</p>
                             <p>🔑 password123</p>
@@ -209,7 +209,7 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
             
             <!-- Language Switcher -->
             <div class="flex justify-center items-center space-x-4 mt-8">
-                <span class="text-sm text-gray-400">${locale === 'tr' ? 'Dil:' : 'Language:'}</span>
+                <span class="text-sm text-gray-400">${t('auth.language', locale)}:</span>
                 <div class="flex items-center space-x-2 glass-strong px-4 py-2 rounded-xl">
                     <a href="/en/login" class="px-3 py-1 rounded-lg text-sm font-medium ${locale === 'en' ? 'bg-purple-600' : 'hover:bg-white/5'}">
                         EN

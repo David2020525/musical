@@ -7,7 +7,7 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${locale === 'tr' ? 'Şifremi Unuttum - MusicHub' : 'Forgot Password - MusicHub'}</title>
+    <title>${t('auth.forgot_password', locale)} - MusicHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -55,12 +55,10 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                     🔐
                 </div>
                 <h1 class="text-3xl font-bold text-white mb-2">
-                    ${locale === 'tr' ? 'Şifremi Unuttum' : 'Forgot Password'}
+                    ${t('auth.forgot_password', locale)}
                 </h1>
                 <p class="text-white text-opacity-90">
-                    ${locale === 'tr' 
-                        ? 'E-posta adresinize şifre sıfırlama bağlantısı göndereceğiz' 
-                        : 'We\'ll send you a password reset link'}
+                    ${t('auth.reset_password_desc', locale)}
                 </p>
             </div>
 
@@ -73,12 +71,10 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                         <i class="fas fa-check-circle text-green-500 text-xl mr-3 mt-0.5"></i>
                         <div>
                             <h3 class="font-semibold text-green-900 mb-1">
-                                ${locale === 'tr' ? 'E-posta Gönderildi!' : 'Email Sent!'}
+                                ${t('auth.email_sent', locale)}
                             </h3>
                             <p class="text-green-700 text-sm" id="successText">
-                                ${locale === 'tr' 
-                                    ? 'Şifre sıfırlama bağlantısını e-posta adresinize gönderdik.' 
-                                    : 'We\'ve sent a password reset link to your email.'}
+                                ${t('auth.check_inbox', locale)}
                             </p>
                         </div>
                     </div>
@@ -90,7 +86,7 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                         <i class="fas fa-exclamation-circle text-red-500 text-xl mr-3 mt-0.5"></i>
                         <div>
                             <h3 class="font-semibold text-red-900 mb-1">
-                                ${locale === 'tr' ? 'Hata' : 'Error'}
+                                ${t('common.error', locale)}
                             </h3>
                             <p class="text-red-700 text-sm" id="errorText"></p>
                         </div>
@@ -104,13 +100,13 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">
                             <i class="fas fa-envelope mr-2 text-purple-600"></i>
-                            ${locale === 'tr' ? 'E-posta Adresi' : 'Email Address'}
+                            ${t('auth.email', locale)}
                         </label>
                         <input 
                             type="email" 
                             id="email" 
                             required
-                            placeholder="${locale === 'tr' ? 'ornek@email.com' : 'you@example.com'}"
+                            placeholder="${t('auth.email_placeholder', locale)}"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus transition-all"
                         >
                     </div>
@@ -123,7 +119,7 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                     >
                         <i class="fas fa-paper-plane mr-2"></i>
                         <span id="btnText">
-                            ${locale === 'tr' ? 'Sıfırlama Bağlantısı Gönder' : 'Send Reset Link'}
+                            ${t('auth.send_reset_link', locale)}
                         </span>
                     </button>
 
@@ -133,7 +129,7 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
                 <div class="mt-6 text-center">
                     <a href="/${locale}/login" class="text-purple-600 hover:text-purple-700 font-medium">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        ${locale === 'tr' ? 'Giriş Sayfasına Dön' : 'Back to Login'}
+                        ${t('auth.back_to_login', locale)}
                     </a>
                 </div>
 

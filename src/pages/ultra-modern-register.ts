@@ -159,9 +159,7 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                         >
                         <p class="mt-2 text-xs text-gray-400">
                             <i class="fas fa-info-circle mr-1"></i>
-                            ${locale === 'tr' 
-                                ? '3-20 karakter, sadece harf, rakam ve alt çizgi' 
-                                : '3-20 characters, letters, numbers and underscores only'}
+                            ${t('auth.username_requirements', locale)}
                         </p>
                     </div>
                     
@@ -194,7 +192,7 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                         >
                         <p class="mt-2 text-xs text-gray-400">
                             <i class="fas fa-info-circle mr-1"></i>
-                            ${locale === 'tr' ? 'En az 6 karakter' : 'Minimum 6 characters'}
+                            ${t('auth.password_requirements', locale)}
                         </p>
                     </div>
                     
@@ -209,12 +207,10 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                             <div class="ml-3">
                                 <div class="text-sm font-semibold text-purple-300 group-hover:text-purple-200 transition-colors">
                                     <i class="fas fa-microphone mr-2"></i>
-                                    ${locale === 'tr' ? 'Müzik Üreticisiyim' : "I'm a Music Producer"}
+                                    ${t('auth.im_producer', locale)}
                                 </div>
                                 <p class="text-xs text-gray-400 mt-1">
-                                    ${locale === 'tr' 
-                                        ? 'Kendi müziklerimi yüklemek ve satmak istiyorum' 
-                                        : 'I want to upload and sell my music'}
+                                    ${t('auth.producer_info', locale)}
                                 </p>
                             </div>
                         </label>
@@ -226,14 +222,14 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
                         id="submit-btn"
                         class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-105"
                     >
-                        <i class="fas fa-user-plus mr-2"></i>${locale === 'tr' ? 'Hesap Oluştur' : 'Create Account'}
+                        <i class="fas fa-user-plus mr-2"></i>${t('auth.create_account', locale)}
                     </button>
                     
                     <!-- Login Link -->
                     <p class="text-center text-sm text-gray-400">
-                        ${locale === 'tr' ? 'Zaten hesabınız var mı?' : 'Already have an account?'}
+                        ${t('auth.already_have_account', locale)}
                         <a href="/${locale}/login" class="text-purple-400 hover:text-purple-300 font-semibold">
-                            ${locale === 'tr' ? 'Giriş Yap' : 'Login'}
+                            ${t('auth.login', locale)}
                         </a>
                     </p>
                 </form>
@@ -241,7 +237,7 @@ export const ultraModernRegisterHTML = (locale: Locale = 'en') => `<!DOCTYPE htm
             
             <!-- Language Switcher -->
             <div class="flex justify-center items-center space-x-4 mt-8">
-                <span class="text-sm text-gray-400">${locale === 'tr' ? 'Dil:' : 'Language:'}</span>
+                <span class="text-sm text-gray-400">${t('auth.language', locale)}:</span>
                 <div class="flex items-center space-x-2 glass-strong px-4 py-2 rounded-xl">
                     <a href="/en/register" class="px-3 py-1 rounded-lg text-sm font-medium ${locale === 'en' ? 'bg-purple-600' : 'hover:bg-white/5'}">
                         EN

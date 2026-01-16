@@ -74,13 +74,13 @@ export function ultraModernVerifyEmailHTML(locale: Locale = 'en') {
                 <div class="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-check text-green-500 text-4xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold mb-2">${locale === 'tr' ? 'E-posta Doğrulandı!' : 'Email Verified!'}</h2>
+                <h2 class="text-2xl font-bold mb-2">${t('auth.verification_success', locale)}</h2>
                 <p class="text-gray-400 mb-6">
-                    ${locale === 'tr' ? 'Hesabınız başarıyla doğrulandı.' : 'Your account has been successfully verified.'}
+                    ${t('auth.account_verified', locale)}
                 </p>
                 <a href="/${locale}/dashboard" 
                    class="inline-block px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:opacity-90 transition-opacity">
-                    ${locale === 'tr' ? 'Panele Git' : 'Go to Dashboard'}
+                    ${t('auth.goto_dashboard', locale)}
                 </a>
             </div>
 
@@ -89,17 +89,17 @@ export function ultraModernVerifyEmailHTML(locale: Locale = 'en') {
                 <div class="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-times text-red-500 text-4xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold mb-2">${locale === 'tr' ? 'Doğrulama Başarısız' : 'Verification Failed'}</h2>
+                <h2 class="text-2xl font-bold mb-2">${t('auth.verification_failed', locale)}</h2>
                 <p class="text-gray-400 mb-6" id="error-message">
-                    ${locale === 'tr' ? 'Geçersiz veya süresi dolmuş bağlantı.' : 'Invalid or expired verification link.'}
+                    ${t('auth.invalid_token', locale)}
                 </p>
                 <button onclick="resendVerification()" 
                         class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:opacity-90 transition-opacity mb-3">
-                    ${locale === 'tr' ? 'Yeni Bağlantı Gönder' : 'Resend Verification'}
+                    ${t('auth.resend_verification', locale)}
                 </button>
                 <br>
                 <a href="/${locale}" class="text-gray-400 hover:text-white transition-colors text-sm">
-                    ${locale === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'}
+                    ${t('auth.goto_home', locale)}
                 </a>
             </div>
 
@@ -113,7 +113,7 @@ export function ultraModernVerifyEmailHTML(locale: Locale = 'en') {
                     ${locale === 'tr' ? 'Yeni doğrulama bağlantısı e-postanıza gönderildi.' : 'A new verification link has been sent to your email.'}
                 </p>
                 <a href="/${locale}" class="text-gray-400 hover:text-white transition-colors text-sm">
-                    ${locale === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'}
+                    ${t('auth.goto_home', locale)}
                 </a>
             </div>
         </div>
