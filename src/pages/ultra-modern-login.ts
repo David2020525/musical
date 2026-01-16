@@ -180,31 +180,6 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
                     </p>
                 </form>
                 
-                <!-- Test Accounts Info -->
-                <div class="mt-8 pt-6 border-t border-white/10">
-                    <p class="text-xs text-gray-500 text-center mb-3">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        ${t('auth.test_accounts', locale)}
-                    </p>
-                    <div class="space-y-2 text-xs text-gray-400">
-                        <div class="glass-strong rounded-lg p-3">
-                            <p class="font-semibold text-purple-300 mb-1">
-                                <i class="fas fa-user mr-1"></i>
-                                ${t('auth.test_user', locale)}
-                            </p>
-                            <p>📧 john@example.com</p>
-                            <p>🔑 password123</p>
-                        </div>
-                        <div class="glass-strong rounded-lg p-3">
-                            <p class="font-semibold text-pink-300 mb-1">
-                                <i class="fas fa-crown mr-1"></i>
-                                ${t('auth.test_admin', locale)}
-                            </p>
-                            <p>📧 admin@webapp.com</p>
-                            <p>🔑 password123</p>
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- Language Switcher -->

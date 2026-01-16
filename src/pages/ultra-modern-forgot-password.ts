@@ -11,140 +11,185 @@ export const ultraModernForgotPasswordHTML = (locale: string = 'en') => `
     <title>${t('auth.forgot_password', locale)} - MUSICAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
         * {
             font-family: 'Inter', sans-serif;
         }
+        
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        
+        /* Gradient mesh background */
+        .gradient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(219, 39, 119, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            animation: meshMove 20s ease infinite;
         }
+        
+        @keyframes meshMove {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
         .glass-strong {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .btn-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
+        
+        .modern-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
         }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        
+        .modern-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(147, 51, 234, 0.5);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
         }
-        .input-focus:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        
+        .modern-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body>
+    <div class="gradient-mesh"></div>
     
-    <div class="w-full max-w-md">
-        <!-- Card -->
-        <div class="glass-strong rounded-2xl shadow-2xl overflow-hidden">
-            
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-center">
-                <div class="text-white text-5xl mb-4">
-                    🔐
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Card -->
+            <div class="glass-strong rounded-3xl shadow-2xl p-8 border border-white/10">
+                
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4">
+                        <i class="fas fa-key text-2xl text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        ${t('auth.forgot_password', locale)}
+                    </h1>
+                    <p class="text-gray-400 text-sm">
+                        ${t('auth.reset_password_desc', locale)}
+                    </p>
                 </div>
-                <h1 class="text-3xl font-bold text-white mb-2">
-                    ${t('auth.forgot_password', locale)}
-                </h1>
-                <p class="text-white text-opacity-90">
-                    ${t('auth.reset_password_desc', locale)}
+
+                <!-- Content -->
+                <div>
+                    
+                    <!-- Success Message (hidden by default) -->
+                    <div id="successMessage" class="hidden mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-emerald-400 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h3 class="font-semibold text-emerald-400 mb-1">
+                                    ${t('auth.email_sent', locale)}
+                                </h3>
+                                <p class="text-emerald-300/80 text-sm" id="successText">
+                                    ${t('auth.check_inbox', locale)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message (hidden by default) -->
+                    <div id="errorMessage" class="hidden mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-circle text-red-400 text-xl mr-3 mt-0.5"></i>
+                            <div>
+                                <h3 class="font-semibold text-red-400 mb-1">
+                                    ${t('common.error', locale)}
+                                </h3>
+                                <p class="text-red-300/80 text-sm" id="errorText"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="forgotPasswordForm" class="space-y-6">
+                        
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-2 text-sm">
+                                <i class="fas fa-envelope mr-2 text-purple-400"></i>
+                                ${t('auth.email', locale)}
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                required
+                                autocomplete="email"
+                                placeholder="${t('auth.email_placeholder', locale)}"
+                                class="w-full px-4 py-3 modern-input rounded-xl"
+                            >
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            id="submitBtn"
+                            class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-105"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            <span id="btnText">
+                                ${t('auth.send_reset_link', locale)}
+                            </span>
+                        </button>
+
+                    </form>
+
+                    <!-- Back to Login -->
+                    <div class="mt-6 text-center">
+                        <a href="/${locale}/login" class="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            ${t('auth.back_to_login', locale)}
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Additional Info -->
+            <div class="mt-6 text-center text-gray-400 text-sm">
+                <p>
+                    <i class="fas fa-shield-alt mr-2 text-purple-400"></i>
+                    ${locale === 'tr' 
+                        ? 'E-postanız güvende ve asla üçüncü taraflarla paylaşılmaz' 
+                        : 'Your email is safe and never shared with third parties'}
                 </p>
             </div>
-
-            <!-- Content -->
-            <div class="p-8">
-                
-                <!-- Success Message (hidden by default) -->
-                <div id="successMessage" class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div class="flex items-start">
-                        <i class="fas fa-check-circle text-green-500 text-xl mr-3 mt-0.5"></i>
-                        <div>
-                            <h3 class="font-semibold text-green-900 mb-1">
-                                ${t('auth.email_sent', locale)}
-                            </h3>
-                            <p class="text-green-700 text-sm" id="successText">
-                                ${t('auth.check_inbox', locale)}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Error Message (hidden by default) -->
-                <div id="errorMessage" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div class="flex items-start">
-                        <i class="fas fa-exclamation-circle text-red-500 text-xl mr-3 mt-0.5"></i>
-                        <div>
-                            <h3 class="font-semibold text-red-900 mb-1">
-                                ${t('common.error', locale)}
-                            </h3>
-                            <p class="text-red-700 text-sm" id="errorText"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Form -->
-                <form id="forgotPasswordForm" class="space-y-6">
-                    
-                    <!-- Email -->
-                    <div>
-                        <label class="block text-gray-700 font-medium mb-2">
-                            <i class="fas fa-envelope mr-2 text-purple-600"></i>
-                            ${t('auth.email', locale)}
-                        </label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            required
-                            placeholder="${t('auth.email_placeholder', locale)}"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none input-focus transition-all"
-                        >
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button 
-                        type="submit" 
-                        id="submitBtn"
-                        class="w-full btn-gradient text-white font-semibold py-3 rounded-lg shadow-lg"
-                    >
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        <span id="btnText">
-                            ${t('auth.send_reset_link', locale)}
-                        </span>
-                    </button>
-
-                </form>
-
-                <!-- Back to Login -->
-                <div class="mt-6 text-center">
-                    <a href="/${locale}/login" class="text-purple-600 hover:text-purple-700 font-medium">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        ${t('auth.back_to_login', locale)}
+            
+            <!-- Language Switcher -->
+            <div class="flex justify-center items-center space-x-4 mt-6">
+                <span class="text-sm text-gray-400">${t('auth.language', locale)}:</span>
+                <div class="flex items-center space-x-2 glass-strong px-4 py-2 rounded-xl">
+                    <a href="/en/forgot-password" class="px-3 py-1 rounded-lg text-sm font-medium ${locale === 'en' ? 'bg-purple-600' : 'hover:bg-white/5'}">
+                        EN
+                    </a>
+                    <a href="/tr/forgot-password" class="px-3 py-1 rounded-lg text-sm font-medium ${locale === 'tr' ? 'bg-purple-600' : 'hover:bg-white/5'}">
+                        TR
                     </a>
                 </div>
-
             </div>
-
-        </div>
-
-        <!-- Additional Info -->
-        <div class="mt-6 text-center text-white text-sm">
-            <p class="opacity-90">
-                ${locale === 'tr' 
-                    ? '🔒 E-postanız güvende ve asla üçüncü taraflarla paylaşılmaz' 
-                    : '🔒 Your email is safe and never shared with third parties'}
-            </p>
         </div>
     </div>
 
