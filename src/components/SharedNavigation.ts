@@ -14,12 +14,14 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
     } = config;
     
     const otherLocale = locale === 'en' ? 'tr' : 'en';
-    const otherLocaleName = locale === 'en' ? 'Türkçe' : 'English';
+    const otherLocaleName = locale === 'en' ? 'Türkçeye geç' : 'Switch to English';
     
-    // Determine current path to build locale-switched URL
-    const getCurrentPath = () => {
-        // This will be replaced by actual path in the route handler
-        return `{{CURRENT_PATH}}`;
+    // Build locale-switched URL based on current page
+    const getLocaleSwitchUrl = () => {
+        if (currentPage === 'home') {
+            return `/${otherLocale}`;
+        }
+        return `/${otherLocale}/${currentPage}`;
     };
     
     return `
@@ -59,7 +61,7 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
                 
                 <!-- Language Switcher -->
                 <a 
-                    href="/${otherLocale}${getCurrentPath().replace(/^\/(en|tr)/, '')}" 
+                    href="${getLocaleSwitchUrl()}" 
                     class="px-3 py-2 glass-strong rounded-lg hover:bg-white/10 transition-all flex items-center space-x-2"
                     title="${otherLocaleName}">
                     <i class="fas fa-globe text-sm"></i>

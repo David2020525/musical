@@ -1,5 +1,7 @@
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
+import { SharedNavigationHTML, SharedNavigationScript } from '../components/SharedNavigation';
+import { SharedFooterHTML } from '../components/SharedFooter';
 import { t, Locale } from '../lib/i18n';
 
 export function ultraModernHomeHTML(locale: Locale = 'en') {
@@ -167,68 +169,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
 </head>
 <body class="text-white min-h-screen overflow-x-hidden">
     
-    <!-- Ultra-Modern Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <a href="/${locale}" class="flex items-center space-x-3 group">
-                    <div class="relative">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 flex items-center justify-center neon-glow">
-                            <i class="fas fa-wave-square text-white text-xl"></i>
-                        </div>
-                        <div class="absolute -inset-1 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl opacity-20 blur group-hover:opacity-40 transition-opacity"></div>
-                    </div>
-                    <span class="text-2xl font-black bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                        MusicHub
-                    </span>
-                </a>
-                
-                <!-- Center Search - Compact Version -->
-                <div class="hidden lg:flex flex-1 max-w-md mx-8">
-                    <div class="relative w-full group">
-                        <input 
-                            type="text" 
-                            id="navSearch"
-                            placeholder="${t('home.search_placeholder', locale)}"
-                            class="w-full px-4 py-2.5 pl-11 pr-4 glass-strong rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all border border-white/10 hover:border-purple-500/30 focus:border-purple-500/50 backdrop-blur-xl text-sm"
-                        >
-                        <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 group-focus-within:text-pink-400 transition-colors text-sm"></i>
-                    </div>
-                </div>
-                
-                <!-- Navigation Links - Match Dashboard Style -->
-                <div class="hidden lg:flex items-center space-x-6">
-                    <a href="/${locale}/browse" class="text-white/70 hover:text-white transition-colors">${t('nav.browse', locale)}</a>
-                    <a href="/${locale}/forum" class="text-white/70 hover:text-white transition-colors">${t('nav.forum', locale)}</a>
-                    <a href="/${locale}/blog" class="text-white/70 hover:text-white transition-colors">${t('nav.blog', locale)}</a>
-                    <a href="/${locale}/dashboard" class="text-white font-semibold">${t('nav.dashboard', locale)}</a>
-                </div>
-                
-                <!-- Right Actions -->
-                <div class="flex items-center space-x-4">
-                    <!-- Language Switcher -->
-                    <a 
-                        href="/${otherLocale}" 
-                        class="px-3 py-2 rounded-xl glass hover:glass-strong transition-all font-semibold flex items-center gap-2 text-sm"
-                        title="${locale === 'en' ? 'Türkçeye geç' : 'Switch to English'}"
-                    >
-                        <i class="fas fa-globe text-sm"></i>
-                        <span>${otherLocale.toUpperCase()}</span>
-                    </a>
-                    
-                    <div id="authSection" class="hidden lg:block">
-                        <a href="/${locale}/login" class="px-4 py-2 glass rounded-xl hover:bg-white/10 text-sm">
-                            ${t('nav.login', locale)}
-                        </a>
-                    </div>
-                    
-                    <!-- Mobile Menu Toggle (hidden for now - can be added later) -->
-                </div>
-            </div>
-        </div>
-    </nav>
+    ${SharedNavigationHTML(locale, { currentPage: 'home', showSearch: true, showAuth: true })}
     
     <!-- Hero Section with Gradient Mesh -->
     <div class="pt-32 pb-24 px-6 relative overflow-hidden">
