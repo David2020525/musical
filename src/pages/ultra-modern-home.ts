@@ -757,6 +757,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         // Display Trending Chart (all 10 demo tracks)
         displayTrendingChart(demoTracks);
+        
+        // Display All Tracks Grid (8 tracks)
+        displayTrackGrid(demoTracks.slice(0, 8));
+        
+        // Display Blog Preview (3 demo posts)
+        displayBlogPreview();
     }
     
     function displayEditorsPicks(tracks) {
@@ -854,6 +860,87 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<div><i class="fas fa-play mr-2"></i>' + (track.plays_count || 0) + '</div>';
             html += '<div><i class="fas fa-heart mr-2"></i>' + (track.likes_count || 0) + '</div>';
             html += '</div></div>';
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    function displayTrackGrid(tracks) {
+        const container = document.getElementById('trackGrid');
+        if (!container || tracks.length === 0) return;
+        
+        let html = '';
+        tracks.forEach(track => {
+            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
+            html += '<div class="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
+            html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+            html += '<i class="fas fa-music text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
+            
+            // DEMO badge
+            if (track.is_demo) {
+                html += '<div class="absolute top-3 left-3 px-2 py-1 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
+            }
+            
+            html += '</div>';
+            html += '<div class="p-4">';
+            html += '<h3 class="font-bold mb-1 group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h3>';
+            html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+            html += '<div class="flex items-center justify-between mt-3 text-xs text-gray-500">';
+            html += '<span><i class="fas fa-play mr-1"></i> ' + (track.plays_count || 0) + '</span>';
+            html += '<span><i class="fas fa-heart mr-1"></i> ' + (track.likes_count || 0) + '</span>';
+            html += '</div></div></div>';
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    function displayBlogPreview() {
+        const container = document.getElementById('blogPreview');
+        if (!container) return;
+        
+        const demoPosts = [
+            {
+                title: locale === 'tr' ? 'Müzik Lisanslama Rehberi' : 'Music Licensing Guide for Beginners',
+                excerpt: locale === 'tr' ? 'Müziğinizi lisanslamak hakkında bilmeniz gereken her şey...' : 'Everything you need to know about licensing your music...',
+                author: 'Admin',
+                views: '1.5K',
+                category: locale === 'tr' ? 'Rehber' : 'Guide',
+                icon: 'fa-book'
+            },
+            {
+                title: locale === 'tr' ? 'Kaliteli Beat Yapım İpuçları' : 'Tips for Creating Quality Beats',
+                excerpt: locale === 'tr' ? 'Profesyonel beatler oluşturmak için en iyi uygulamalar...' : 'Best practices for crafting professional beats...',
+                author: 'Producer Team',
+                views: '2.3K',
+                category: locale === 'tr' ? 'Prodüksiyon' : 'Production',
+                icon: 'fa-music'
+            },
+            {
+                title: locale === 'tr' ? 'Müzik Pazarlaması 101' : 'Music Marketing 101',
+                excerpt: locale === 'tr' ? 'Müziğinizi etkili bir şekilde tanıtma stratejileri...' : 'Strategies for promoting your music effectively...',
+                author: 'Marketing Team',
+                views: '1.8K',
+                category: locale === 'tr' ? 'Pazarlama' : 'Marketing',
+                icon: 'fa-chart-line'
+            }
+        ];
+        
+        let html = '';
+        demoPosts.forEach(post => {
+            html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">';
+            html += '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">';
+            html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+            html += '<i class="fas ' + post.icon + ' text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
+            html += '<div class="absolute top-3 left-3 px-3 py-1 bg-blue-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + post.category + '</div>';
+            html += '</div>';
+            html += '<div class="p-6">';
+            html += '<h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">' + post.title + '</h3>';
+            html += '<p class="text-gray-400 text-sm mb-4 line-clamp-2">' + post.excerpt + '</p>';
+            html += '<div class="flex items-center justify-between text-sm text-gray-500">';
+            html += '<span><i class="fas fa-user mr-2"></i>' + post.author + '</span>';
+            html += '<span><i class="fas fa-eye mr-2"></i>' + post.views + ' views</span>';
+            html += '</div></div></div>';
         });
         
         container.innerHTML = html;
