@@ -71,9 +71,12 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
                 
                 ${showAuth ? `
                 <!-- Auth Section -->
-                <div id="authSection" class="hidden lg:block">
+                <div id="authSection" class="hidden lg:flex items-center space-x-3">
                     <a href="/${locale}/login" class="px-4 py-2 glass-strong rounded-xl hover:bg-white/10 transition-all text-sm">
                         ${t('nav.login', locale)}
+                    </a>
+                    <a href="/${locale}/register" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all text-sm">
+                        ${t('nav.register', locale)}
                     </a>
                 </div>
                 ` : ''}
