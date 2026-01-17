@@ -1,5 +1,5 @@
 import { Locale } from '../lib/i18n';
-import { SharedNavigationHTML } from '../components/SharedNavigation';
+import { SharedNavigationHTML, SharedNavigationScript } from '../components/SharedNavigation';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 
@@ -133,6 +133,8 @@ export const ultraModernBlogHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
     </div>
     
     ${GlobalAudioPlayerHTML}
+    
+    ${SharedNavigationScript(locale)}
     
     <script>
     // Play Button Functions
