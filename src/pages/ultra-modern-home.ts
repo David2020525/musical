@@ -361,7 +361,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
 </head>
 <body class="text-white min-h-screen overflow-x-hidden">
     
-    ${SharedNavigationHTML(locale, { currentPage: 'home', showSearch: true, showAuth: false })}
+    ${SharedNavigationHTML(locale, { currentPage: 'home', showSearch: true, showAuth: true })}
     
     <!-- Hero Section with Gradient Mesh -->
     <div class="pt-32 pb-32 px-6 relative overflow-hidden">
