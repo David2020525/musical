@@ -1,8 +1,10 @@
+import { Locale } from '../lib/i18n';
+import { SharedNavigationHTML } from '../components/SharedNavigation';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
 
-export const ultraModernBlogHTML = `<!DOCTYPE html>
-<html lang="en">
+export const ultraModernBlogHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
+<html lang="${locale}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,22 +28,7 @@ export const ultraModernBlogHTML = `<!DOCTYPE html>
     </style>
 </head>
 <body class="text-white pb-32">
-    <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
-        <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="/en" class="flex items-center space-x-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <i class="fas fa-music text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">MUSICAL</span>
-            </a>
-            <div class="flex items-center space-x-6">
-                <a href="/en" class="text-gray-300 hover:text-white">Home</a>
-                <a href="/en/browse" class="text-gray-300 hover:text-white">Browse</a>
-                <a href="/en/forum" class="text-gray-300 hover:text-white">Forum</a>
-                <a href="/en/blog" class="text-white font-semibold">Blog</a>
-            </div>
-        </div>
-    </nav>
+    ${SharedNavigationHTML(locale, { currentPage: 'blog', showSearch: true, showAuth: true })}
     
     <div class="pt-28 px-6 pb-32">
         <div class="max-w-[1400px] mx-auto">

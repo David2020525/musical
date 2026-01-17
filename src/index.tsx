@@ -234,7 +234,8 @@ app.get('/:locale/forum/:slug', c => {
 
 // Blog page
 app.get('/:locale/blog', c => {
-  return c.html(ultraModernBlogHTML)
+  const locale = c.req.param('locale') as Locale
+  return c.html(ultraModernBlogHTML(locale))
 })
 
 // Blog article detail page
