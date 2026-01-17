@@ -1,6 +1,7 @@
 import { Locale, t } from '../lib/i18n';
 import { GlobalAudioPlayerHTML } from '../components/GlobalAudioPlayer';
 import { PlayButtonScript } from '../components/PlayButton';
+import { SharedNavigationHTML } from '../components/SharedNavigation';
 
 export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
 <html lang="${locale}">
@@ -92,6 +93,8 @@ export const ultraModernLoginHTML = (locale: Locale = 'en') => `<!DOCTYPE html>
     </style>
 </head>
 <body>
+    ${SharedNavigationHTML(locale, { currentPage: 'login', showSearch: false, showAuth: false })}
+    
     <div class="gradient-mesh"></div>
     
     <div class="min-h-screen flex items-center justify-center p-6">
