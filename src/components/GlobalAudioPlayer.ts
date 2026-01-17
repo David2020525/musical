@@ -820,24 +820,29 @@ export const GlobalAudioPlayerHTML = `
     
     // Show player when cursor moves to bottom of screen
     document.addEventListener('mousemove', (e) => {
-        const windowHeight = window.innerHeight;
-        const bottomThreshold = 100; // Show when within 100px of bottom
+        if (!player || !state.isPlaying) return;
         
-        if (windowHeight - e.clientY < bottomThreshold) {
+        const windowHeight = window.innerHeight;
+        const bottomThreshold = 150; // Show when within 150px of bottom
+        const distanceFromBottom = windowHeight - e.clientY;
+        
+        if (distanceFromBottom < bottomThreshold) {
             showPlayer();
         }
     });
     
     // Show player when hovering over it
-    player.addEventListener('mouseenter', () => {
-        isPlayerHovered = true;
-        showPlayer();
-    });
-    
-    player.addEventListener('mouseleave', () => {
-        isPlayerHovered = false;
-        resetAutoHideTimer();
-    });
+    if (player) {
+        player.addEventListener('mouseenter', () => {
+            isPlayerHovered = true;
+            showPlayer();
+        });
+        
+        player.addEventListener('mouseleave', () => {
+            isPlayerHovered = false;
+            resetAutoHideTimer();
+        });
+    }
     
     // Start auto-hide timer when playback starts
     audio.addEventListener('play', () => {
