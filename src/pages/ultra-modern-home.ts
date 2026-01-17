@@ -364,7 +364,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     ${SharedNavigationHTML(locale, { currentPage: 'home', showSearch: true, showAuth: true })}
     
     <!-- Hero Section with Gradient Mesh -->
-    <div class="pt-32 pb-24 px-6 relative overflow-hidden">
+    <div class="pt-32 pb-32 px-6 relative overflow-hidden">
         <!-- Animated Gradient Background -->
         <div class="absolute inset-0 -z-10">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20 animate-gradient"></div>
@@ -412,7 +412,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     </div>
     
     <!-- Stats Section - Bento Style -->
-    <div class="px-6 mb-24">
+    <div class="px-6 mb-24 mt-16">
         <div class="max-w-[1400px] mx-auto">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
