@@ -38,7 +38,7 @@ export function NavigationHTML(currentPage: string = 'home') {
                 <!-- Language Switcher -->
                 <button 
                     id="languageSwitcher"
-                    class="px-3 py-2 glass-strong rounded-lg hover:bg-white/10 transition-all flex items-center space-x-2"
+                    class="px-3 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all flex items-center space-x-2"
                     title="Switch language">
                     <i class="fas fa-globe text-sm"></i>
                     <span id="currentLangLabel">EN</span>
