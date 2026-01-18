@@ -236,7 +236,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         </div>
 
         <!-- Tracks Grid -->
-        <div id="tracks-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+        <div id="tracks-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
 
         <!-- Load More Button -->
         <div id="load-more-container" class="text-center hidden">
@@ -298,7 +298,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
         // Fetch tracks
         async function loadTracks(append = false) {
-            if (isLoading) return;
+            if (isLoading || !loadingState || !tracksGrid || !emptyState) return;
             isLoading = true;
 
             try {
@@ -345,7 +345,8 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 // Check if empty
                 if (tracks.length === 0 && !append) {
                     emptyState.classList.remove('hidden');
-                    loadMoreContainer.classList.add('hidden');
+                    tracksGrid.classList.add('hidden');
+                    if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
                     return;
                 } else {
                     emptyState.classList.add('hidden');
@@ -359,16 +360,19 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
                 // Update load more button
                 hasMore = tracks.length === 12;
-                if (hasMore) {
-                    loadMoreContainer.classList.remove('hidden');
-                } else {
-                    loadMoreContainer.classList.add('hidden');
+                if (loadMoreContainer) {
+                    if (hasMore) {
+                        loadMoreContainer.classList.remove('hidden');
+                    } else {
+                        loadMoreContainer.classList.add('hidden');
+                    }
                 }
 
             } catch (error) {
                 console.error('Error loading tracks:', error);
-                loadingState.classList.add('hidden');
-                emptyState.classList.remove('hidden');
+                if (loadingState) loadingState.classList.add('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
+                if (tracksGrid) tracksGrid.classList.add('hidden');
             } finally {
                 isLoading = false;
             }
