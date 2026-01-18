@@ -77,11 +77,20 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             color: #ffffff;
         }
         
-        /* Style select options dropdown - transparent glass effect matching auth dropdown */
+        /* Style select options dropdown - note: limited browser support for option styling */
+        /* Browsers render dropdown menus natively, so transparency effects may not work */
         select option {
-            background-color: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.9);
             color: #ffffff;
             padding: 0.5rem;
+        }
+        
+        select option:checked,
+        select option:hover,
+        select option:focus {
+            background: rgba(147, 51, 234, 0.5);
+            background-color: rgba(147, 51, 234, 0.5);
         }
         
         /* For Firefox */
