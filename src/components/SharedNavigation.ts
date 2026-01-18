@@ -63,7 +63,7 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
                 <!-- Language Switcher -->
                 <a 
                     href="${getLocaleSwitchUrl()}" 
-                    class="px-3 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all flex items-center space-x-2"
+                    class="px-3 py-1 glass-strong rounded-lg hover:bg-white/10 transition-all flex items-center space-x-2"
                     title="${otherLocaleName}">
                     <i class="fas fa-globe text-sm"></i>
                     <span>${otherLocale.toUpperCase()}</span>
