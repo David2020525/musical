@@ -411,7 +411,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         // Event listeners
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value.trim();
+                currentSearch = searchInput.value.trim();
                 currentPage = 1;
                 
                 // Clear previous debounce timer
@@ -424,11 +424,11 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             });
             
             // Handle Enter key for immediate search
-            searchInput.addEventListener('keypress', (e) => {
+            searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-                    currentSearch = e.target.value.trim();
+                    currentSearch = searchInput.value.trim();
                     currentPage = 1;
                     loadTracks();
                 }
