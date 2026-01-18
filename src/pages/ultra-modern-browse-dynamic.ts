@@ -282,6 +282,16 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         const searchInput = document.getElementById('search-input');
         const genreFilter = document.getElementById('genre-filter');
 
+        // Read search query from URL on page load
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlQuery = urlParams.get('q');
+        if (urlQuery) {
+            currentSearch = urlQuery;
+            if (searchInput) {
+                searchInput.value = urlQuery;
+            }
+        }
+
         // Fetch tracks
         async function loadTracks(append = false) {
             if (isLoading) return;

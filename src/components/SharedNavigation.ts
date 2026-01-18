@@ -132,6 +132,27 @@ export function SharedNavigationScript(locale: Locale) {
                 localStorage.clear();
                 window.location.href = '/${locale}';
             };
+            
+            // Search functionality
+            const navSearchInput = document.getElementById('navSearch');
+            if (navSearchInput) {
+                navSearchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = e.target.value.trim();
+                        if (query.length >= 2) {
+                            window.location.href = \`/${locale}/browse?q=\${encodeURIComponent(query)}\`;
+                        }
+                    }
+                });
+                
+                // Keyboard shortcut (Cmd/Ctrl + K) to focus search
+                document.addEventListener('keydown', (e) => {
+                    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                        e.preventDefault();
+                        navSearchInput.focus();
+                    }
+                });
+            }
         })();
     </script>
     `;
