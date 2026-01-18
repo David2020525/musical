@@ -67,10 +67,27 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         /* Fix select dropdown styling */
         select {
             appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             padding-right: 3rem;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+        
+        /* Style select options dropdown */
+        select option {
+            background-color: rgba(0, 0, 0, 0.95);
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+        
+        /* For Firefox */
+        select:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 #ffffff;
         }
 
         /* Ensure proper text rendering in inputs */
