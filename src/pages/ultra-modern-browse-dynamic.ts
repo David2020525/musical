@@ -77,9 +77,11 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             color: #ffffff;
         }
         
-        /* Style select options dropdown */
+        /* Style select options dropdown - transparent glass effect */
         select option {
-            background-color: rgba(0, 0, 0, 0.95);
+            background-color: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
             color: #ffffff;
             padding: 0.5rem;
         }
