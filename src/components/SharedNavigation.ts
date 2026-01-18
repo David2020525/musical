@@ -27,6 +27,19 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
     };
     
     return `
+    <style>
+        /* Override browser autofill/autocomplete background color */
+        #navSearch:-webkit-autofill,
+        #navSearch:-webkit-autofill:hover,
+        #navSearch:-webkit-autofill:focus,
+        #navSearch:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.08) inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
     <!-- Shared Navigation Component -->
     <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
         <div class="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
