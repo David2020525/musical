@@ -274,6 +274,9 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         let currentProducer = '';
         let hasMore = true;
         let isLoading = false;
+        let searchDebounceTimer = null;
+        let priceDebounceTimer = null;
+        let producerDebounceTimer = null;
 
         const loadingState = document.getElementById('loading-state');
         const emptyState = document.getElementById('empty-state');
@@ -406,96 +409,151 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
         }
 
         // Event listeners
-        searchInput.addEventListener('input', (e) => {
-            currentSearch = e.target.value;
-            currentPage = 1;
-            setTimeout(() => loadTracks(), 300); // Debounce
-        });
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.trim();
+                currentPage = 1;
+                
+                // Clear previous debounce timer
+                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                
+                // Debounce search - wait 300ms after user stops typing
+                searchDebounceTimer = setTimeout(() => {
+                    loadTracks();
+                }, 300);
+            });
+            
+            // Handle Enter key for immediate search
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                    currentSearch = e.target.value.trim();
+                    currentPage = 1;
+                    loadTracks();
+                }
+            });
+        }
 
-        genreFilter.addEventListener('change', (e) => {
-            currentGenre = e.target.value;
-            currentPage = 1;
-            loadTracks();
-        });
+        if (genreFilter) {
+            genreFilter.addEventListener('change', (e) => {
+                currentGenre = e.target.value;
+                currentPage = 1;
+                loadTracks();
+            });
+        }
 
         // Sort filter
         const sortFilter = document.getElementById('sort-filter');
-        sortFilter.addEventListener('change', (e) => {
-            currentSort = e.target.value;
-            currentPage = 1;
-            loadTracks();
-        });
+        if (sortFilter) {
+            sortFilter.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                currentPage = 1;
+                loadTracks();
+            });
+        }
 
         // Price filters
         const priceMin = document.getElementById('price-min');
         const priceMax = document.getElementById('price-max');
         const freeOnly = document.getElementById('free-only');
 
-        priceMin.addEventListener('input', (e) => {
-            currentPriceMin = e.target.value;
-            currentPage = 1;
-            setTimeout(() => loadTracks(), 500); // Debounce
-        });
+        if (priceMin) {
+            priceMin.addEventListener('input', (e) => {
+                currentPriceMin = e.target.value;
+                currentPage = 1;
+                
+                if (priceDebounceTimer) clearTimeout(priceDebounceTimer);
+                priceDebounceTimer = setTimeout(() => {
+                    loadTracks();
+                }, 500); // Debounce
+            });
+        }
 
-        priceMax.addEventListener('input', (e) => {
-            currentPriceMax = e.target.value;
-            currentPage = 1;
-            setTimeout(() => loadTracks(), 500); // Debounce
-        });
+        if (priceMax) {
+            priceMax.addEventListener('input', (e) => {
+                currentPriceMax = e.target.value;
+                currentPage = 1;
+                
+                if (priceDebounceTimer) clearTimeout(priceDebounceTimer);
+                priceDebounceTimer = setTimeout(() => {
+                    loadTracks();
+                }, 500); // Debounce
+            });
+        }
 
-        freeOnly.addEventListener('change', (e) => {
-            currentFreeOnly = e.target.checked;
-            currentPage = 1;
-            loadTracks();
-        });
+        if (freeOnly) {
+            freeOnly.addEventListener('change', (e) => {
+                currentFreeOnly = e.target.checked;
+                currentPage = 1;
+                loadTracks();
+            });
+        }
 
         // Date filter
         const dateFilter = document.getElementById('date-filter');
-        dateFilter.addEventListener('change', (e) => {
-            currentDateFilter = e.target.value;
-            currentPage = 1;
-            loadTracks();
-        });
+        if (dateFilter) {
+            dateFilter.addEventListener('change', (e) => {
+                currentDateFilter = e.target.value;
+                currentPage = 1;
+                loadTracks();
+            });
+        }
 
         // Producer filter
         const producerFilter = document.getElementById('producer-filter');
-        producerFilter.addEventListener('input', (e) => {
-            currentProducer = e.target.value;
-            currentPage = 1;
-            setTimeout(() => loadTracks(), 500); // Debounce
-        });
+        if (producerFilter) {
+            producerFilter.addEventListener('input', (e) => {
+                currentProducer = e.target.value.trim();
+                currentPage = 1;
+                
+                if (producerDebounceTimer) clearTimeout(producerDebounceTimer);
+                producerDebounceTimer = setTimeout(() => {
+                    loadTracks();
+                }, 500); // Debounce
+            });
+        }
 
         // Reset filters
         const resetFilters = document.getElementById('reset-filters');
-        resetFilters.addEventListener('click', () => {
-            // Reset all filter values
-            currentGenre = '';
-            currentSearch = '';
-            currentSort = 'newest';
-            currentPriceMin = '';
-            currentPriceMax = '';
-            currentFreeOnly = false;
-            currentDateFilter = '';
-            currentProducer = '';
-            currentPage = 1;
+        if (resetFilters) {
+            resetFilters.addEventListener('click', () => {
+                // Clear debounce timers
+                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                if (priceDebounceTimer) clearTimeout(priceDebounceTimer);
+                if (producerDebounceTimer) clearTimeout(producerDebounceTimer);
+                
+                // Reset all filter values
+                currentGenre = '';
+                currentSearch = '';
+                currentSort = 'newest';
+                currentPriceMin = '';
+                currentPriceMax = '';
+                currentFreeOnly = false;
+                currentDateFilter = '';
+                currentProducer = '';
+                currentPage = 1;
 
-            // Reset UI
-            document.getElementById('search-input').value = '';
-            genreFilter.value = '';
-            sortFilter.value = 'newest';
-            priceMin.value = '';
-            priceMax.value = '';
-            freeOnly.checked = false;
-            dateFilter.value = '';
-            producerFilter.value = '';
+                // Reset UI
+                if (searchInput) searchInput.value = '';
+                if (genreFilter) genreFilter.value = '';
+                if (sortFilter) sortFilter.value = 'newest';
+                if (priceMin) priceMin.value = '';
+                if (priceMax) priceMax.value = '';
+                if (freeOnly) freeOnly.checked = false;
+                if (dateFilter) dateFilter.value = '';
+                if (producerFilter) producerFilter.value = '';
 
-            loadTracks();
-        });
+                loadTracks();
+            });
+        }
 
-        loadMoreBtn.addEventListener('click', () => {
-            currentPage++;
-            loadTracks(true);
-        });
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                currentPage++;
+                loadTracks(true);
+            });
+        }
 
         // Initial load
         loadTracks();
