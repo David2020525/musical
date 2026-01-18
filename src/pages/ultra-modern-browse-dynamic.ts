@@ -77,9 +77,9 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             color: #ffffff;
         }
         
-        /* Style select options dropdown - transparent dark glass effect */
+        /* Style select options dropdown - transparent glass effect matching auth dropdown */
         select option {
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(255, 255, 255, 0.08);
             color: #ffffff;
             padding: 0.5rem;
         }
