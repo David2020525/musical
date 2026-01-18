@@ -39,25 +39,6 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
             background: rgba(255, 255, 255, 0.08) !important;
             transition: background-color 5000s ease-in-out 0s;
         }
-        
-        /* Auth dropdown menu styling */
-        #authSection .group > div {
-            background: rgba(0, 0, 0, 0.95) !important;
-            backdrop-filter: blur(40px) saturate(200%) !important;
-            -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        }
-        
-        #authSection .group > div a,
-        #authSection .group > div button {
-            color: rgba(255, 255, 255, 0.9) !important;
-        }
-        
-        #authSection .group > div a:hover,
-        #authSection .group > div button:hover {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            color: #ffffff !important;
-        }
     </style>
     <!-- Shared Navigation Component -->
     <nav class="fixed top-0 w-full z-50 glass-strong border-b border-white/5">
