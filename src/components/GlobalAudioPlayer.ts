@@ -58,6 +58,12 @@ export const GlobalAudioPlayerHTML = `
     opacity: 1;
 }
 
+#global-audio-player.manually-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
 .player-content {
     max-width: 1400px;
     margin: 0 auto;
@@ -353,6 +359,48 @@ export const GlobalAudioPlayerHTML = `
     transition: width 0.1s;
 }
 
+/* Hide Button */
+.player-hide-btn {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 12px 12px 0 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#global-audio-player.visible .player-hide-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.player-hide-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.player-hide-btn i {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+#global-audio-player.manually-hidden .player-hide-btn i {
+    transform: rotate(180deg);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .player-content {
@@ -400,6 +448,9 @@ export const GlobalAudioPlayerHTML = `
 </style>
 
 <div id="global-audio-player" class="hidden">
+    <button class="player-hide-btn" id="player-hide-btn" title="Hide player">
+        <i class="fas fa-chevron-down"></i>
+    </button>
     <div class="player-content">
         <!-- Track Info -->
         <div class="player-track-info">
@@ -493,6 +544,9 @@ export const GlobalAudioPlayerHTML = `
     const volumeSlider = document.getElementById('player-volume-slider');
     const volumeFilled = document.getElementById('player-volume-filled');
     
+    // Hide button
+    const hideBtn = document.getElementById('player-hide-btn');
+    
     // State (using localStorage for persistence)
     let state = {
         currentTrack: null,
@@ -502,7 +556,8 @@ export const GlobalAudioPlayerHTML = `
         shuffle: false,
         repeat: 'off', // 'off', 'all', 'one'
         queue: [],
-        queueIndex: -1
+        queueIndex: -1,
+        manuallyHidden: false
     };
     
     // Load state from localStorage
@@ -514,6 +569,11 @@ export const GlobalAudioPlayerHTML = `
                 state = { ...state, ...parsed, isPlaying: false }; // Don't auto-play
                 audio.volume = state.volume;
                 updateVolumeUI();
+                // Restore manually hidden state
+                if (parsed.manuallyHidden && player) {
+                    player.classList.add('manually-hidden');
+                    player.classList.remove('visible');
+                }
             } catch (e) {
                 console.error('Failed to load player state:', e);
             }
@@ -529,7 +589,8 @@ export const GlobalAudioPlayerHTML = `
             shuffle: state.shuffle,
             repeat: state.repeat,
             queue: state.queue,
-            queueIndex: state.queueIndex
+            queueIndex: state.queueIndex,
+            manuallyHidden: state.manuallyHidden
         };
         localStorage.setItem('audioPlayerState', JSON.stringify(toSave));
     }
@@ -789,45 +850,91 @@ export const GlobalAudioPlayerHTML = `
     // Auto-hide functionality
     let autoHideTimer = null;
     let isPlayerHovered = false;
+    let edgeShowEnabled = true;
     
-    function showPlayer() {
-        if (player) {
-            player.classList.remove('auto-hidden');
-            if (autoHideTimer) clearTimeout(autoHideTimer);
-            // Restart timer if playing
-            if (state.isPlaying && player.classList.contains('visible')) {
-                autoHideTimer = setTimeout(() => {
-                    hidePlayer();
-                }, 3000);
-            }
+    function showPlayer(force = false) {
+        if (!player) return;
+        
+        // Remove all hide states
+        player.classList.remove('auto-hidden', 'manually-hidden');
+        player.classList.add('visible');
+        
+        // If manually hidden and not forced, respect manual hide
+        if (state.manuallyHidden && !force) {
+            player.classList.add('manually-hidden');
+            player.classList.remove('visible');
+            return;
         }
-    }
-    
-    function hidePlayer() {
-        if (player && player.classList.contains('visible') && !isPlayerHovered && state.isPlaying) {
-            player.classList.add('auto-hidden');
+        
+        // Clear manual hide state if forced
+        if (force) {
+            state.manuallyHidden = false;
+            saveState();
         }
-    }
-    
-    function resetAutoHideTimer() {
+        
         if (autoHideTimer) clearTimeout(autoHideTimer);
-        if (state.isPlaying && player.classList.contains('visible')) {
+        
+        // Restart auto-hide timer if playing (unless manually hidden)
+        if (state.isPlaying && !state.manuallyHidden) {
             autoHideTimer = setTimeout(() => {
-                hidePlayer();
+                autoHidePlayer();
             }, 3000);
         }
     }
     
-    // Show player when cursor moves to bottom of screen
+    function autoHidePlayer() {
+        if (player && player.classList.contains('visible') && !isPlayerHovered && state.isPlaying && !state.manuallyHidden) {
+            player.classList.add('auto-hidden');
+        }
+    }
+    
+    function manuallyHidePlayer() {
+        if (!player) return;
+        
+        state.manuallyHidden = true;
+        player.classList.add('manually-hidden');
+        player.classList.remove('visible', 'auto-hidden');
+        
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        saveState();
+    }
+    
+    function resetAutoHideTimer() {
+        if (autoHideTimer) clearTimeout(autoHideTimer);
+        if (state.isPlaying && player.classList.contains('visible') && !state.manuallyHidden) {
+            autoHideTimer = setTimeout(() => {
+                autoHidePlayer();
+            }, 3000);
+        }
+    }
+    
+    // Manual hide button handler
+    if (hideBtn) {
+        hideBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (state.manuallyHidden) {
+                showPlayer(true); // Force show
+            } else {
+                manuallyHidePlayer();
+            }
+        });
+    }
+    
+    // Show player when cursor moves to bottom edge of screen
     document.addEventListener('mousemove', (e) => {
-        if (!player || !state.isPlaying) return;
+        if (!player || !edgeShowEnabled) return;
         
         const windowHeight = window.innerHeight;
-        const bottomThreshold = 150; // Show when within 150px of bottom
+        const bottomThreshold = 100; // Show when within 100px of bottom
         const distanceFromBottom = windowHeight - e.clientY;
         
+        // Show when near bottom edge (even if manually hidden)
         if (distanceFromBottom < bottomThreshold) {
-            showPlayer();
+            showPlayer(true); // Force show from edge
+            edgeShowEnabled = false; // Prevent rapid toggling
+            setTimeout(() => {
+                edgeShowEnabled = true;
+            }, 500);
         }
     });
     
@@ -835,24 +942,34 @@ export const GlobalAudioPlayerHTML = `
     if (player) {
         player.addEventListener('mouseenter', () => {
             isPlayerHovered = true;
-            showPlayer();
+            if (state.manuallyHidden) {
+                showPlayer(true); // Force show on hover even if manually hidden
+            } else {
+                showPlayer();
+            }
         });
         
         player.addEventListener('mouseleave', () => {
             isPlayerHovered = false;
-            resetAutoHideTimer();
+            if (!state.manuallyHidden) {
+                resetAutoHideTimer();
+            }
         });
     }
     
     // Start auto-hide timer when playback starts
     audio.addEventListener('play', () => {
-        resetAutoHideTimer();
+        if (!state.manuallyHidden) {
+            resetAutoHideTimer();
+        }
     });
     
-    // Show player when paused
+    // Show player when paused (unless manually hidden)
     audio.addEventListener('pause', () => {
         if (autoHideTimer) clearTimeout(autoHideTimer);
-        showPlayer();
+        if (!state.manuallyHidden) {
+            showPlayer();
+        }
     });
     
     // Update UI on visibility change
