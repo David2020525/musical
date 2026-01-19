@@ -440,14 +440,22 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
         // Create track card HTML
         function createTrackCard(track) {
-            const coverUrl = track.cover_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop';
+            // Use a reliable fallback image - SVG gradient placeholder
+            const fallbackImage = 'data:image/svg+xml,%3Csvg width="500" height="500" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333EA;stop-opacity:1"/%3E%3Cstop offset="50%25" style="stop-color:%23EC4899;stop-opacity:1"/%3E%3Cstop offset="100%25" style="stop-color:%233B82F6;stop-opacity:1"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23g)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" opacity="0.3" text-anchor="middle" dy=".3em"%3E🎵 MUSICAL%3C/text%3E%3C/svg%3E';
+            const coverUrl = track.cover_url || fallbackImage;
             const price = track.price ? '$' + track.price : i18nFree;
             
             return \`
                 <div class="card-3d glass rounded-2xl p-6 cursor-pointer hover:bg-white/5 transition-all group">
                     <a href="/${locale}/tracks/\${track.id}">
-                        <div class="aspect-square rounded-xl overflow-hidden mb-4 relative">
-                            <img src="\${coverUrl}" alt="\${track.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <div class="aspect-square rounded-xl overflow-hidden mb-4 relative bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+                            <img 
+                                src="\${coverUrl}" 
+                                alt="\${track.title}" 
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                onerror="this.onerror=null; this.src='\${fallbackImage}';"
+                                loading="lazy"
+                            />
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             <button 
                                 class="play-btn absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
@@ -471,6 +479,19 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 </div>
             \`;
         }
+        
+        // Global image error handler for track cover images
+        document.addEventListener('error', function(e) {
+            if (e.target && e.target.tagName === 'IMG' && e.target.closest('.card-3d')) {
+                const img = e.target;
+                // Only replace if it hasn't been replaced already (check if it's not already the fallback)
+                if (!img.src.includes('data:image/svg+xml')) {
+                    const fallbackImage = 'data:image/svg+xml,%3Csvg width="500" height="500" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333EA;stop-opacity:1"/%3E%3Cstop offset="50%25" style="stop-color:%23EC4899;stop-opacity:1"/%3E%3Cstop offset="100%25" style="stop-color:%233B82F6;stop-opacity:1"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="url(%23g)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" opacity="0.3" text-anchor="middle" dy=".3em"%3E🎵 MUSICAL%3C/text%3E%3C/svg%3E';
+                    img.src = fallbackImage;
+                    img.onerror = null; // Prevent infinite loop
+                }
+            }
+        }, true);
 
         // Event listeners
         if (searchInput) {
