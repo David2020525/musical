@@ -619,10 +619,15 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             });
         }
 
-        // Initial load
-        loadTracks();
+        // Initial load - wrap in try-catch to prevent SyntaxError from blocking execution
+        try {
+            loadTracks();
+        } catch (error) {
+            console.error('Error in initial loadTracks call:', error);
+        }
+    </script>
+    
     ${SharedNavigationScript(locale)}
-        </script>
 </body>
 </html>
 `;
