@@ -35,6 +35,7 @@ tracks.get('/', async (c) => {
     const priceMax = c.req.query('price_max')
     const freeOnly = c.req.query('free_only')
     const producer = c.req.query('producer')
+    const dateFilter = c.req.query('date')
 
     let query = `
       SELECT 
@@ -78,6 +79,29 @@ tracks.get('/', async (c) => {
     if (producer) {
       query += ' AND u.username = ?'
       params.push(producer)
+    }
+
+    // Date filter
+    if (dateFilter) {
+      const now = new Date()
+      switch (dateFilter) {
+        case 'today':
+          query += ' AND DATE(t.created_at) = DATE(?)'
+          params.push(now.toISOString())
+          break
+        case 'week':
+          query += ' AND t.created_at >= datetime(?, "-7 days")'
+          params.push(now.toISOString())
+          break
+        case 'month':
+          query += ' AND t.created_at >= datetime(?, "-30 days")'
+          params.push(now.toISOString())
+          break
+        case 'year':
+          query += ' AND t.created_at >= datetime(?, "-365 days")'
+          params.push(now.toISOString())
+          break
+      }
     }
 
     // Sorting

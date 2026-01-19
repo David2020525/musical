@@ -358,13 +358,23 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
                 // Fetch from API
                 const response = await fetch(\`/api/tracks?\${params}\`);
-                const result = await response.json();
-
+                
                 if (!response.ok) {
+                    console.error('API Error:', response.status, response.statusText);
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(\`Failed to load tracks: \${response.status}\`);
+                }
+                
+                const result = await response.json();
+                console.log('API Response:', result);
+
+                if (!result.success) {
                     throw new Error(result.error || 'Failed to load tracks');
                 }
 
                 const tracks = result.data || [];
+                console.log('Tracks loaded:', tracks.length);
 
                 // Hide loading
                 loadingState.classList.add('hidden');
