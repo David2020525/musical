@@ -36,6 +36,21 @@ export function SharedNavigationHTML(locale: Locale, config: NavConfig = {}) {
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
         
+        /* User profile dropdown - ensure transparent glass effect */
+        .user-dropdown {
+            background: rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(40px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+        
+        #authSection .user-dropdown {
+            background: rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(40px) saturate(200%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+        
         /* Override browser autofill/autocomplete background color */
         #navSearch:-webkit-autofill,
         #navSearch:-webkit-autofill:hover,
