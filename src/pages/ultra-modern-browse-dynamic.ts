@@ -359,11 +359,18 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 // Fetch from API
                 const response = await fetch(\`/api/tracks?\${params}\`);
                 
-                if (!response.ok) {
-                    console.error('API Error:', response.status, response.statusText);
+                // Check content type to ensure we're getting JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
                     const errorText = await response.text();
-                    console.error('Error response:', errorText);
-                    throw new Error(\`Failed to load tracks: \${response.status}\`);
+                    console.error('API returned non-JSON response:', contentType, errorText.substring(0, 200));
+                    throw new Error(\`API returned invalid response: \${response.status}\`);
+                }
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+                    console.error('API Error:', response.status, errorData);
+                    throw new Error(errorData.error || \`Failed to load tracks: \${response.status}\`);
                 }
                 
                 const result = await response.json();

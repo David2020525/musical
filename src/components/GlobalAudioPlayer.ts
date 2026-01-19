@@ -608,7 +608,7 @@ export const GlobalAudioPlayerHTML = `
         if (state.currentTrack) {
             player.classList.remove('hidden');
             player.classList.add('visible');
-            artwork.src = state.currentTrack.artwork || '/static/default-artwork.jpg';
+            artwork.src = state.currentTrack.artwork || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop';
             title.textContent = state.currentTrack.title;
             artist.textContent = state.currentTrack.artist;
         }
