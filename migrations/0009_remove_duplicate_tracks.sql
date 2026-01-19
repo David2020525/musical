@@ -14,7 +14,7 @@ WHERE id NOT IN (
 -- Note: SQLite doesn't support ALTER TABLE ADD CONSTRAINT directly
 -- So we'll create a new table with the constraint and copy data
 
--- Create new tracks table with unique constraint
+-- Create new tracks table with unique constraint (includes all columns from migrations)
 CREATE TABLE IF NOT EXISTS tracks_new (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
@@ -40,18 +40,33 @@ CREATE TABLE IF NOT EXISTS tracks_new (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Copy all data from old table to new table
+-- Copy all data from old table to new table (handles missing columns gracefully)
 INSERT INTO tracks_new (
     id, title, artist, album, genre, duration, release_year, cover_url, audio_url,
     description, plays_count, likes_count, price, user_id, bpm, mood, tags, is_featured,
     created_at, updated_at
 )
 SELECT 
-    id, title, artist, album, genre, duration, release_year, cover_url, audio_url,
-    description, plays_count, likes_count, 
+    id, 
+    title, 
+    artist, 
+    album, 
+    genre, 
+    duration, 
+    release_year, 
+    cover_url, 
+    audio_url,
+    description, 
+    COALESCE(plays_count, 0) as plays_count, 
+    COALESCE(likes_count, 0) as likes_count, 
     COALESCE(price, 0.0) as price,
-    user_id, bpm, mood, tags, COALESCE(is_featured, 0) as is_featured,
-    created_at, updated_at
+    user_id, 
+    bpm, 
+    mood, 
+    tags, 
+    COALESCE(is_featured, 0) as is_featured,
+    COALESCE(created_at, CURRENT_TIMESTAMP) as created_at,
+    COALESCE(updated_at, CURRENT_TIMESTAMP) as updated_at
 FROM tracks
 ORDER BY id;
 
