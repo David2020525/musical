@@ -31,7 +31,7 @@ INSERT OR IGNORE INTO tracks (
  datetime('now', '-5 days')),
 
 ('Midnight Vibes', 'Synth City', 'Night Drive', 'Electronic', 195, 2024,
- 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=500&fit=crop',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
  'Smooth electronic beats perfect for late-night sessions. Atmospheric and immersive.',
  8921, 654, 24.99, NULL, 120, 'Chill', 'electronic,ambient,night', 0,
@@ -53,7 +53,7 @@ INSERT OR IGNORE INTO tracks (
  datetime('now', '-6 days')),
 
 ('Hip Hop Beat', 'Beat Maker Pro', 'Underground', 'Hip Hop', 220, 2024,
- 'https://images.unsplash.com/photo-1514320291840-2e0a9bf29a9e?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
  'Classic hip hop instrumental with smooth samples and crisp drums.',
  18765, 1432, 29.99, NULL, 90, 'Smooth', 'hiphop,instrumental,beats', 0,
@@ -61,7 +61,7 @@ INSERT OR IGNORE INTO tracks (
 
 -- Rock Tracks
 ('Rock Anthem', 'Electric Storm', 'Power Chord', 'Rock', 245, 2024,
- 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
  'Powerful rock track with driving guitars and energetic drums. Perfect for action scenes.',
  9876, 743, 35.99, NULL, 130, 'Powerful', 'rock,electric,guitar', 0,
@@ -77,7 +77,7 @@ INSERT OR IGNORE INTO tracks (
 
 -- Pop Tracks
 ('Pop Sensation', 'Chart Toppers', 'Hit Parade', 'Pop', 200, 2024,
- 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
  'Catchy pop track with infectious melodies. Perfect for commercial use.',
  11234, 987, 32.99, NULL, 125, 'Upbeat', 'pop,catchy,commercial', 1,
@@ -93,7 +93,7 @@ INSERT OR IGNORE INTO tracks (
 
 -- Classical Tracks
 ('Classical Overture', 'Symphony Orchestra', 'Masterpieces', 'Classical', 280, 2024,
- 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3',
  'Elegant classical composition with orchestral arrangements. Timeless and sophisticated.',
  5432, 321, 44.99, NULL, 100, 'Elegant', 'classical,orchestral,elegant', 0,
@@ -109,7 +109,7 @@ INSERT OR IGNORE INTO tracks (
 
 -- Country Tracks
 ('Country Roads', 'Wild West', 'Prairie Songs', 'Country', 235, 2024,
- 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
  'Authentic country track with acoustic guitars and heartfelt melodies.',
  4321, 298, 26.99, NULL, 115, 'Nostalgic', 'country,acoustic,folk', 0,
@@ -117,14 +117,14 @@ INSERT OR IGNORE INTO tracks (
 
 -- Free Tracks (for testing free filter)
 ('Free Demo Track', 'Demo Artist', 'Free Samples', 'Electronic', 150, 2024,
- 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
  'Free demo track to showcase the platform. Perfect for testing.',
  5432, 234, 0.00, NULL, 120, 'Energetic', 'free,demo,electronic', 0,
  datetime('now', '-1 day')),
 
 ('Another Free Beat', 'Free Music Co', 'No Cost Collection', 'Hip Hop', 165, 2024,
- 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=500&fit=crop',
+ 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&h=500&fit=crop&q=80',
  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
  'Another free track for your projects. No strings attached.',
  3210, 187, 0.00, NULL, 100, 'Chill', 'free,hiphop,beats', 0,
