@@ -147,7 +147,7 @@ export function SharedNavigationScript(locale: Locale) {
                                 <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
                                 <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
                             </button>
-                            <div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl" style="background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); border: 1px solid rgba(255, 255, 255, 0.12);">
+                            <div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl user-dropdown" style="background: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(40px) saturate(200%) !important; -webkit-backdrop-filter: blur(40px) saturate(200%) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">
                                 <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
                                     <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
                                 </a>
