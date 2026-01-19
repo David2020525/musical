@@ -357,24 +357,34 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 if (currentProducer) params.append('producer', currentProducer);
 
                 // Fetch from API
-                const response = await fetch(\`/api/tracks?\${params}\`);
-                
-                // Check content type to ensure we're getting JSON
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    const errorText = await response.text();
-                    console.error('API returned non-JSON response:', contentType, errorText.substring(0, 200));
-                    throw new Error(\`API returned invalid response: \${response.status}\`);
+                let response;
+                try {
+                    response = await fetch(\`/api/tracks?\${params}\`);
+                } catch (networkError) {
+                    console.error('Network error fetching tracks:', networkError);
+                    throw new Error('Network error: Unable to connect to server');
                 }
+                
+                // Get response text first to check if it's JSON
+                const responseText = await response.text();
+                let result;
+                
+                try {
+                    result = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse API response as JSON:', parseError);
+                    console.error('Response status:', response.status);
+                    console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+                    console.error('Response text (first 500 chars):', responseText.substring(0, 500));
+                    throw new Error(\`API returned invalid response (not JSON). Status: \${response.status}\`);
+                }
+                
+                console.log('API Response:', result);
                 
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-                    console.error('API Error:', response.status, errorData);
-                    throw new Error(errorData.error || \`Failed to load tracks: \${response.status}\`);
+                    console.error('API Error:', response.status, result);
+                    throw new Error(result.error || \`Failed to load tracks: \${response.status}\`);
                 }
-                
-                const result = await response.json();
-                console.log('API Response:', result);
 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to load tracks');
