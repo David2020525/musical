@@ -209,11 +209,23 @@ class IyzicoClient {
  * Initialize Iyzico client
  */
 export function createIyzicoClient(env: any): IyzicoClient {
+  // Use provided keys or fallback to defaults
+  const apiKey = env.IYZICO_API_KEY || 'sandbox-noviqVlRF6oY7obkTgHoXlbfKIhQWPqz';
+  const secretKey = env.IYZICO_SECRET_KEY || 'sandbox-lFRZTg7O0MK8q7svquRoJfdXyKt9MPAI';
+  
   const config: IyzicoConfig = {
-    apiKey: env.IYZICO_API_KEY || 'sandbox-noviqVlRF6oY7obkTgHoXlbfKIhQWPqz',
-    secretKey: env.IYZICO_SECRET_KEY || 'sandbox-lFRZTg7O0MK8q7svquRoJfdXyKt9MPAI',
+    apiKey,
+    secretKey,
     baseUrl: env.IYZICO_BASE_URL || 'https://sandbox-api.iyzipay.com',
   };
+
+  // Log for debugging (remove sensitive data in production)
+  console.log('Iyzico Client Initialized:', {
+    apiKeyPrefix: apiKey.substring(0, 15) + '...',
+    secretKeyPrefix: secretKey.substring(0, 15) + '...',
+    baseUrl: config.baseUrl,
+    usingEnvKeys: !!(env.IYZICO_API_KEY && env.IYZICO_SECRET_KEY)
+  });
 
   return new IyzicoClient(config);
 }
