@@ -225,23 +225,35 @@ class IyzicoClient {
  * Initialize Iyzico client
  */
 export function createIyzicoClient(env: any): IyzicoClient {
+  // Check if keys exist in environment
+  const apiKeyFromEnv = env.IYZICO_API_KEY;
+  const secretKeyFromEnv = env.IYZICO_SECRET_KEY;
+  
   // Use provided keys or fallback to defaults
-  const apiKey = env.IYZICO_API_KEY || 'sandbox-noviqVlRF6oY7obkTgHoXlbfKIhQWPqz';
-  const secretKey = env.IYZICO_SECRET_KEY || 'sandbox-lFRZTg7O0MK8q7svquRoJfdXyKt9MPAI';
+  const apiKey = apiKeyFromEnv || 'sandbox-noviqVlRF6oY7obkTgHoXlbfKIhQWPqz';
+  const secretKey = secretKeyFromEnv || 'sandbox-lFRZTg7O0MK8q7svquRoJfdXyKt9MPAI';
+  
+  // Log environment variable access for debugging
+  console.log('Iyzico Environment Check:', {
+    hasApiKey: !!apiKeyFromEnv,
+    hasSecretKey: !!secretKeyFromEnv,
+    apiKeyLength: apiKey.length,
+    secretKeyLength: secretKey.length,
+    apiKeyPrefix: apiKey.substring(0, 20) + '...',
+    envKeys: Object.keys(env).filter(k => k.includes('IYZICO') || k.includes('iyzico'))
+  });
+  
+  // Warn if using defaults
+  if (!apiKeyFromEnv || !secretKeyFromEnv) {
+    console.warn('⚠️ Iyzico keys not found in environment! Using default sandbox keys which may not work.');
+    console.warn('Please set IYZICO_API_KEY and IYZICO_SECRET_KEY as secrets in Cloudflare Dashboard.');
+  }
   
   const config: IyzicoConfig = {
     apiKey,
     secretKey,
     baseUrl: env.IYZICO_BASE_URL || 'https://sandbox-api.iyzipay.com',
   };
-
-  // Log for debugging (remove sensitive data in production)
-  console.log('Iyzico Client Initialized:', {
-    apiKeyPrefix: apiKey.substring(0, 15) + '...',
-    secretKeyPrefix: secretKey.substring(0, 15) + '...',
-    baseUrl: config.baseUrl,
-    usingEnvKeys: !!(env.IYZICO_API_KEY && env.IYZICO_SECRET_KEY)
-  });
 
   return new IyzicoClient(config);
 }
