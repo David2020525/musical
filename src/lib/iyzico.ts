@@ -98,13 +98,15 @@ class IyzicoClient {
 
   /**
    * Generate authorization header
+   * Iyzico signature format: HMAC-SHA256(randomString + endpoint + body, secretKey)
    */
-  private generateAuthString(url: string, body: string, randomString: string): string {
-    const dataToSign = randomString + url + body;
+  private generateAuthString(endpoint: string, body: string, randomString: string): string {
+    // Iyzico requires: randomString + endpoint + body (in this exact order)
+    const dataToSign = randomString + endpoint + body;
     
     const hash = crypto
       .createHmac('sha256', this.config.secretKey)
-      .update(dataToSign)
+      .update(dataToSign, 'utf8')
       .digest('base64');
 
     return `IYZWS ${this.config.apiKey}:${hash}:${randomString}`;
@@ -126,7 +128,20 @@ class IyzicoClient {
     
     // Generate random string once and use it for both signature and header
     const randomString = this.generateRandomString();
+    
+    // Iyzico signature uses endpoint path (not full URL)
     const authString = this.generateAuthString(endpoint, bodyString, randomString);
+
+    // Debug logging (remove in production)
+    if (this.config.apiKey.includes('sandbox')) {
+      console.log('Iyzico Request Debug:', {
+        endpoint,
+        randomString,
+        bodyLength: bodyString.length,
+        apiKey: this.config.apiKey.substring(0, 10) + '...',
+        hasSecretKey: !!this.config.secretKey
+      });
+    }
 
     const response = await fetch(url, {
       method: 'POST',
