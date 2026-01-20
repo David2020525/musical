@@ -418,25 +418,49 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
             }
 
             try {
-                const response = await fetch('/api/purchases', {
+                // Show loading state
+                const purchaseBtn = document.getElementById('purchase-btn');
+                if (purchaseBtn) {
+                    purchaseBtn.disabled = true;
+                    purchaseBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                }
+
+                const response = await fetch('/api/payments/checkout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': \`Bearer \${token}\`
                     },
-                    body: JSON.stringify({ track_id: parseInt(trackId) })
+                    body: JSON.stringify({ 
+                        trackId: parseInt(trackId),
+                        locale: locale
+                    })
                 });
 
                 const result = await response.json();
 
-                if (result.success) {
-                    alert('${t('track.purchase_success', locale)}');
+                if (result.success && result.paymentUrl) {
+                    // Redirect to payment page
+                    window.location.href = result.paymentUrl;
                 } else {
-                    alert(result.error || '${t('track.purchase_error', locale)}');
+                    alert(result.error || 'Failed to initialize payment. Please try again.');
+                    // Reset button
+                    if (purchaseBtn) {
+                        purchaseBtn.disabled = false;
+                        const price = currentTrack.price || 0;
+                        purchaseBtn.innerHTML = \`<i class="fas fa-shopping-cart mr-2"></i>${t('track.purchase', locale)} <span id="track-price">\${price > 0 ? '$' + price : i18nFree}</span>\`;
+                    }
                 }
             } catch (error) {
                 console.error('Purchase error:', error);
-                alert('${t('track.purchase_error', locale)}');
+                alert('Failed to purchase track. Please try again.');
+                // Reset button
+                const purchaseBtn = document.getElementById('purchase-btn');
+                if (purchaseBtn) {
+                    purchaseBtn.disabled = false;
+                    const price = currentTrack.price || 0;
+                    purchaseBtn.innerHTML = \`<i class="fas fa-shopping-cart mr-2"></i>${t('track.purchase', locale)} <span id="track-price">\${price > 0 ? '$' + price : i18nFree}</span>\`;
+                }
             }
         }
 
