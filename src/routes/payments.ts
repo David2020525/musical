@@ -122,14 +122,39 @@ payments.post('/checkout', async (c) => {
     // Initialize payment
     let response;
     try {
+      console.log('Initializing Iyzico checkout with request:', {
+        locale: paymentRequest.locale,
+        price: paymentRequest.price,
+        conversationId: paymentRequest.conversationId,
+        basketId: paymentRequest.basketId,
+        buyerId: paymentRequest.buyer.id,
+        trackId: trackId
+      });
+      
       response = await iyzico.initializeCheckout(paymentRequest);
+      
+      console.log('Iyzico response:', {
+        status: response.status,
+        hasPaymentUrl: !!response.paymentPageUrl,
+        hasToken: !!response.token,
+        errorCode: response.errorCode,
+        errorMessage: response.errorMessage
+      });
     } catch (error: any) {
       console.error('Iyzico checkout error:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error keys:', Object.keys(error));
+      console.error('Error iyzicoError:', error.iyzicoError);
+      
       const errorMessage = error.iyzicoError?.errorMessage || error.message || 'Payment initialization failed';
+      const errorDetails = error.iyzicoError || error.details || {};
+      
       return c.json({
         success: false,
         error: errorMessage,
-        details: error.iyzicoError,
+        details: errorDetails,
+        errorType: error.constructor?.name,
+        fullError: process.env.NODE_ENV === 'development' ? String(error) : undefined
       }, 400);
     }
 

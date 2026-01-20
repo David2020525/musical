@@ -153,10 +153,26 @@ class IyzicoClient {
       body: bodyString,
     });
 
-    const responseData = await response.json();
+    let responseData;
+    try {
+      responseData = await response.json();
+    } catch (parseError) {
+      const text = await response.text();
+      console.error('Failed to parse Iyzico response as JSON:', text);
+      throw new Error(`Iyzico API returned invalid JSON: ${response.status} ${response.statusText}`);
+    }
     
     // Check if Iyzico returned an error
     if (responseData.status === 'failure' || !response.ok) {
+      console.error('Iyzico API error response:', {
+        status: responseData.status,
+        errorCode: responseData.errorCode,
+        errorMessage: responseData.errorMessage,
+        errorGroup: responseData.errorGroup,
+        httpStatus: response.status,
+        httpStatusText: response.statusText
+      });
+      
       const errorMessage = responseData.errorMessage || responseData.errorCode || response.statusText || 'Unknown error';
       const error = new Error(`Iyzico API error: ${errorMessage}`);
       (error as any).iyzicoError = responseData;
