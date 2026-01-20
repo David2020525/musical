@@ -68,7 +68,7 @@ tracks.get('/', async (c) => {
             SELECT 1 FROM purchases p 
             WHERE p.track_id = t.id 
             AND p.user_id = ? 
-            AND (p.status = 'completed' OR p.payment_status = 'COMPLETED')
+            AND (p.payment_status = 'COMPLETED' OR p.payment_status = 'completed')
           ) THEN 1
           ELSE 0
         END as is_purchased
@@ -233,11 +233,13 @@ tracks.get('/:id', async (c) => {
             SELECT 1 FROM purchases p 
             WHERE p.track_id = t.id 
             AND p.user_id = ? 
-            AND p.status = 'completed'
+            AND (p.payment_status = 'COMPLETED' OR p.payment_status = 'completed')
           ) THEN 1
           ELSE 0
         END as is_purchased
       `
+    } else {
+      query += `, 0 as is_purchased`
     }
     
     query += `

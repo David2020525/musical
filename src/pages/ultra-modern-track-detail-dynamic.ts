@@ -303,8 +303,18 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 if (mainPlayBtn) {
                     mainPlayBtn.addEventListener('click', async () => {
                         const price = parseFloat(currentTrack.price || 0);
-                        const isPurchased = currentTrack.is_purchased === 1 || currentTrack.is_purchased === true;
+                        // Check purchase status - handle both number (1/0) and boolean
+                        const isPurchased = currentTrack.is_purchased === 1 || 
+                                          currentTrack.is_purchased === true || 
+                                          currentTrack.is_purchased === '1';
                         const token = localStorage.getItem('token');
+                        
+                        console.log('Play button clicked:', {
+                            price,
+                            isPurchased,
+                            hasToken: !!token,
+                            is_purchased: currentTrack.is_purchased
+                        });
                         
                         // Check if track requires purchase
                         if (price > 0 && !isPurchased) {
