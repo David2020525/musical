@@ -137,11 +137,17 @@ class IyzicoClient {
       body: bodyString,
     });
 
-    if (!response.ok) {
-      throw new Error(`Iyzico API error: ${response.statusText}`);
+    const responseData = await response.json();
+    
+    // Check if Iyzico returned an error
+    if (responseData.status === 'failure' || !response.ok) {
+      const errorMessage = responseData.errorMessage || responseData.errorCode || response.statusText || 'Unknown error';
+      const error = new Error(`Iyzico API error: ${errorMessage}`);
+      (error as any).iyzicoError = responseData;
+      throw error;
     }
 
-    return response.json();
+    return responseData as T;
   }
 
   /**

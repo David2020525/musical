@@ -24,9 +24,16 @@ payments.post('/checkout', async (c) => {
       return c.json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    const decoded = verifyToken(authHeader.replace('Bearer ', ''), c.env);
+    const token = authHeader.replace('Bearer ', '');
+    const decoded = verifyToken(token, c.env);
     if (!decoded) {
-      return c.json({ success: false, error: 'Invalid token' }, 401);
+      console.error('Token verification failed for checkout');
+      return c.json({ success: false, error: 'Invalid or expired token. Please log in again.' }, 401);
+    }
+    
+    if (!decoded.userId) {
+      console.error('Token missing userId:', decoded);
+      return c.json({ success: false, error: 'Invalid token format' }, 401);
     }
 
     const body = await c.req.json();
@@ -108,7 +115,18 @@ payments.post('/checkout', async (c) => {
     };
 
     // Initialize payment
-    const response = await iyzico.initializeCheckout(paymentRequest);
+    let response;
+    try {
+      response = await iyzico.initializeCheckout(paymentRequest);
+    } catch (error: any) {
+      console.error('Iyzico checkout error:', error);
+      const errorMessage = error.iyzicoError?.errorMessage || error.message || 'Payment initialization failed';
+      return c.json({
+        success: false,
+        error: errorMessage,
+        details: error.iyzicoError,
+      }, 400);
+    }
 
     if (response.status === 'success' && response.paymentPageUrl) {
       // Store pending transaction
