@@ -288,16 +288,72 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 }
 
                 // Setup play button
-                mainPlayBtn.addEventListener('click', () => {
-                    if (window.globalAudioPlayer) {
-                        window.globalAudioPlayer.loadTrack(
-                            currentTrack.audio_url,
-                            currentTrack.title,
-                            currentTrack.artist,
-                            coverUrl
-                        );
+                if (mainPlayBtn) {
+                    mainPlayBtn.addEventListener('click', () => {
+                        if (typeof window.GlobalAudioPlayer !== 'undefined') {
+                            // Prepare track object for GlobalAudioPlayer
+                            const trackForPlayer = {
+                                id: currentTrack.id,
+                                title: currentTrack.title,
+                                artist: currentTrack.artist,
+                                audio_url: currentTrack.audio_url || '/static/sample.mp3',
+                                artwork: coverUrl,
+                                cover_url: coverUrl
+                            };
+                            
+                            // Get current state
+                            const currentPlayingTrack = window.GlobalAudioPlayer.getCurrentTrack();
+                            const isPlaying = window.GlobalAudioPlayer.isPlaying();
+                            
+                            // If same track, toggle play/pause
+                            if (currentPlayingTrack && currentPlayingTrack.id === trackForPlayer.id) {
+                                window.GlobalAudioPlayer.toggle();
+                            } else {
+                                // Play new track
+                                window.GlobalAudioPlayer.play(trackForPlayer);
+                            }
+                            
+                            // Update play button icon
+                            updateMainPlayButton();
+                        } else {
+                            console.error('GlobalAudioPlayer not initialized');
+                        }
+                    });
+                }
+                
+                // Function to update main play button icon based on player state
+                function updateMainPlayButton() {
+                    if (!mainPlayBtn) return;
+                    
+                    if (typeof window.GlobalAudioPlayer === 'undefined') return;
+                    
+                    const currentPlayingTrack = window.GlobalAudioPlayer.getCurrentTrack();
+                    const isPlaying = window.GlobalAudioPlayer.isPlaying();
+                    const icon = mainPlayBtn.querySelector('i');
+                    
+                    if (currentPlayingTrack && currentPlayingTrack.id === currentTrack.id) {
+                        if (isPlaying) {
+                            icon.className = 'fas fa-pause text-white text-3xl';
+                        } else {
+                            icon.className = 'fas fa-play text-white text-3xl ml-1';
+                        }
+                    } else {
+                        icon.className = 'fas fa-play text-white text-3xl ml-1';
                     }
-                });
+                }
+                
+                // Update button when player state changes
+                if (typeof window.GlobalAudioPlayer !== 'undefined') {
+                    const audio = document.getElementById('global-audio-element');
+                    if (audio) {
+                        audio.addEventListener('play', updateMainPlayButton);
+                        audio.addEventListener('pause', updateMainPlayButton);
+                        audio.addEventListener('ended', updateMainPlayButton);
+                    }
+                }
+                
+                // Initial update
+                setTimeout(updateMainPlayButton, 100);
 
                 // Purchase button
                 document.getElementById('purchase-btn').addEventListener('click', handlePurchase);
