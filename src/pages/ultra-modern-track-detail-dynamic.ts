@@ -212,10 +212,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
 
     ${GlobalAudioPlayerHTML}
 
-    <script>
-    // Play Button Functions
     ${PlayButtonScript}
-    </script>
 
     <script>
         const trackId = '${trackId}';

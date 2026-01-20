@@ -37,7 +37,12 @@ payments.post('/checkout', async (c) => {
     }
 
     const body = await c.req.json();
+    console.log('Checkout request body:', body);
     const { trackId, locale = 'en' } = body;
+
+    if (!trackId) {
+      return c.json({ success: false, error: 'trackId is required' }, 400);
+    }
 
     // Get track details
     const track = await c.env.DB.prepare(
