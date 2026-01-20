@@ -99,8 +99,7 @@ class IyzicoClient {
   /**
    * Generate authorization header
    */
-  private generateAuthString(url: string, body: string): string {
-    const randomString = this.generateRandomString();
+  private generateAuthString(url: string, body: string, randomString: string): string {
     const dataToSign = randomString + url + body;
     
     const hash = crypto
@@ -125,14 +124,16 @@ class IyzicoClient {
     const url = `${this.config.baseUrl}${endpoint}`;
     const bodyString = JSON.stringify(body);
     
-    const authString = this.generateAuthString(endpoint, bodyString);
+    // Generate random string once and use it for both signature and header
+    const randomString = this.generateRandomString();
+    const authString = this.generateAuthString(endpoint, bodyString, randomString);
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': authString,
-        'x-iyzi-rnd': this.generateRandomString(),
+        'x-iyzi-rnd': randomString,
       },
       body: bodyString,
     });
