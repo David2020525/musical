@@ -425,25 +425,34 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                     purchaseBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
                 }
 
+                const requestBody = { 
+                    trackId: parseInt(trackId),
+                    locale: locale
+                };
+                
+                console.log('Purchase request:', requestBody);
+                console.log('Token present:', !!token);
+
                 const response = await fetch('/api/payments/checkout', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': \`Bearer \${token}\`
                     },
-                    body: JSON.stringify({ 
-                        trackId: parseInt(trackId),
-                        locale: locale
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
+                console.log('Purchase response status:', response.status);
                 const result = await response.json();
+                console.log('Purchase response:', result);
 
                 if (result.success && result.paymentUrl) {
                     // Redirect to payment page
                     window.location.href = result.paymentUrl;
                 } else {
-                    alert(result.error || 'Failed to initialize payment. Please try again.');
+                    const errorMsg = result.error || result.message || 'Failed to initialize payment. Please try again.';
+                    console.error('Purchase failed:', result);
+                    alert(errorMsg);
                     // Reset button
                     if (purchaseBtn) {
                         purchaseBtn.disabled = false;
@@ -453,7 +462,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 }
             } catch (error) {
                 console.error('Purchase error:', error);
-                alert('Failed to purchase track. Please try again.');
+                alert('Failed to purchase track. Please check the console for details.');
                 // Reset button
                 const purchaseBtn = document.getElementById('purchase-btn');
                 if (purchaseBtn) {

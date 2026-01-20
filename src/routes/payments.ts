@@ -132,9 +132,9 @@ payments.post('/checkout', async (c) => {
       // Store pending transaction
       await c.env.DB.prepare(
         `INSERT INTO purchases (
-          user_id, track_id, amount, platform_commission, artist_payout,
-          status, payment_provider, payment_id, conversation_id, created_at
-        ) VALUES (?, ?, ?, ?, ?, 'pending', 'iyzico', ?, ?, datetime('now'))`
+          user_id, track_id, amount, platform_commission, artist_earning,
+          payment_status, payment_id, conversation_id, created_at
+        ) VALUES (?, ?, ?, ?, ?, 'PENDING', ?, ?, datetime('now'))`
       )
         .bind(decoded.userId, trackId, price, platform, artist, response.token, conversationId)
         .run();
