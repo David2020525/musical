@@ -37,16 +37,57 @@ tracks.get('/', async (c) => {
     const producer = c.req.query('producer')
     const dateFilter = c.req.query('date')
 
+    // Check if user is authenticated
+    const authHeader = c.req.header('Authorization')
+    let userId: number | null = null
+    
+    if (authHeader) {
+      try {
+        const token = authHeader.replace('Bearer ', '')
+        const decoded = verifyToken(token, c.env)
+        if (decoded && decoded.userId) {
+          userId = decoded.userId
+        }
+      } catch (e) {
+        // Invalid token, continue as guest
+      }
+    }
+
     let query = `
       SELECT 
         t.*,
         u.username as producer_username,
         u.name as producer_name
+    `
+    
+    // Add purchase status if user is authenticated
+    if (userId) {
+      query += `,
+        CASE 
+          WHEN EXISTS (
+            SELECT 1 FROM purchases p 
+            WHERE p.track_id = t.id 
+            AND p.user_id = ? 
+            AND (p.status = 'completed' OR p.payment_status = 'COMPLETED')
+          ) THEN 1
+          ELSE 0
+        END as is_purchased
+      `
+    } else {
+      query += `, 0 as is_purchased`
+    }
+    
+    query += `
       FROM tracks t
       LEFT JOIN users u ON t.user_id = u.id
       WHERE 1=1
     `
     const params: any[] = []
+    
+    // Add userId to params if authenticated (for purchase check)
+    if (userId) {
+      params.push(userId)
+    }
 
     // Filters
     if (genre && genre !== 'all') {
@@ -158,18 +199,60 @@ tracks.get('/', async (c) => {
 tracks.get('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    
+    // Check if user is authenticated
+    const authHeader = c.req.header('Authorization')
+    let userId: number | null = null
+    
+    if (authHeader) {
+      try {
+        const token = authHeader.replace('Bearer ', '')
+        const decoded = verifyToken(token, c.env)
+        if (decoded && decoded.userId) {
+          userId = decoded.userId
+        }
+      } catch (e) {
+        // Invalid token, continue as guest
+      }
+    }
 
-    const track = await c.env.DB.prepare(`
+    let query = `
       SELECT 
         t.*,
         u.username as producer_username,
         u.name as producer_name,
         u.avatar_url as producer_avatar,
         u.bio as producer_bio
+    `
+    
+    // Add purchase status if user is authenticated
+    if (userId) {
+      query += `,
+        CASE 
+          WHEN EXISTS (
+            SELECT 1 FROM purchases p 
+            WHERE p.track_id = t.id 
+            AND p.user_id = ? 
+            AND p.status = 'completed'
+          ) THEN 1
+          ELSE 0
+        END as is_purchased
+      `
+    }
+    
+    query += `
       FROM tracks t
       LEFT JOIN users u ON t.user_id = u.id
       WHERE t.id = ?
-    `).bind(id).first()
+    `
+    
+    const params: any[] = []
+    if (userId) {
+      params.push(userId)
+    }
+    params.push(id)
+
+    const track = await c.env.DB.prepare(query).bind(...params).first()
 
     if (!track) {
       return c.json({ 

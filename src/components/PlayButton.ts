@@ -47,10 +47,35 @@ export function generatePlayButton(track: any, size: 'sm' | 'md' | 'lg' = 'md') 
 // Global function for playing tracks
 export const PlayButtonScript = `
 <script>
-function playTrack(button) {
+async function playTrack(button) {
     try {
         const trackData = button.getAttribute('data-track');
         const track = JSON.parse(trackData);
+        
+        // Check purchase status for paid tracks
+        const price = parseFloat(track.price || 0);
+        const isPurchased = track.is_purchased === 1 || track.is_purchased === true;
+        const token = localStorage.getItem('token');
+        
+        // If track requires purchase and not purchased
+        if (price > 0 && !isPurchased) {
+            // Check if user is logged in
+            if (!token) {
+                // Redirect to login
+                const locale = window.location.pathname.split('/')[1] || 'en';
+                if (confirm('You need to purchase this track to play it. Would you like to log in?')) {
+                    window.location.href = \`/\${locale}/login?redirect=\${window.location.pathname}\`;
+                }
+                return;
+            }
+            
+            // Show purchase prompt and redirect to track detail page
+            if (confirm(\`This track costs $\${price.toFixed(2)}. Would you like to purchase it?\`)) {
+                const locale = window.location.pathname.split('/')[1] || 'en';
+                window.location.href = \`/\${locale}/tracks/\${track.id}\`;
+            }
+            return;
+        }
         
         // Check if Global Audio Player exists
         if (typeof window.GlobalAudioPlayer === 'undefined') {

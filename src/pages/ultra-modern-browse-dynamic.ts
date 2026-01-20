@@ -356,10 +356,21 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                 if (currentDateFilter) params.append('date', currentDateFilter);
                 if (currentProducer) params.append('producer', currentProducer);
 
-                // Fetch from API
+                // Fetch from API with auth header if available
+                const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                if (token) {
+                    headers['Authorization'] = \`Bearer \${token}\`;
+                }
+                
                 let response;
                 try {
-                    response = await fetch(\`/api/tracks?\${params}\`);
+                    response = await fetch(\`/api/tracks?\${params}\`, {
+                        headers: headers
+                    });
                 } catch (networkError) {
                     console.error('Network error fetching tracks:', networkError);
                     throw new Error('Network error: Unable to connect to server');

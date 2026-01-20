@@ -1,9 +1,8 @@
 -- Migration 0008: Fix Unique Images for All Tracks
 -- Updates all tracks with completely unique, diverse cover images
--- Each track gets a unique Unsplash image to avoid duplicates and broken images
+-- Each of the 34 tracks gets a unique Unsplash image (no duplicates)
 
--- Curated list of 34 unique Unsplash images for all tracks
--- Migration 0006 tracks (15 tracks)
+-- Migration 0006 tracks (15 tracks) - Unique images 1-15
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&h=500&fit=crop&q=80' WHERE title = 'Electronic Dreams';
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=500&fit=crop&q=80' WHERE title = 'Midnight Vibes';
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop&q=80' WHERE title = 'Bass Drop';
@@ -19,7 +18,7 @@ UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1504280390367-3
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1511593358241-5eea2f2c5c5a?w=500&h=500&fit=crop&q=80' WHERE title = 'Free Demo Track';
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=500&fit=crop&q=80' WHERE title = 'Another Free Beat';
 
--- Migration 0007 tracks (20 tracks) - using completely different unique images
+-- Migration 0007 tracks (20 tracks) - Unique images 16-35 (completely different from above)
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=500&h=500&fit=crop&q=80' WHERE title = 'Synthwave Dreams';
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=500&h=500&fit=crop&q=80' WHERE title = 'Digital Pulse';
 UPDATE tracks SET cover_url = 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500&h=500&fit=crop&q=80' WHERE title = 'Ambient Space';

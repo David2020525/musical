@@ -233,7 +233,19 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
         // Load track data
         async function loadTrack() {
             try {
-                const response = await fetch(\`/api/tracks/\${trackId}\`);
+                // Get auth token
+                const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                if (token) {
+                    headers['Authorization'] = \`Bearer \${token}\`;
+                }
+                
+                const response = await fetch(\`/api/tracks/\${trackId}\`, {
+                    headers: headers
+                });
                 const result = await response.json();
 
                 if (!response.ok || !result.success) {
@@ -287,9 +299,32 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                     document.getElementById('track-tags').innerHTML = '<span class="text-white/40">' + i18nNoTags + '</span>';
                 }
 
-                // Setup play button
+                // Setup play button with purchase check
                 if (mainPlayBtn) {
-                    mainPlayBtn.addEventListener('click', () => {
+                    mainPlayBtn.addEventListener('click', async () => {
+                        const price = parseFloat(currentTrack.price || 0);
+                        const isPurchased = currentTrack.is_purchased === 1 || currentTrack.is_purchased === true;
+                        const token = localStorage.getItem('token');
+                        
+                        // Check if track requires purchase
+                        if (price > 0 && !isPurchased) {
+                            // Check if user is logged in
+                            if (!token) {
+                                // Redirect to login
+                                if (confirm('You need to purchase this track to play it. Would you like to log in?')) {
+                                    window.location.href = \`/\${locale}/login?redirect=/\${locale}/tracks/\${trackId}\`;
+                                }
+                                return;
+                            }
+                            
+                            // Show purchase prompt
+                            if (confirm(\`This track costs $\${price.toFixed(2)}. Would you like to purchase it?\`)) {
+                                handlePurchase();
+                            }
+                            return;
+                        }
+                        
+                        // Allow playback for free tracks or purchased tracks
                         if (typeof window.GlobalAudioPlayer !== 'undefined') {
                             // Prepare track object for GlobalAudioPlayer
                             const trackForPlayer = {
