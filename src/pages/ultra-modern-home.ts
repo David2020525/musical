@@ -662,6 +662,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     ${PlayButtonScript}
     
     <script>
+    // Debug: Verify script is loading
+    console.log('Homepage script starting...');
+    
     // Generate Play Button HTML (exposed to window)
     window.generatePlayButton = function(track, size = 'md') {
         const sizes = {
@@ -1021,15 +1024,19 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     });
     
     async function loadHomepageData() {
+        console.log('loadHomepageData() called');
         try {
             // Fetch tracks
+            console.log('Fetching /api/tracks?limit=20...');
             const response = await fetch('/api/tracks?limit=20');
+            console.log('Response received:', response.status, response.statusText);
             
             if (!response.ok) {
                 throw new Error(`API returned ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
+            console.log('Data received:', data);
             
             if (data.success && data.data && data.data.length > 0) {
                 const tracks = data.data;
