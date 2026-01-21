@@ -1016,9 +1016,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             
             const data = await response.json();
             console.log('Data received:', data);
+            console.log('Data structure check:', {
+                hasSuccess: !!data.success,
+                hasData: !!data.data,
+                dataIsArray: Array.isArray(data.data),
+                dataLength: data.data ? data.data.length : 0,
+                firstTrack: data.data && data.data.length > 0 ? data.data[0] : null
+            });
             
             if (data.success && data.data && data.data.length > 0) {
                 const tracks = data.data;
+                console.log('Tracks array:', tracks);
+                console.log('First 3 tracks for Editors Picks:', tracks.slice(0, 3));
                 
                 // Update track count
                 const trackCountEl = document.getElementById('trackCount');
@@ -1043,6 +1052,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             } else {
                 // No tracks available - show demo tracks
                 console.log('No tracks from API, displaying demo content');
+                console.log('API response was:', {
+                    success: data.success,
+                    hasData: !!data.data,
+                    dataType: typeof data.data,
+                    dataValue: data.data
+                });
                 displayDemoTracks();
             }
         } catch (error) {
@@ -1211,15 +1226,20 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     function displayEditorsPicks(tracks) {
         console.log('displayEditorsPicks called with tracks:', tracks);
+        console.log('Tracks type:', typeof tracks, 'Is array:', Array.isArray(tracks));
+        
         const container = document.getElementById('editorsPicks');
         
         if (!container) {
             console.error('Editors Picks container not found!');
+            console.error('Available elements with "editors" in id:', Array.from(document.querySelectorAll('[id*="editors" i]')).map(el => el.id));
             return;
         }
         
-        if (!tracks || tracks.length === 0) {
-            console.warn('No tracks provided to displayEditorsPicks');
+        console.log('Container found:', container);
+        
+        if (!tracks || !Array.isArray(tracks) || tracks.length === 0) {
+            console.warn('No tracks provided to displayEditorsPicks. Tracks:', tracks);
             // Clear loading skeleton and show empty state
             container.innerHTML = '<div class="col-span-2 text-center py-12 text-gray-400">No tracks available</div>';
             return;
@@ -1228,8 +1248,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         try {
             const [featured, ...rest] = tracks;
             
-            if (!featured) {
-                console.error('Featured track is missing');
+            console.log('Featured track:', featured);
+            console.log('Rest tracks:', rest);
+            
+            if (!featured || typeof featured !== 'object') {
+                console.error('Featured track is missing or invalid:', featured);
                 container.innerHTML = '<div class="col-span-2 text-center py-12 text-gray-400">No tracks available</div>';
                 return;
             }
