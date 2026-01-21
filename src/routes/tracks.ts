@@ -686,4 +686,35 @@ tracks.post('/upload/cover', requireAuth, requireProducer, async (c) => {
   }
 })
 
+/**
+ * GET /api/tracks/stats
+ * Get public platform statistics (no auth required)
+ */
+tracks.get('/stats', async (c) => {
+  try {
+    const db = c.env.DB
+
+    // Get all stats in parallel
+    const [tracksResult, usersResult, playsResult, artistsResult] = await Promise.all([
+      db.prepare('SELECT COUNT(*) as count FROM tracks').first(),
+      db.prepare('SELECT COUNT(*) as count FROM users').first(),
+      db.prepare('SELECT COALESCE(SUM(plays_count), 0) as total FROM tracks').first(),
+      db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
+    ])
+
+    return c.json({
+      success: true,
+      data: {
+        tracks: (tracksResult as any)?.count || 0,
+        users: (usersResult as any)?.count || 0,
+        plays: (playsResult as any)?.total || 0,
+        artists: (artistsResult as any)?.count || 0,
+      }
+    })
+  } catch (error) {
+    console.error('Stats error:', error)
+    return c.json({ success: false, error: 'Failed to fetch stats' }, 500)
+  }
+})
+
 export default tracks

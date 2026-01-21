@@ -437,22 +437,22 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
-                    <div class="text-5xl font-black bg-gradient-to-br from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2">
-                        150K+
+                    <div class="text-5xl font-black bg-gradient-to-br from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2" id="userCount">
+                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_users', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
-                    <div class="text-5xl font-black bg-gradient-to-br from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                        5.2M+
+                    <div class="text-5xl font-black bg-gradient-to-br from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2" id="playCount">
+                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_plays', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
-                    <div class="text-5xl font-black bg-gradient-to-br from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">
-                        2.5K+
+                    <div class="text-5xl font-black bg-gradient-to-br from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2" id="artistCount">
+                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_artists', locale)}</div>
                 </div>
@@ -988,8 +988,69 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         }
     });
     
+    // Helper function to format numbers
+    function formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M+';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K+';
+        }
+        return num.toString();
+    }
+    
+    // Load platform statistics
+    async function loadStats() {
+        try {
+            const response = await fetch('/api/tracks/stats');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.data) {
+                    const stats = data.data;
+                    
+                    // Update track count
+                    const trackCountEl = document.getElementById('trackCount');
+                    if (trackCountEl) {
+                        trackCountEl.innerHTML = formatNumber(stats.tracks);
+                    }
+                    
+                    // Update user count
+                    const userCountEl = document.getElementById('userCount');
+                    if (userCountEl) {
+                        userCountEl.innerHTML = formatNumber(stats.users);
+                    }
+                    
+                    // Update play count
+                    const playCountEl = document.getElementById('playCount');
+                    if (playCountEl) {
+                        playCountEl.innerHTML = formatNumber(stats.plays);
+                    }
+                    
+                    // Update artist count
+                    const artistCountEl = document.getElementById('artistCount');
+                    if (artistCountEl) {
+                        artistCountEl.innerHTML = formatNumber(stats.artists);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+            // Set default values if stats fail to load
+            const trackCountEl = document.getElementById('trackCount');
+            if (trackCountEl) trackCountEl.innerHTML = '0';
+            const userCountEl = document.getElementById('userCount');
+            if (userCountEl) userCountEl.innerHTML = '0';
+            const playCountEl = document.getElementById('playCount');
+            if (playCountEl) playCountEl.innerHTML = '0';
+            const artistCountEl = document.getElementById('artistCount');
+            if (artistCountEl) artistCountEl.innerHTML = '0';
+        }
+    }
+    
     async function loadHomepageData() {
         console.log('loadHomepageData() called');
+        
+        // Load stats immediately (independent of tracks)
+        loadStats().catch(err => console.error('Stats loading error:', err));
         
         // Set a timeout to show demo content if API doesn't respond
         let timeoutId = setTimeout(() => {
@@ -1028,12 +1089,6 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 const tracks = data.data;
                 console.log('Tracks array:', tracks);
                 console.log('First 3 tracks for Editors Picks:', tracks.slice(0, 3));
-                
-                // Update track count
-                const trackCountEl = document.getElementById('trackCount');
-                if (trackCountEl) {
-                    trackCountEl.innerHTML = tracks.length + '+';
-                }
                 
                 // Display Editor's Picks (first 3 tracks)
                 console.log('Calling displayEditorsPicks with tracks:', tracks.slice(0, 3));
@@ -1205,11 +1260,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
         ];
         
-        // Update track count
-        const trackCountEl = document.getElementById('trackCount');
-        if (trackCountEl) {
-            trackCountEl.innerHTML = demoTracks.length + '+';
-        }
+        // Track count will be updated by loadStats() if available
+        // Otherwise keep loading state or show demo count
         
         // Display Editor's Picks (first 3 demo tracks)
         displayEditorsPicks(demoTracks.slice(0, 3));
