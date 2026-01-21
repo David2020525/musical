@@ -1543,6 +1543,33 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         }
     }
     
+    // Listen for audio events to update card states
+    const audio = document.getElementById('global-audio-element');
+    if (audio) {
+        audio.addEventListener('play', () => {
+            if (typeof window.updateCardStates === 'function') {
+                window.updateCardStates();
+            }
+        });
+        audio.addEventListener('pause', () => {
+            if (typeof window.updateCardStates === 'function') {
+                window.updateCardStates();
+            }
+        });
+        audio.addEventListener('ended', () => {
+            if (typeof window.updateCardStates === 'function') {
+                window.updateCardStates();
+            }
+        });
+    }
+    
+    // Update periodically (for cross-page sync)
+    setInterval(() => {
+        if (typeof window.updateCardStates === 'function') {
+            window.updateCardStates();
+        }
+    }, 1000);
+    
     // Load data when page loads - handle both cases
     if (document.readyState === 'loading') {
         window.addEventListener('DOMContentLoaded', initializeHomepage);
@@ -1550,34 +1577,6 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // DOM already loaded, execute immediately
         initializeHomepage();
     }
-        
-        // Listen for audio events to update card states
-        const audio = document.getElementById('global-audio-element');
-        if (audio) {
-            audio.addEventListener('play', () => {
-                if (typeof window.updateCardStates === 'function') {
-                    window.updateCardStates();
-                }
-            });
-            audio.addEventListener('pause', () => {
-                if (typeof window.updateCardStates === 'function') {
-                    window.updateCardStates();
-                }
-            });
-            audio.addEventListener('ended', () => {
-                if (typeof window.updateCardStates === 'function') {
-                    window.updateCardStates();
-                }
-            });
-        }
-        
-        // Update periodically (for cross-page sync)
-        setInterval(() => {
-            if (typeof window.updateCardStates === 'function') {
-                window.updateCardStates();
-            }
-        }, 1000);
-    });
     
     // Scroll reveal
     window.addEventListener('scroll', revealOnScroll);
