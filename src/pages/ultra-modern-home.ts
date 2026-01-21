@@ -931,75 +931,60 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         modal.className = 'modal-overlay';
         modal.onclick = (e) => { if (e.target === modal) closeModal(); };
         
-        modal.innerHTML = \`
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <div class="p-8">
-                    <!-- Blog Header -->
-                    <div class="mb-8">
-                        <span class="inline-block px-3 py-1 bg-blue-500/80 rounded-full text-xs font-bold mb-4">\${post.category}</span>
-                        <h2 class="text-4xl font-black mb-4">\${post.title}</h2>
-                        <div class="flex items-center space-x-6 text-sm text-gray-400 mb-6">
-                            <span><i class="fas fa-user mr-2"></i>\${post.author}</span>
-                            <span><i class="fas fa-calendar mr-2"></i>\${post.date}</span>
-                            <span><i class="fas fa-clock mr-2"></i>\${post.readTime} read</span>
-                            <span><i class="fas fa-eye mr-2"></i>\${post.views} views</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Featured Image -->
-                    <div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black/40"></div>
-                        <i class="fas \${post.icon} text-6xl text-white/30 relative z-10"></i>
-                    </div>
-                    
-                    <!-- Blog Content -->
-                    <div class="prose prose-invert max-w-none">
-                        <p class="text-lg text-gray-300 leading-relaxed mb-6">
-                            \${post.content}
-                        </p>
-                        
-                        <p class="text-gray-400 leading-relaxed mb-6">
-                            This is demo content. In production, this would be the full blog post with rich text formatting, 
-                            images, code snippets, embedded media, and more. The blog system would support markdown or a 
-                            rich text editor for content creation.
-                        </p>
-                        
-                        <h3 class="text-2xl font-bold mb-4 mt-8">Key Takeaways</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-400 mb-6">
-                            <li>Professional advice from industry experts</li>
-                            <li>Practical tips you can apply immediately</li>
-                            <li>Step-by-step guidance for beginners</li>
-                            <li>Real-world examples and case studies</li>
-                        </ul>
-                        
-                        <p class="text-gray-400 leading-relaxed">
-                            Continue reading on the full blog page for more detailed information, 
-                            downloadable resources, and community discussions.
-                        </p>
-                    </div>
-                    
-                    <!-- Share & Actions -->
-                    <div class="flex items-center space-x-4 mt-8 pt-8 border-t border-white/10">
-                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
-                            <i class="fas fa-heart"></i>
-                            <span>Like</span>
-                        </button>
-                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
-                            <i class="fas fa-bookmark"></i>
-                            <span>Save</span>
-                        </button>
-                        <button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
-                            <i class="fas fa-share"></i>
-                            <span>Share</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        \`;
+        modal.innerHTML = '<div class="modal-content" onclick="event.stopPropagation()">' +
+            '<button class="modal-close" onclick="closeModal()">' +
+            '<i class="fas fa-times"></i>' +
+            '</button>' +
+            '<div class="p-8">' +
+            '<div class="mb-8">' +
+            '<span class="inline-block px-3 py-1 bg-blue-500/80 rounded-full text-xs font-bold mb-4">' + post.category + '</span>' +
+            '<h2 class="text-4xl font-black mb-4">' + post.title + '</h2>' +
+            '<div class="flex items-center space-x-6 text-sm text-gray-400 mb-6">' +
+            '<span><i class="fas fa-user mr-2"></i>' + post.author + '</span>' +
+            '<span><i class="fas fa-calendar mr-2"></i>' + post.date + '</span>' +
+            '<span><i class="fas fa-clock mr-2"></i>' + post.readTime + ' read</span>' +
+            '<span><i class="fas fa-eye mr-2"></i>' + post.views + ' views</span>' +
+            '</div>' +
+            '</div>' +
+            '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden">' +
+            '<div class="absolute inset-0 bg-black/40"></div>' +
+            '<i class="fas ' + post.icon + ' text-6xl text-white/30 relative z-10"></i>' +
+            '</div>' +
+            '<div class="prose prose-invert max-w-none">' +
+            '<p class="text-lg text-gray-300 leading-relaxed mb-6">' + post.content + '</p>' +
+            '<p class="text-gray-400 leading-relaxed mb-6">' +
+            'This is demo content. In production, this would be the full blog post with rich text formatting, ' +
+            'images, code snippets, embedded media, and more. The blog system would support markdown or a ' +
+            'rich text editor for content creation.' +
+            '</p>' +
+            '<h3 class="text-2xl font-bold mb-4 mt-8">Key Takeaways</h3>' +
+            '<ul class="list-disc list-inside space-y-2 text-gray-400 mb-6">' +
+            '<li>Professional advice from industry experts</li>' +
+            '<li>Practical tips you can apply immediately</li>' +
+            '<li>Step-by-step guidance for beginners</li>' +
+            '<li>Real-world examples and case studies</li>' +
+            '</ul>' +
+            '<p class="text-gray-400 leading-relaxed">' +
+            'Continue reading on the full blog page for more detailed information, ' +
+            'downloadable resources, and community discussions.' +
+            '</p>' +
+            '</div>' +
+            '<div class="flex items-center space-x-4 mt-8 pt-8 border-t border-white/10">' +
+            '<button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">' +
+            '<i class="fas fa-heart"></i>' +
+            '<span>Like</span>' +
+            '</button>' +
+            '<button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">' +
+            '<i class="fas fa-bookmark"></i>' +
+            '<span>Save</span>' +
+            '</button>' +
+            '<button class="px-6 py-3 glass-strong rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">' +
+            '<i class="fas fa-share"></i>' +
+            '<span>Share</span>' +
+            '</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
         
         document.body.appendChild(modal);
         document.body.style.overflow = 'hidden';
