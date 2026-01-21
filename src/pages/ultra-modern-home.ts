@@ -1026,6 +1026,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 
                 // Display Trending Chart (first 10 tracks)
                 displayTrendingChart(tracks.slice(0, 10));
+                
+                // Display All Tracks Grid (first 8 tracks)
+                displayTrackGrid(tracks.slice(0, 8));
+                
+                // Display Blog Preview (async)
+                displayBlogPreview();
             } else {
                 // No tracks available - show demo tracks
                 console.log('No tracks from API, displaying demo content');
@@ -1327,10 +1333,58 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         container.innerHTML = html;
     }
     
-    function displayBlogPreview() {
+    async function displayBlogPreview() {
         const container = document.getElementById('blogPreview');
         if (!container) return;
         
+        // Try to fetch real blog posts from API
+        try {
+            const response = await fetch('/api/blog/posts?limit=3');
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.length > 0) {
+                const posts = data.data.slice(0, 3);
+                const categoryIcons = {
+                    'Guide': 'fa-book',
+                    'Production': 'fa-music',
+                    'Marketing': 'fa-chart-line',
+                    'Tutorial': 'fa-graduation-cap',
+                    'News': 'fa-newspaper',
+                    'Review': 'fa-star'
+                };
+                
+                let html = '';
+                posts.forEach((post, index) => {
+                    const category = post.category || 'News';
+                    const icon = categoryIcons[category] || 'fa-newspaper';
+                    const views = post.views_count ? (post.views_count >= 1000 ? (post.views_count / 1000).toFixed(1) + 'K' : post.views_count.toString()) : '0';
+                    const author = post.author_name || post.author_username || 'Admin';
+                    const excerpt = post.excerpt || (post.content ? post.content.substring(0, 100) + '...' : '');
+                    const slug = post.slug || '';
+                    
+                    html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="window.location.href=\'/' + locale + '/blog/' + slug + '\'">';
+                    html += '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">';
+                    html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+                    html += '<i class="fas ' + icon + ' text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
+                    html += '<div class="absolute top-3 left-3 px-3 py-1 bg-blue-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + category + '</div>';
+                    html += '</div>';
+                    html += '<div class="p-6">';
+                    html += '<h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">' + post.title + '</h3>';
+                    html += '<p class="text-gray-400 text-sm mb-4 line-clamp-2">' + excerpt + '</p>';
+                    html += '<div class="flex items-center justify-between text-sm text-gray-500">';
+                    html += '<span><i class="fas fa-user mr-2"></i>' + author + '</span>';
+                    html += '<span><i class="fas fa-eye mr-2"></i>' + views + ' views</span>';
+                    html += '</div></div></div>';
+                });
+                
+                container.innerHTML = html;
+                return;
+            }
+        } catch (error) {
+            console.error('Failed to load blog posts:', error);
+        }
+        
+        // Fallback to demo posts if API fails or returns no posts
         const demoPosts = [
             {
                 title: locale === 'tr' ? 'Müzik Lisanslama Rehberi' : 'Music Licensing Guide for Beginners',
