@@ -138,29 +138,28 @@ export function SharedNavigationScript(locale: Locale) {
             if (token && user) {
                 const authSection = document.getElementById('authSection');
                 if (authSection) {
-                    authSection.innerHTML = \`
-                        <div class="relative group">
-                            <button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">
-                                <div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">
-                                    \${user.name.charAt(0).toUpperCase()}
-                                </div>
-                                <span class="hidden md:block text-xs font-normal text-white/80">\${user.name}</span>
-                                <i class="fas fa-chevron-down text-[10px] text-white/60"></i>
-                            </button>
-                            <div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl user-dropdown" style="background: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(40px) saturate(200%) !important; -webkit-backdrop-filter: blur(40px) saturate(200%) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">
-                                <a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
-                                    <i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}
-                                </a>
-                                <a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">
-                                    <i class="fas fa-user mr-2 text-blue-400 text-xs"></i>${t('profile.edit', locale)}
-                                </a>
-                                <div class="border-t border-white/10 my-1"></div>
-                                <button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400 whitespace-nowrap">
-                                    <i class="fas fa-sign-out-alt mr-2 text-xs"></i>${t('nav.logout', locale)}
-                                </button>
-                            </div>
-                        </div>
-                    \`;
+                    const userInitial = user.name.charAt(0).toUpperCase();
+                    authSection.innerHTML = '<div class="relative group">' +
+                        '<button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">' +
+                        '<div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">' +
+                        userInitial +
+                        '</div>' +
+                        '<span class="hidden md:block text-xs font-normal text-white/80">' + user.name + '</span>' +
+                        '<i class="fas fa-chevron-down text-[10px] text-white/60"></i>' +
+                        '</button>' +
+                        '<div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl user-dropdown" style="background: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(40px) saturate(200%) !important; -webkit-backdrop-filter: blur(40px) saturate(200%) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">' +
+                        '<a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">' +
+                        '<i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>${t('nav.dashboard', locale)}' +
+                        '</a>' +
+                        '<a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">' +
+                        '<i class="fas fa-user mr-2 text-blue-400 text-xs"></i>${t('profile.edit', locale)}' +
+                        '</a>' +
+                        '<div class="border-t border-white/10 my-1"></div>' +
+                        '<button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400 whitespace-nowrap">' +
+                        '<i class="fas fa-sign-out-alt mr-2 text-xs"></i>${t('nav.logout', locale)}' +
+                        '</button>' +
+                        '</div>' +
+                        '</div>';
                 }
             }
             
@@ -176,7 +175,7 @@ export function SharedNavigationScript(locale: Locale) {
                     if (e.key === 'Enter') {
                         const query = e.target.value.trim();
                         if (query.length >= 2) {
-                            window.location.href = \`/${locale}/browse?q=\${encodeURIComponent(query)}\`;
+                            window.location.href = '/${locale}/browse?q=' + encodeURIComponent(query);
                         }
                     }
                 });

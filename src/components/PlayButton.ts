@@ -64,15 +64,16 @@ async function playTrack(button) {
                 // Redirect to login
                 const locale = window.location.pathname.split('/')[1] || 'en';
                 if (confirm('You need to purchase this track to play it. Would you like to log in?')) {
-                    window.location.href = \`/\${locale}/login?redirect=\${window.location.pathname}\`;
+                    const locale = window.location.pathname.split('/')[1] || 'en';
+                    window.location.href = '/' + locale + '/login?redirect=' + window.location.pathname;
                 }
                 return;
             }
             
             // Show purchase prompt and redirect to track detail page
-            if (confirm(\`This track costs $\${price.toFixed(2)}. Would you like to purchase it?\`)) {
+            if (confirm('This track costs $' + price.toFixed(2) + '. Would you like to purchase it?')) {
                 const locale = window.location.pathname.split('/')[1] || 'en';
-                window.location.href = \`/\${locale}/tracks/\${track.id}\`;
+                window.location.href = '/' + locale + '/tracks/' + track.id;
             }
             return;
         }
