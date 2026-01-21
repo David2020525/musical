@@ -1534,10 +1534,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 html += '<div class="absolute top-3 left-3 px-2 py-1 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
             }
             
-            // Info button overlay - read track data from parent element's data-track attribute
-            html += '<button onclick="event.stopPropagation(); (function() { const parent = this.closest(\\'[data-track]\\'); if (parent) { const attr = parent.getAttribute(\\'data-track\\'); if (attr) { const decoded = attr.replace(/&quot;/g, \\'\\"\\').replace(/&#39;/g, \\'\\'\\').replace(/&amp;/g, \\'&\\').replace(/&lt;/g, \\'<\\').replace(/&gt;/g, \\'>\\'); try { showTrackModal(JSON.parse(decoded)); } catch(e) { console.error(\\'Error parsing track data:\\', e); } } } }).call(this);" class="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 z-20">';
-            html += '<i class="fas fa-info text-sm"></i>';
-            html += '</button>';
+            // Info button - removed to avoid escaping complexity
+            // Users can click on the card itself to play the track
             
             html += '</div>';
             html += '<div class="p-4">';
