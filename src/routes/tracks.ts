@@ -176,18 +176,24 @@ tracks.get('/', async (c) => {
 
     return c.json({
       success: true,
-      data: result.results,
+      data: result.results || [],
       meta: {
         limit,
         offset,
-        count: result.results.length,
+        count: result.results?.length || 0,
       },
     })
   } catch (error: any) {
     console.error('Fetch tracks error:', error)
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
     return c.json({ 
       success: false, 
-      error: 'Failed to fetch tracks' 
+      error: error.message || 'Failed to fetch tracks',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     }, 500)
   }
 })

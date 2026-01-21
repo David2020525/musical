@@ -1052,27 +1052,56 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // Load stats immediately (independent of tracks)
         loadStats().catch(err => console.error('Stats loading error:', err));
         
+        // Flag to prevent multiple fallback triggers
+        let fallbackTriggered = false;
+        
         // Set a timeout to show demo content if API doesn't respond
         let timeoutId = setTimeout(() => {
-            console.warn('API request timed out, showing demo content');
-            displayDemoTracks();
+            if (!fallbackTriggered) {
+                console.warn('API request timed out after 5 seconds, showing demo content');
+                fallbackTriggered = true;
+                displayDemoTracks();
+            }
         }, 5000); // 5 second timeout
         
         try {
-            // Fetch tracks
+            // Fetch tracks with AbortController for better timeout handling
+            const controller = new AbortController();
+            const timeoutAbort = setTimeout(() => controller.abort(), 5000);
+            
             console.log('Fetching /api/tracks?limit=20...');
             const response = await fetch('/api/tracks?limit=20', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutAbort);
+            clearTimeout(timeoutId); // Clear timeout if we got a response
             console.log('Response received:', response.status, response.statusText);
             
-            clearTimeout(timeoutId); // Clear timeout if we got a response
-            
+            // Handle non-OK responses
             if (!response.ok) {
-                throw new Error('API returned ' + response.status + ': ' + response.statusText);
+                console.warn('API returned error status:', response.status);
+                // Try to parse error response
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { success: false, error: 'API error ' + response.status };
+                }
+                
+                // If API explicitly says it failed, show demo content
+                if (!errorData.success || response.status >= 500) {
+                    console.log('API error detected, showing demo content');
+                    if (!fallbackTriggered) {
+                        fallbackTriggered = true;
+                        displayDemoTracks();
+                    }
+                    return;
+                }
             }
             
             const data = await response.json();
@@ -1085,7 +1114,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 firstTrack: data.data && data.data.length > 0 ? data.data[0] : null
             });
             
-            if (data.success && data.data && data.data.length > 0) {
+            // Check if we have valid tracks data
+            if (data.success && Array.isArray(data.data) && data.data.length > 0) {
                 const tracks = data.data;
                 console.log('Tracks array:', tracks);
                 console.log('First 3 tracks for Editors Picks:', tracks.slice(0, 3));
@@ -1105,22 +1135,36 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     console.error('Error loading blog preview:', err);
                 });
             } else {
-                // No tracks available - show demo tracks
-                console.log('No tracks from API, displaying demo content');
+                // No tracks available or API returned success:false - show demo tracks
+                console.log('No tracks from API or API returned success:false, displaying demo content');
                 console.log('API response was:', {
                     success: data.success,
                     hasData: !!data.data,
                     dataType: typeof data.data,
+                    dataIsArray: Array.isArray(data.data),
+                    dataLength: data.data ? (Array.isArray(data.data) ? data.data.length : 'not array') : 0,
                     dataValue: data.data
                 });
-                displayDemoTracks();
+                if (!fallbackTriggered) {
+                    fallbackTriggered = true;
+                    displayDemoTracks();
+                }
             }
         } catch (error) {
             clearTimeout(timeoutId); // Clear timeout on error
             console.error('Error loading homepage data:', error);
-            console.error('Error details:', error.message);
+            console.error('Error details:', error.name, error.message);
+            
+            // Handle AbortError (timeout)
+            if (error.name === 'AbortError') {
+                console.warn('Request aborted (timeout), showing demo content');
+            }
+            
             // Always show demo content as fallback
-            displayDemoTracks();
+            if (!fallbackTriggered) {
+                fallbackTriggered = true;
+                displayDemoTracks();
+            }
         }
     }
     
