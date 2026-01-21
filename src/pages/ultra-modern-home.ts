@@ -1010,6 +1010,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         try {
             // Fetch tracks
             const response = await fetch('/api/tracks?limit=20');
+            
+            if (!response.ok) {
+                throw new Error(`API returned ${response.status}: ${response.statusText}`);
+            }
+            
             const data = await response.json();
             
             if (data.success && data.data && data.data.length > 0) {
@@ -1030,8 +1035,10 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 // Display All Tracks Grid (first 8 tracks)
                 displayTrackGrid(tracks.slice(0, 8));
                 
-                // Display Blog Preview (async)
-                displayBlogPreview();
+                // Display Blog Preview (async - don't await, let it load independently)
+                displayBlogPreview().catch(err => {
+                    console.error('Error loading blog preview:', err);
+                });
             } else {
                 // No tracks available - show demo tracks
                 console.log('No tracks from API, displaying demo content');
@@ -1039,6 +1046,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
         } catch (error) {
             console.error('Error loading homepage data:', error);
+            // Always show demo content as fallback
             displayDemoTracks();
         }
     }
@@ -1444,10 +1452,39 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         });
     }
     
+    // Immediately reveal elements that are already in view (don't wait for scroll)
+    function revealOnLoad() {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            // If element is already in viewport, reveal it immediately
+            if (elementTop < windowHeight + 200) {
+                element.classList.add('active');
+            }
+        });
+    }
+    
     // Load data when page loads
     window.addEventListener('DOMContentLoaded', () => {
-        loadHomepageData();
-        revealOnScroll();
+        console.log('Homepage script loaded, initializing...');
+        try {
+            // Reveal sections immediately if they're in view
+            revealOnLoad();
+            // Load homepage data
+            loadHomepageData();
+            // Set up scroll reveal
+            revealOnScroll();
+        } catch (error) {
+            console.error('Critical error in homepage initialization:', error);
+            // Fallback: show demo content if everything fails
+            try {
+                displayDemoTracks();
+                revealOnLoad(); // Still try to reveal sections
+            } catch (fallbackError) {
+                console.error('Even fallback failed:', fallbackError);
+            }
+        }
         
         // Listen for audio events to update card states
         const audio = document.getElementById('global-audio-element');
