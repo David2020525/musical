@@ -1486,8 +1486,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         });
     }
     
-    // Load data when page loads
-    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize function
+    function initializeHomepage() {
         console.log('Homepage script loaded, initializing...');
         try {
             // Reveal sections immediately if they're in view
@@ -1506,6 +1506,15 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 console.error('Even fallback failed:', fallbackError);
             }
         }
+    }
+    
+    // Load data when page loads - handle both cases
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', initializeHomepage);
+    } else {
+        // DOM already loaded, execute immediately
+        initializeHomepage();
+    }
         
         // Listen for audio events to update card states
         const audio = document.getElementById('global-audio-element');
