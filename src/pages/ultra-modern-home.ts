@@ -1032,7 +1032,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             console.log('Response received:', response.status, response.statusText);
             
             if (!response.ok) {
-                throw new Error(`API returned ${response.status}: ${response.statusText}`);
+                throw new Error('API returned ' + response.status + ': ' + response.statusText);
             }
             
             const data = await response.json();
