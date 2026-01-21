@@ -48,6 +48,54 @@ app.get('/favicon.svg', c => {
   return c.body(`<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="faviconGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#9333EA;stop-opacity:1" /><stop offset="50%" style="stop-color:#EC4899;stop-opacity:1" /><stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" /></linearGradient><linearGradient id="faviconGlow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#9333EA;stop-opacity:0.6" /><stop offset="50%" style="stop-color:#EC4899;stop-opacity:0.6" /><stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0.6" /></linearGradient></defs><circle cx="16" cy="16" r="15" fill="url(#faviconGlow)" opacity="0.3"/><circle cx="16" cy="16" r="12" fill="url(#faviconGlow)" opacity="0.2"/><g transform="translate(16, 16)"><path d="M -6 0 Q -6 -8, 0 -8 Q 6 -8, 6 0" stroke="url(#faviconGradient)" stroke-width="2" stroke-linecap="round" fill="none"/><rect x="-8" y="-2" width="3" height="6" rx="1.5" fill="url(#faviconGradient)"/><rect x="-7.5" y="0" width="2" height="3" rx="1" fill="#1a1a2e" opacity="0.4"/><rect x="5" y="-2" width="3" height="6" rx="1.5" fill="url(#faviconGradient)"/><rect x="5.5" y="0" width="2" height="3" rx="1" fill="#1a1a2e" opacity="0.4"/><path d="M -3 0 L -3 -2 L -1.5 2.5 L 0 -3 L 1.5 3 L 3 -1.5 L 3 0" stroke="url(#faviconGradient)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/></g></svg>`, 200, {'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=31536000'})
 })
 
+// Health check endpoint - Database connection test
+app.get('/api/health', async (c) => {
+  try {
+    const db = c.env.DB
+    
+    // Test database connection with a simple query
+    const result = await db.prepare('SELECT 1 as test').first()
+    
+    // Get database info
+    const [tablesResult, usersCount, tracksCount] = await Promise.all([
+      db.prepare(`
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name NOT LIKE 'sqlite_%'
+        ORDER BY name
+      `).all(),
+      db.prepare('SELECT COUNT(*) as count FROM users').first(),
+      db.prepare('SELECT COUNT(*) as count FROM tracks').first(),
+    ])
+    
+    return c.json({
+      success: true,
+      status: 'healthy',
+      database: {
+        connected: true,
+        database_id: '873f8f65-474c-490c-81dc-6dabc303dadb',
+        database_name: 'music',
+        tables_count: tablesResult.results?.length || 0,
+        tables: tablesResult.results?.map((t: any) => t.name) || [],
+        users: (usersCount as any)?.count || 0,
+        tracks: (tracksCount as any)?.count || 0,
+      },
+      timestamp: new Date().toISOString(),
+    })
+  } catch (error: any) {
+    return c.json({
+      success: false,
+      status: 'unhealthy',
+      error: error.message || 'Database connection failed',
+      database: {
+        connected: false,
+        database_id: '873f8f65-474c-490c-81dc-6dabc303dadb',
+        database_name: 'music',
+      },
+      timestamp: new Date().toISOString(),
+    }, 500)
+  }
+})
+
 // API Routes
 app.route('/api/auth', authRoutes)
 app.route('/api/tracks', trackRoutes)
