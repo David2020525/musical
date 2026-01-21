@@ -1027,7 +1027,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         console.log('loadHomepageData() called');
         
         // Set a timeout to show demo content if API doesn't respond
-        const timeoutId = setTimeout(() => {
+        let timeoutId = setTimeout(() => {
             console.warn('API request timed out, showing demo content');
             displayDemoTracks();
         }, 5000); // 5 second timeout
@@ -1080,7 +1080,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 displayDemoTracks();
             }
         } catch (error) {
+            clearTimeout(timeoutId); // Clear timeout on error
             console.error('Error loading homepage data:', error);
+            console.error('Error details:', error.message);
             // Always show demo content as fallback
             displayDemoTracks();
         }
