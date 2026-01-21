@@ -357,6 +357,20 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* Fallback: If JavaScript fails, show content after a delay */
+        @media (prefers-reduced-motion: no-preference) {
+            .reveal {
+                animation: revealFallback 0.1s 0.5s forwards;
+            }
+        }
+        
+        @keyframes revealFallback {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body class="text-white min-h-screen overflow-x-hidden">
