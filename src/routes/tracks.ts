@@ -708,18 +708,37 @@ tracks.get('/stats', async (c) => {
       db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
     ])
 
+    const stats = {
+      tracks: Number((tracksResult as any)?.count) || 0,
+      users: Number((usersResult as any)?.count) || 0,
+      plays: Number((playsResult as any)?.total) || 0,
+      artists: Number((artistsResult as any)?.count) || 0,
+    }
+
+    console.log('Stats query results:', {
+      tracksResult,
+      usersResult,
+      playsResult,
+      artistsResult,
+      computed: stats
+    })
+
     return c.json({
       success: true,
-      data: {
-        tracks: (tracksResult as any)?.count || 0,
-        users: (usersResult as any)?.count || 0,
-        plays: (playsResult as any)?.total || 0,
-        artists: (artistsResult as any)?.count || 0,
-      }
+      data: stats
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Stats error:', error)
-    return c.json({ success: false, error: 'Failed to fetch stats' }, 500)
+    console.error('Stats error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
+    return c.json({ 
+      success: false, 
+      error: error.message || 'Failed to fetch stats',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, 500)
   }
 })
 

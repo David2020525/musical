@@ -57,7 +57,7 @@ app.get('/api/health', async (c) => {
     const result = await db.prepare('SELECT 1 as test').first()
     
     // Get database info
-    const [tablesResult, usersCount, tracksCount] = await Promise.all([
+    const [tablesResult, usersCount, tracksCount, tracksSample] = await Promise.all([
       db.prepare(`
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name NOT LIKE 'sqlite_%'
@@ -65,6 +65,7 @@ app.get('/api/health', async (c) => {
       `).all(),
       db.prepare('SELECT COUNT(*) as count FROM users').first(),
       db.prepare('SELECT COUNT(*) as count FROM tracks').first(),
+      db.prepare('SELECT id, title, artist FROM tracks LIMIT 5').all(),
     ])
     
     return c.json({
@@ -78,14 +79,17 @@ app.get('/api/health', async (c) => {
         tables: tablesResult.results?.map((t: any) => t.name) || [],
         users: (usersCount as any)?.count || 0,
         tracks: (tracksCount as any)?.count || 0,
+        sample_tracks: tracksSample.results || [],
       },
       timestamp: new Date().toISOString(),
     })
   } catch (error: any) {
+    console.error('Health check error:', error)
     return c.json({
       success: false,
       status: 'unhealthy',
       error: error.message || 'Database connection failed',
+      error_details: error.stack,
       database: {
         connected: false,
         database_id: '873f8f65-474c-490c-81dc-6dabc303dadb',

@@ -1000,48 +1000,71 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     // Load platform statistics
     async function loadStats() {
+        console.log('loadStats() called');
+        const trackCountEl = document.getElementById('trackCount');
+        const userCountEl = document.getElementById('userCount');
+        const playCountEl = document.getElementById('playCount');
+        const artistCountEl = document.getElementById('artistCount');
+        
         try {
-            const response = await fetch('/api/tracks/stats');
-            if (response.ok) {
-                const data = await response.json();
-                if (data.success && data.data) {
-                    const stats = data.data;
-                    
-                    // Update track count
-                    const trackCountEl = document.getElementById('trackCount');
-                    if (trackCountEl) {
-                        trackCountEl.innerHTML = formatNumber(stats.tracks);
-                    }
-                    
-                    // Update user count
-                    const userCountEl = document.getElementById('userCount');
-                    if (userCountEl) {
-                        userCountEl.innerHTML = formatNumber(stats.users);
-                    }
-                    
-                    // Update play count
-                    const playCountEl = document.getElementById('playCount');
-                    if (playCountEl) {
-                        playCountEl.innerHTML = formatNumber(stats.plays);
-                    }
-                    
-                    // Update artist count
-                    const artistCountEl = document.getElementById('artistCount');
-                    if (artistCountEl) {
-                        artistCountEl.innerHTML = formatNumber(stats.artists);
-                    }
+            console.log('Fetching /api/tracks/stats...');
+            const response = await fetch('/api/tracks/stats', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
                 }
+            });
+            
+            console.log('Stats response status:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error('Stats API returned ' + response.status + ': ' + response.statusText);
+            }
+            
+            const data = await response.json();
+            console.log('Stats data received:', data);
+            
+            if (data.success && data.data) {
+                const stats = data.data;
+                console.log('Updating stats UI with:', stats);
+                
+                // Update track count
+                if (trackCountEl) {
+                    trackCountEl.innerHTML = formatNumber(stats.tracks || 0);
+                }
+                
+                // Update user count
+                if (userCountEl) {
+                    userCountEl.innerHTML = formatNumber(stats.users || 0);
+                }
+                
+                // Update play count
+                if (playCountEl) {
+                    playCountEl.innerHTML = formatNumber(stats.plays || 0);
+                }
+                
+                // Update artist count
+                if (artistCountEl) {
+                    artistCountEl.innerHTML = formatNumber(stats.artists || 0);
+                }
+                
+                console.log('Stats UI updated successfully');
+            } else {
+                console.warn('Stats API returned success:false or no data:', data);
+                // Set default values
+                if (trackCountEl) trackCountEl.innerHTML = '0';
+                if (userCountEl) userCountEl.innerHTML = '0';
+                if (playCountEl) playCountEl.innerHTML = '0';
+                if (artistCountEl) artistCountEl.innerHTML = '0';
             }
         } catch (error) {
             console.error('Error loading stats:', error);
-            // Set default values if stats fail to load
-            const trackCountEl = document.getElementById('trackCount');
+            console.error('Error details:', error.name, error.message);
+            
+            // Always set default values if stats fail to load
             if (trackCountEl) trackCountEl.innerHTML = '0';
-            const userCountEl = document.getElementById('userCount');
             if (userCountEl) userCountEl.innerHTML = '0';
-            const playCountEl = document.getElementById('playCount');
             if (playCountEl) playCountEl.innerHTML = '0';
-            const artistCountEl = document.getElementById('artistCount');
             if (artistCountEl) artistCountEl.innerHTML = '0';
         }
     }
