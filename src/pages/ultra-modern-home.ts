@@ -1025,11 +1025,25 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     async function loadHomepageData() {
         console.log('loadHomepageData() called');
+        
+        // Set a timeout to show demo content if API doesn't respond
+        const timeoutId = setTimeout(() => {
+            console.warn('API request timed out, showing demo content');
+            displayDemoTracks();
+        }, 5000); // 5 second timeout
+        
         try {
             // Fetch tracks
             console.log('Fetching /api/tracks?limit=20...');
-            const response = await fetch('/api/tracks?limit=20');
+            const response = await fetch('/api/tracks?limit=20', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             console.log('Response received:', response.status, response.statusText);
+            
+            clearTimeout(timeoutId); // Clear timeout if we got a response
             
             if (!response.ok) {
                 throw new Error('API returned ' + response.status + ': ' + response.statusText);
