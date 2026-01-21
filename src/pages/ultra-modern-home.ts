@@ -674,7 +674,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         };
         
         const sizeClasses = sizes[size] || sizes.md;
-        const trackJson = JSON.stringify(track).replace(/'/g, '&apos;');
+        // Properly escape JSON for HTML attribute (escape quotes and HTML entities)
+        const trackJson = JSON.stringify(track)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
         
         return \`
             <button 
@@ -682,7 +688,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                        text-white flex items-center justify-center shadow-lg hover:shadow-xl 
                        hover:scale-110 transition-all duration-300 group relative overflow-hidden"
                 data-track-id="\${track.id}"
-                data-track='\${trackJson}'
+                data-track="\${trackJson}"
                 onclick="playTrack(this)"
                 title="Play \${track.title}"
             >
@@ -779,7 +785,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const demoBadge = trackData.is_demo ? '<span class="inline-block px-3 py-1 bg-purple-500/80 rounded-full text-xs font-bold mb-3">DEMO</span>' : '';
         const durationMinutes = Math.floor((trackData.duration || 0) / 60);
         const durationSeconds = String((trackData.duration || 0) % 60).padStart(2, '0');
-        const trackJson = JSON.stringify(trackData).replace(/'/g, '&apos;');
+        // Properly escape JSON for HTML attribute
+        const trackJson = JSON.stringify(trackData)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
         const artist = trackData.artist || trackData.producer_name || 'Unknown Artist';
         const genre = trackData.genre || 'Electronic';
         
@@ -801,7 +813,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '<span><i class="fas fa-heart mr-2"></i>' + (trackData.likes_count || 0) + ' likes</span>' +
             '<span><i class="fas fa-clock mr-2"></i>' + durationMinutes + ':' + durationSeconds + '</span>' +
             '</div>' +
-            '<button onclick="playTrackFromCard(this)" data-track=\'' + trackJson + '\' class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold hover:shadow-xl hover:shadow-purple-500/50 transition-all flex items-center space-x-2">' +
+            '<button onclick="playTrackFromCard(this)" data-track="' + trackJson + '" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold hover:shadow-xl hover:shadow-purple-500/50 transition-all flex items-center space-x-2">' +
             '<i class="fas fa-play"></i>' +
             '<span>Play Track</span>' +
             '</button>' +
@@ -1405,7 +1417,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 html += '<div class="grid grid-rows-2 gap-6">';
                 rest.forEach(track => {
                     if (!track) return;
-                    const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+                    // Properly escape JSON for HTML attribute
+                    const trackJson = JSON.stringify(track)
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
                     html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
                     html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
                     
@@ -1459,7 +1477,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 rankClass = 'bg-gradient-to-br from-blue-400 to-purple-400 bg-clip-text text-transparent opacity-70';
             }
             
-            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+            // Properly escape JSON for HTML attribute
+            const trackJson = JSON.stringify(track)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
             html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center flex-shrink-0">' + (index + 1) + '</div>';
             html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative overflow-hidden">';
@@ -1487,7 +1511,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         let html = '';
         tracks.forEach(track => {
-            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+            // Properly escape JSON for HTML attribute
+            const trackJson = JSON.stringify(track)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
             html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10 relative">';
             html += '<div class="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden cursor-pointer" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
