@@ -1027,6 +1027,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 }
                 
                 // Display Editor's Picks (first 3 tracks)
+                console.log('Calling displayEditorsPicks with tracks:', tracks.slice(0, 3));
                 displayEditorsPicks(tracks.slice(0, 3));
                 
                 // Display Trending Chart (first 10 tracks)
@@ -1209,62 +1210,92 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     }
     
     function displayEditorsPicks(tracks) {
+        console.log('displayEditorsPicks called with tracks:', tracks);
         const container = document.getElementById('editorsPicks');
-        if (!container || tracks.length === 0) return;
         
-        const [featured, ...rest] = tracks;
-        
-        // Build featured track HTML with card-level click (no play button overlay)
-        const trackJson = JSON.stringify(featured).replace(/"/g, '&quot;');
-        let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
-        html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
-        html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
-        
-        // Just the music icon, no play button overlay
-        html += '<i class="fas fa-music text-6xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
-        
-        // Add DEMO badge if this is a demo track
-        if (featured.is_demo) {
-            const demoBadge = locale === 'tr' ? 'DEMO' : 'DEMO';
-            html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + demoBadge + '</div>';
+        if (!container) {
+            console.error('Editors Picks container not found!');
+            return;
         }
         
-        html += '</div>';
-        html += '<div class="p-8">';
-        html += '<h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">' + featured.title + '</h3>';
-        html += '<p class="text-gray-400 line-clamp-1">' + (featured.artist || featured.producer_name || 'Unknown Artist') + '</p>';
-        html += '<div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">';
-        html += '<span><i class="fas fa-play mr-1"></i> ' + (featured.plays_count || 0) + '</span>';
-        html += '<span><i class="fas fa-heart mr-1"></i> ' + (featured.likes_count || 0) + '</span>';
-        html += '</div></div></div>';
+        if (!tracks || tracks.length === 0) {
+            console.warn('No tracks provided to displayEditorsPicks');
+            // Clear loading skeleton and show empty state
+            container.innerHTML = '<div class="col-span-2 text-center py-12 text-gray-400">No tracks available</div>';
+            return;
+        }
         
-        // Build other tracks HTML with card-level click
-        html += '<div class="grid grid-rows-2 gap-6">';
-        rest.forEach(track => {
-            const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
-            html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
-            html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
+        try {
+            const [featured, ...rest] = tracks;
             
-            // Subtle hover effect on background, no play button
+            if (!featured) {
+                console.error('Featured track is missing');
+                container.innerHTML = '<div class="col-span-2 text-center py-12 text-gray-400">No tracks available</div>';
+                return;
+            }
+            
+            // Build featured track HTML with card-level click (no play button overlay)
+            const trackJson = JSON.stringify(featured).replace(/"/g, '&quot;');
+            let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
+            html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
-            html += '<i class="fas fa-music text-3xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
+            
+            // Just the music icon, no play button overlay
+            html += '<i class="fas fa-music text-6xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
             
             // Add DEMO badge if this is a demo track
-            if (track.is_demo) {
-                html += '<div class="absolute top-1 left-1 px-2 py-0.5 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
+            if (featured.is_demo) {
+                const demoBadge = locale === 'tr' ? 'DEMO' : 'DEMO';
+                html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + demoBadge + '</div>';
             }
             
             html += '</div>';
-            html += '<div class="flex-1 min-w-0">';
-            html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
-            html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
-            html += '<div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">';
-            html += '<span><i class="fas fa-play mr-1"></i> ' + (track.plays_count || 0) + '</span>';
+            html += '<div class="p-8">';
+            html += '<h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-1">' + (featured.title || 'Untitled') + '</h3>';
+            html += '<p class="text-gray-400 line-clamp-1">' + (featured.artist || featured.producer_name || 'Unknown Artist') + '</p>';
+            html += '<div class="flex items-center space-x-4 mt-4 text-sm text-gray-500">';
+            html += '<span><i class="fas fa-play mr-1"></i> ' + (featured.plays_count || 0) + '</span>';
+            html += '<span><i class="fas fa-heart mr-1"></i> ' + (featured.likes_count || 0) + '</span>';
             html += '</div></div></div>';
-        });
-        html += '</div>';
-        
-        container.innerHTML = html;
+            
+            // Build other tracks HTML with card-level click
+            if (rest.length > 0) {
+                html += '<div class="grid grid-rows-2 gap-6">';
+                rest.forEach(track => {
+                    if (!track) return;
+                    const trackJson = JSON.stringify(track).replace(/"/g, '&quot;');
+                    html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
+                    html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
+                    
+                    // Subtle hover effect on background, no play button
+                    html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
+                    html += '<i class="fas fa-music text-3xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
+                    
+                    // Add DEMO badge if this is a demo track
+                    if (track.is_demo) {
+                        html += '<div class="absolute top-1 left-1 px-2 py-0.5 bg-purple-500/80 backdrop-blur-sm rounded text-xs font-bold">DEMO</div>';
+                    }
+                    
+                    html += '</div>';
+                    html += '<div class="flex-1 min-w-0">';
+                    html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + (track.title || 'Untitled') + '</h4>';
+                    html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+                    html += '<div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">';
+                    html += '<span><i class="fas fa-play mr-1"></i> ' + (track.plays_count || 0) + '</span>';
+                    html += '</div></div></div>';
+                });
+                html += '</div>';
+            } else {
+                // If only one track, add empty grid to maintain layout
+                html += '<div class="grid grid-rows-2 gap-6"></div>';
+            }
+            
+            container.innerHTML = html;
+            console.log('Editors Picks displayed successfully');
+        } catch (error) {
+            console.error('Error in displayEditorsPicks:', error);
+            container.innerHTML = '<div class="col-span-2 text-center py-12 text-gray-400">Error loading tracks</div>';
+        }
     }
     
     function displayTrendingChart(tracks) {
