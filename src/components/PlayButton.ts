@@ -1,5 +1,22 @@
 // PlayButton Component - Integrates with Global Audio Player
 
+// Helper function to safely escape JSON for HTML attributes
+function escapeJsonForAttribute(obj: any): string {
+    try {
+        let json = JSON.stringify(obj);
+        // Escape for HTML attribute (must escape & first to avoid double-escaping!)
+        return json
+            .replace(/&/g, '&amp;')   // Escape ampersands FIRST (critical!)
+            .replace(/"/g, '&quot;')   // Escape double quotes
+            .replace(/'/g, '&#39;')   // Escape single quotes
+            .replace(/</g, '&lt;')    // Escape less than
+            .replace(/>/g, '&gt;');   // Escape greater than
+    } catch (e) {
+        console.error('Error escaping JSON for attribute:', e);
+        return '{}';
+    }
+}
+
 export function generatePlayButton(track: any, size: 'sm' | 'md' | 'lg' = 'md') {
     const sizes = {
         sm: { btn: 'w-8 h-8 text-xs', icon: 'text-xs' },
@@ -8,6 +25,7 @@ export function generatePlayButton(track: any, size: 'sm' | 'md' | 'lg' = 'md') 
     };
     
     const sizeClasses = sizes[size];
+    const trackJson = escapeJsonForAttribute(track);
     
     return `
         <button 
@@ -15,7 +33,7 @@ export function generatePlayButton(track: any, size: 'sm' | 'md' | 'lg' = 'md') 
                    text-white flex items-center justify-center shadow-lg hover:shadow-xl 
                    hover:scale-110 transition-all duration-300 group relative overflow-hidden"
             data-track-id="${track.id}"
-            data-track='${JSON.stringify(track).replace(/'/g, '&apos;')}'
+            data-track="${trackJson}"
             onclick="playTrack(this)"
         >
             <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
