@@ -685,7 +685,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 data-track-id="\${track.id}"
                 data-track="\${trackJson}"
                 onclick="playTrack(this)"
-                title="Play \${track.title}"
+                title="Play \${escapeHtml(track.title || 'Track')}"
             >
                 <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <i class="fas fa-play \${sizeClasses.icon} relative z-10 play-icon"></i>
