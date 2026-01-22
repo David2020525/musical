@@ -674,13 +674,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         };
         
         const sizeClasses = sizes[size] || sizes.md;
-        // Properly escape JSON for HTML attribute (escape quotes and HTML entities)
-        const trackJson = JSON.stringify(track)
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+        // Use safe JSON escaping function
+        const trackJson = escapeJsonForAttribute(track);
         
         return \`
             <button 

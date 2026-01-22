@@ -449,6 +449,14 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             }
         }
 
+        // Helper function to escape HTML entities
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
         // Create track card HTML
         function createTrackCard(track) {
             // Use a reliable fallback image - SVG gradient placeholder
@@ -456,13 +464,19 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
             const coverUrl = track.cover_url || fallbackImage;
             const price = track.price ? '$' + track.price : i18nFree;
             
+            // Escape track data to prevent HTML injection and syntax errors
+            const safeTitle = escapeHtml(track.title || 'Untitled');
+            const safeArtist = escapeHtml(track.artist || 'Unknown Artist');
+            const safeGenre = escapeHtml(track.genre || 'Unknown');
+            const safeAudioUrl = escapeHtml(track.audio_url || '');
+            
             return \`
                 <div class="card-3d glass rounded-2xl p-6 cursor-pointer hover:bg-white/5 transition-all group">
                     <a href="/${locale}/tracks/\${track.id}">
                         <div class="aspect-square rounded-xl overflow-hidden mb-4 relative bg-gradient-to-br from-purple-500/20 to-pink-500/20">
                             <img 
                                 src="\${coverUrl}" 
-                                alt="\${track.title}" 
+                                alt="\${safeTitle}" 
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 onerror="this.onerror=null; this.src='\${fallbackImage}';"
                                 loading="lazy"
@@ -470,20 +484,20 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             <button 
                                 class="play-btn absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
-                                data-audio-url="\${track.audio_url}"
-                                data-title="\${track.title}"
-                                data-artist="\${track.artist}"
+                                data-audio-url="\${safeAudioUrl}"
+                                data-title="\${safeTitle}"
+                                data-artist="\${safeArtist}"
                                 data-cover="\${coverUrl}"
                             >
                                 <i class="fas fa-play text-white text-xl ml-1"></i>
                             </button>
                         </div>
                         <h3 class="font-bold text-lg mb-1 text-white group-hover:text-purple-400 transition-colors truncate">
-                            \${track.title}
+                            \${safeTitle}
                         </h3>
-                        <p class="text-white/60 text-sm mb-2 truncate">\${track.artist}</p>
+                        <p class="text-white/60 text-sm mb-2 truncate">\${safeArtist}</p>
                         <div class="flex items-center justify-between">
-                            <span class="text-xs text-white/40">\${track.genre || 'Unknown'}</span>
+                            <span class="text-xs text-white/40">\${safeGenre}</span>
                             <span class="text-sm font-semibold text-purple-400">\${price}</span>
                         </div>
                     </a>
