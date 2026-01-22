@@ -785,13 +785,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const demoBadge = trackData.is_demo ? '<span class="inline-block px-3 py-1 bg-purple-500/80 rounded-full text-xs font-bold mb-3">DEMO</span>' : '';
         const durationMinutes = Math.floor((trackData.duration || 0) / 60);
         const durationSeconds = String((trackData.duration || 0) % 60).padStart(2, '0');
-        // Properly escape JSON for HTML attribute
-        const trackJson = JSON.stringify(trackData)
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+        // Use safe JSON escaping function
+        const trackJson = escapeJsonForAttribute(trackData);
         const artist = trackData.artist || trackData.producer_name || 'Unknown Artist';
         const genre = trackData.genre || 'Electronic';
         
@@ -1008,6 +1003,25 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             return (num / 1000).toFixed(1) + 'K+';
         }
         return num.toString();
+    }
+    
+    // Safe JSON escaping for HTML attributes - handles all edge cases
+    function escapeJsonForAttribute(obj) {
+        try {
+            // First stringify the object (JSON.stringify already escapes special chars in strings)
+            let json = JSON.stringify(obj);
+            // Then escape for HTML attribute (must escape & first to avoid double-escaping!)
+            // Note: JSON.stringify already handles \n, \r, \t, etc. in strings
+            return json
+                .replace(/&/g, '&amp;')   // Escape ampersands FIRST (critical!)
+                .replace(/"/g, '&quot;')   // Escape double quotes (JSON uses these, so we need HTML entities)
+                .replace(/'/g, '&#39;')   // Escape single quotes
+                .replace(/</g, '&lt;')    // Escape less than
+                .replace(/>/g, '&gt;');   // Escape greater than
+        } catch (e) {
+            console.error('Error escaping JSON for attribute:', e, obj);
+            return '{}';
+        }
     }
     
     // Load platform statistics
@@ -1411,13 +1425,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
             
             // Build featured track HTML with card-level click (no play button overlay)
-            // Properly escape JSON for HTML attribute
-            const trackJson = JSON.stringify(featured)
-                .replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            // Use safe JSON escaping function
+            const trackJson = escapeJsonForAttribute(featured);
             let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
@@ -1445,13 +1454,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 html += '<div class="grid grid-rows-2 gap-6">';
                 rest.forEach(track => {
                     if (!track) return;
-                    // Properly escape JSON for HTML attribute
-                    const trackJson = JSON.stringify(track)
-                        .replace(/&/g, '&amp;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&#39;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;');
+                    // Use safe JSON escaping function
+                    const trackJson = escapeJsonForAttribute(track);
                     html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
                     html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
                     
@@ -1505,13 +1509,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 rankClass = 'bg-gradient-to-br from-blue-400 to-purple-400 bg-clip-text text-transparent opacity-70';
             }
             
-            // Properly escape JSON for HTML attribute
-            const trackJson = JSON.stringify(track)
-                .replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            // Use safe JSON escaping function
+            const trackJson = escapeJsonForAttribute(track);
             html += '<div class="flex items-center space-x-4 p-4 glass rounded-2xl hover:bg-white/5 transition-all group cursor-pointer hover:scale-[1.01]" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="text-3xl font-black ' + rankClass + ' w-12 text-center flex-shrink-0">' + (index + 1) + '</div>';
             html += '<div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0 flex items-center justify-center relative overflow-hidden">';
@@ -1539,13 +1538,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         let html = '';
         tracks.forEach(track => {
-            // Properly escape JSON for HTML attribute
-            const trackJson = JSON.stringify(track)
-                .replace(/&/g, '&amp;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            // Use safe JSON escaping function
+            const trackJson = escapeJsonForAttribute(track);
             html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10 relative">';
             html += '<div class="aspect-square bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden cursor-pointer" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
