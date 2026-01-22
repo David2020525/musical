@@ -775,6 +775,14 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         });
     };
     
+    // Helper function to escape HTML entities
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
     // Helper function to build track modal HTML
     function buildTrackModalHTML(trackData) {
         const demoBadge = trackData.is_demo ? '<span class="inline-block px-3 py-1 bg-purple-500/80 rounded-full text-xs font-bold mb-3">DEMO</span>' : '';
@@ -782,8 +790,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const durationSeconds = String((trackData.duration || 0) % 60).padStart(2, '0');
         // Use safe JSON escaping function
         const trackJson = escapeJsonForAttribute(trackData);
-        const artist = trackData.artist || trackData.producer_name || 'Unknown Artist';
-        const genre = trackData.genre || 'Electronic';
+        // Escape HTML entities for safe insertion
+        const safeTitle = escapeHtml(trackData.title || 'Untitled');
+        const safeArtist = escapeHtml(trackData.artist || trackData.producer_name || 'Unknown Artist');
+        const safeGenre = escapeHtml(trackData.genre || 'Electronic');
+        const safeProducerName = escapeHtml(trackData.producer_name || trackData.artist || 'Unknown');
         
         return '<div class="modal-content" onclick="event.stopPropagation()">' +
             '<button class="modal-close" onclick="closeModal()">' +
@@ -796,8 +807,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '</div>' +
             '<div class="flex-1">' +
             demoBadge +
-            '<h2 class="text-4xl font-black mb-2">' + trackData.title + '</h2>' +
-            '<p class="text-xl text-gray-400 mb-4">' + artist + '</p>' +
+            '<h2 class="text-4xl font-black mb-2">' + safeTitle + '</h2>' +
+            '<p class="text-xl text-gray-400 mb-4">' + safeArtist + '</p>' +
             '<div class="flex items-center space-x-6 text-sm text-gray-500 mb-6">' +
             '<span><i class="fas fa-play mr-2"></i>' + (trackData.plays_count || 0) + ' plays</span>' +
             '<span><i class="fas fa-heart mr-2"></i>' + (trackData.likes_count || 0) + ' likes</span>' +
@@ -813,7 +824,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '<div class="glass p-6 rounded-xl">' +
             '<h3 class="text-lg font-bold mb-3"><i class="fas fa-info-circle mr-2 text-purple-400"></i>Track Information</h3>' +
             '<div class="space-y-2 text-sm">' +
-            '<div class="flex justify-between"><span class="text-gray-400">Genre:</span><span class="font-semibold">' + (trackData.genre || 'Unknown') + '</span></div>' +
+            '<div class="flex justify-between"><span class="text-gray-400">Genre:</span><span class="font-semibold">' + safeGenre + '</span></div>' +
             '<div class="flex justify-between"><span class="text-gray-400">Duration:</span><span class="font-semibold">' + durationMinutes + ':' + durationSeconds + '</span></div>' +
             '<div class="flex justify-between"><span class="text-gray-400">BPM:</span><span class="font-semibold">120</span></div>' +
             '<div class="flex justify-between"><span class="text-gray-400">Key:</span><span class="font-semibold">C Minor</span></div>' +
@@ -822,7 +833,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '<div class="glass p-6 rounded-xl">' +
             '<h3 class="text-lg font-bold mb-3"><i class="fas fa-user mr-2 text-purple-400"></i>Producer</h3>' +
             '<div class="space-y-2 text-sm">' +
-            '<div class="flex justify-between"><span class="text-gray-400">Name:</span><span class="font-semibold">' + (trackData.producer_name || trackData.artist || 'Unknown') + '</span></div>' +
+            '<div class="flex justify-between"><span class="text-gray-400">Name:</span><span class="font-semibold">' + safeProducerName + '</span></div>' +
             '<div class="flex justify-between"><span class="text-gray-400">Tracks:</span><span class="font-semibold">15</span></div>' +
             '<div class="flex justify-between"><span class="text-gray-400">Followers:</span><span class="font-semibold">1.2K</span></div>' +
             '</div>' +
@@ -1465,8 +1476,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     
                     html += '</div>';
                     html += '<div class="flex-1 min-w-0">';
-                    html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + (track.title || 'Untitled') + '</h4>';
-                    html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+                    // Escape HTML entities for safe insertion
+                    const safeTrackTitle = escapeHtml(track.title || 'Untitled');
+                    const safeTrackArtist = escapeHtml(track.artist || track.producer_name || 'Unknown Artist');
+                    html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + safeTrackTitle + '</h4>';
+                    html += '<p class="text-sm text-gray-400 line-clamp-1">' + safeTrackArtist + '</p>';
                     html += '<div class="flex items-center space-x-3 mt-2 text-xs text-gray-500">';
                     html += '<span><i class="fas fa-play mr-1"></i> ' + (track.plays_count || 0) + '</span>';
                     html += '</div></div></div>';
