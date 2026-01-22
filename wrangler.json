@@ -23,5 +23,11 @@
       "binding": "TRACKS_BUCKET",
       "bucket_name": "musical"
     }
-  ]
+  ],
+  "observability": {
+    "logs": {
+      "enabled": false,
+      "invocation_logs": true
+    }
+  }
 }

@@ -74,7 +74,7 @@ app.get('/api/health', async (c) => {
       database: {
         connected: true,
         database_id: '873f8f65-474c-490c-81dc-6dabc303dadb',
-        database_name: 'muscial',
+        database_name: 'music',
         tables_count: tablesResult.results?.length || 0,
         tables: tablesResult.results?.map((t: any) => t.name) || [],
         users: (usersCount as any)?.count || 0,
@@ -93,7 +93,7 @@ app.get('/api/health', async (c) => {
       database: {
         connected: false,
         database_id: '873f8f65-474c-490c-81dc-6dabc303dadb',
-        database_name: 'muscial',
+        database_name: 'music',
       },
       timestamp: new Date().toISOString(),
     }, 500)
