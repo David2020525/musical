@@ -138,13 +138,21 @@ export function SharedNavigationScript(locale: Locale) {
             if (token && user) {
                 const authSection = document.getElementById('authSection');
                 if (authSection) {
-                    const userInitial = user.name.charAt(0).toUpperCase();
+                    // Escape user data to prevent XSS
+                    function escapeHtml(text) {
+                        if (!text) return '';
+                        const div = document.createElement('div');
+                        div.textContent = text;
+                        return div.innerHTML;
+                    }
+                    const userInitial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+                    const safeUserName = escapeHtml(user.name || 'User');
                     authSection.innerHTML = '<div class="relative group">' +
                         '<button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">' +
                         '<div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center font-bold text-xs">' +
                         userInitial +
                         '</div>' +
-                        '<span class="hidden md:block text-xs font-normal text-white/80">' + user.name + '</span>' +
+                        '<span class="hidden md:block text-xs font-normal text-white/80">' + safeUserName + '</span>' +
                         '<i class="fas fa-chevron-down text-[10px] text-white/60"></i>' +
                         '</button>' +
                         '<div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl user-dropdown" style="background: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(40px) saturate(200%) !important; -webkit-backdrop-filter: blur(40px) saturate(200%) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">' +
