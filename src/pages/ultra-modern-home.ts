@@ -1529,8 +1529,11 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             html += '<i class="fas fa-music text-2xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
             html += '</div>';
             html += '<div class="flex-1 min-w-0">';
-            html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + track.title + '</h4>';
-            html += '<p class="text-sm text-gray-400 line-clamp-1">' + (track.artist || track.producer_name || 'Unknown Artist') + '</p>';
+            // Escape HTML entities for safe insertion
+            const safeTrendingTitle = escapeHtml(track.title || 'Untitled');
+            const safeTrendingArtist = escapeHtml(track.artist || track.producer_name || 'Unknown Artist');
+            html += '<h4 class="font-bold group-hover:text-purple-400 transition-colors line-clamp-1">' + safeTrendingTitle + '</h4>';
+            html += '<p class="text-sm text-gray-400 line-clamp-1">' + safeTrendingArtist + '</p>';
             html += '</div>';
             html += '<div class="text-right text-gray-500 text-sm space-y-1 flex-shrink-0">';
             html += '<div><i class="fas fa-play mr-2"></i>' + (track.plays_count || 0) + '</div>';
