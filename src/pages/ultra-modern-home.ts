@@ -1017,13 +1017,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // First stringify the object (JSON.stringify already escapes special chars in strings)
             let json = JSON.stringify(obj);
             // Then escape for HTML attribute (must escape & first to avoid double-escaping!)
-            // Note: JSON.stringify already handles \n, \r, \t, etc. in strings
+            // Note: JSON.stringify already handles \n, \r, \t, etc. in strings as \n, \r, \t
+            // But we need to ensure they don't break HTML attributes
             return json
-                .replace(/&/g, '&amp;')   // Escape ampersands FIRST (critical!)
-                .replace(/"/g, '&quot;')   // Escape double quotes (JSON uses these, so we need HTML entities)
-                .replace(/'/g, '&#39;')   // Escape single quotes
-                .replace(/</g, '&lt;')    // Escape less than
-                .replace(/>/g, '&gt;');   // Escape greater than
+                .replace(/&/g, '&amp;')      // Escape ampersands FIRST (critical!)
+                .replace(/"/g, '&quot;')      // Escape double quotes
+                .replace(/'/g, '&#39;')       // Escape single quotes  
+                .replace(/</g, '&lt;')        // Escape less than
+                .replace(/>/g, '&gt;')        // Escape greater than
+                .replace(/\r\n/g, '\\r\\n')   // Ensure CRLF is escaped
+                .replace(/\n/g, '\\n')        // Ensure newlines are escaped
+                .replace(/\r/g, '\\r')         // Ensure carriage returns are escaped
+                .replace(/\t/g, '\\t');        // Ensure tabs are escaped
         } catch (e) {
             console.error('Error escaping JSON for attribute:', e, obj);
             return '{}';
