@@ -1018,15 +1018,34 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const playCountEl = document.getElementById('playCount');
         const artistCountEl = document.getElementById('artistCount');
         
+        // Helper to safely update element
+        function updateStatElement(el, value) {
+            if (el) {
+                el.innerHTML = formatNumber(value || 0);
+                // Remove any shimmer/loading elements
+                const shimmer = el.querySelector('.shimmer');
+                if (shimmer) {
+                    shimmer.remove();
+                }
+            }
+        }
+        
         try {
             console.log('Fetching /api/tracks/stats...');
+            
+            // Add timeout to prevent hanging
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
             const response = await fetch('/api/tracks/stats', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                signal: controller.signal
             });
             
+            clearTimeout(timeoutId);
             console.log('Stats response status:', response.status, response.statusText);
             
             if (!response.ok) {
@@ -1040,44 +1059,31 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 const stats = data.data;
                 console.log('Updating stats UI with:', stats);
                 
-                // Update track count
-                if (trackCountEl) {
-                    trackCountEl.innerHTML = formatNumber(stats.tracks || 0);
-                }
-                
-                // Update user count
-                if (userCountEl) {
-                    userCountEl.innerHTML = formatNumber(stats.users || 0);
-                }
-                
-                // Update play count
-                if (playCountEl) {
-                    playCountEl.innerHTML = formatNumber(stats.plays || 0);
-                }
-                
-                // Update artist count
-                if (artistCountEl) {
-                    artistCountEl.innerHTML = formatNumber(stats.artists || 0);
-                }
+                // Update all stats
+                updateStatElement(trackCountEl, stats.tracks);
+                updateStatElement(userCountEl, stats.users);
+                updateStatElement(playCountEl, stats.plays);
+                updateStatElement(artistCountEl, stats.artists);
                 
                 console.log('Stats UI updated successfully');
             } else {
                 console.warn('Stats API returned success:false or no data:', data);
                 // Set default values
-                if (trackCountEl) trackCountEl.innerHTML = '0';
-                if (userCountEl) userCountEl.innerHTML = '0';
-                if (playCountEl) playCountEl.innerHTML = '0';
-                if (artistCountEl) artistCountEl.innerHTML = '0';
+                updateStatElement(trackCountEl, 0);
+                updateStatElement(userCountEl, 0);
+                updateStatElement(playCountEl, 0);
+                updateStatElement(artistCountEl, 0);
             }
         } catch (error) {
             console.error('Error loading stats:', error);
             console.error('Error details:', error.name, error.message);
             
             // Always set default values if stats fail to load
-            if (trackCountEl) trackCountEl.innerHTML = '0';
-            if (userCountEl) userCountEl.innerHTML = '0';
-            if (playCountEl) playCountEl.innerHTML = '0';
-            if (artistCountEl) artistCountEl.innerHTML = '0';
+            // This ensures shimmer is removed even on error
+            updateStatElement(trackCountEl, 0);
+            updateStatElement(userCountEl, 0);
+            updateStatElement(playCountEl, 0);
+            updateStatElement(artistCountEl, 0);
         }
     }
     
@@ -1085,7 +1091,23 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         console.log('loadHomepageData() called');
         
         // Load stats immediately (independent of tracks)
-        loadStats().catch(err => console.error('Stats loading error:', err));
+        // Call with explicit error handling to ensure it runs even if other code fails
+        try {
+            await loadStats();
+        } catch (err) {
+            console.error('Stats loading error:', err);
+            // Even if loadStats fails, try to remove shimmer placeholders
+            ['trackCount', 'userCount', 'playCount', 'artistCount'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const shimmer = el.querySelector('.shimmer');
+                    if (shimmer) shimmer.remove();
+                    if (el.innerHTML.trim() === '' || el.querySelector('.shimmer')) {
+                        el.innerHTML = '0';
+                    }
+                }
+            });
+        }
         
         // Flag to prevent multiple fallback triggers
         let fallbackTriggered = false;
@@ -1680,12 +1702,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         try {
             // Reveal sections immediately if they're in view
             revealOnLoad();
-            // Load homepage data
+            // Load homepage data (includes stats)
             loadHomepageData();
             // Set up scroll reveal
             revealOnScroll();
         } catch (error) {
             console.error('Critical error in homepage initialization:', error);
+            // Even on error, try to load stats independently
+            try {
+                loadStats().catch(e => console.error('Stats failed in error handler:', e));
+            } catch (statsError) {
+                console.error('Stats loading failed in error handler:', statsError);
+            }
             // Fallback: show demo content if everything fails
             try {
                 displayDemoTracks();
@@ -1695,6 +1723,22 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
         }
     }
+    
+    // Load stats immediately on script load (before DOM ready if possible)
+    // This ensures stats load even if other JavaScript has errors
+    (function loadStatsImmediately() {
+        try {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(loadStats, 100); // Small delay to ensure elements exist
+                });
+            } else {
+                setTimeout(loadStats, 100);
+            }
+        } catch (e) {
+            console.error('Failed to set up immediate stats loader:', e);
+        }
+    })();
     
     // Listen for audio events to update card states
     const audio = document.getElementById('global-audio-element');
