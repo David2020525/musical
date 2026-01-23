@@ -290,7 +290,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
     <script>
         // i18n constants
         const locale = '${locale}';
-        const i18nFree = '${t('common.free', locale)}';
+        const i18nFree = ${JSON.stringify(t('common.free', locale))};
 
         // State
         let currentPage = 1;

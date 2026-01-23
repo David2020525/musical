@@ -217,9 +217,9 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
     <script>
         const trackId = '${trackId}';
         const locale = '${locale}';
-        const i18nFree = '${t('common.free', locale)}';
-        const i18nNoDescription = '${t('track.no_description', locale)}';
-        const i18nNoTags = '${t('track.no_tags', locale)}';
+        const i18nFree = ${JSON.stringify(t('common.free', locale))};
+        const i18nNoDescription = ${JSON.stringify(t('track.no_description', locale))};
+        const i18nNoTags = ${JSON.stringify(t('track.no_tags', locale))};
         let currentTrack = null;
 
         const loadingState = document.getElementById('loading-state');
