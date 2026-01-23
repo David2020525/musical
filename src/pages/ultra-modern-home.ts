@@ -431,28 +431,28 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2" id="trackCount" style="min-height: 3rem;">
-                        10
+                        0
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_tracks', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2" id="userCount" style="min-height: 3rem;">
-                        10
+                        0
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_users', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2" id="playCount" style="min-height: 3rem;">
-                        10
+                        0
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_plays', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2" id="artistCount" style="min-height: 3rem;">
-                        10
+                        0
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_artists', locale)}</div>
                 </div>
