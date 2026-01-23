@@ -303,7 +303,7 @@ export function createR2Client(env: any): R2Client {
     accountId: env.R2_ACCOUNT_ID || '8acb02437032e44576dc364343c04059',
     accessKeyId: env.R2_ACCESS_KEY_ID || 'bc87e631b295b635948d9abf31756e2d',
     secretAccessKey: env.R2_SECRET_ACCESS_KEY || '30152cc476f6efa086ff01f3bdd18d14adf96acdffc22951295aa06bfec4c0a8',
-    bucketName: env.R2_BUCKET_NAME || 'musichub-tracks',
+    bucketName: env.R2_BUCKET_NAME || 'musical',
     publicUrl: env.R2_PUBLIC_URL || 'https://8acb02437032e44576dc364343c04059.r2.cloudflarestorage.com',
   };
 
