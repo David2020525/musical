@@ -148,15 +148,9 @@ export function SharedNavigationScript(locale: Locale) {
                     const userInitial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
                     const safeUserName = escapeHtml(user.name || 'User');
                     // Escape translation strings for safe insertion into HTML
-                    function escapeHtml(text) {
-                        if (!text) return '';
-                        const div = document.createElement('div');
-                        div.textContent = text;
-                        return div.innerHTML;
-                    }
-                    const safeDashboardText = escapeHtml(${JSON.stringify(t('nav.dashboard', locale))});
-                    const safeProfileText = escapeHtml(${JSON.stringify(t('profile.edit', locale))});
-                    const safeLogoutText = escapeHtml(${JSON.stringify(t('nav.logout', locale))});
+                    const safeDashboardText = ${JSON.stringify(t('nav.dashboard', locale))};
+                    const safeProfileText = ${JSON.stringify(t('profile.edit', locale))};
+                    const safeLogoutText = ${JSON.stringify(t('nav.logout', locale))};
                     
                     authSection.innerHTML = '<div class="relative group">' +
                         '<button class="flex items-center space-x-2 px-2.5 py-1.5 glass-strong rounded-lg hover:bg-white/10 transition-all">' +
@@ -168,14 +162,14 @@ export function SharedNavigationScript(locale: Locale) {
                         '</button>' +
                         '<div class="hidden group-hover:block absolute right-0 mt-2 w-36 rounded-lg py-1.5 z-50 shadow-xl user-dropdown" style="background: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(40px) saturate(200%) !important; -webkit-backdrop-filter: blur(40px) saturate(200%) !important; border: 1px solid rgba(255, 255, 255, 0.12) !important;">' +
                         '<a href="/${locale}/dashboard" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">' +
-                        '<i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>' + safeDashboardText +
+                        '<i class="fas fa-chart-line mr-2 text-purple-400 text-xs"></i>' + escapeHtml(safeDashboardText) +
                         '</a>' +
                         '<a href="/${locale}/profile" class="block px-3 py-2 hover:bg-white/10 transition-all text-xs text-white/90 hover:text-white whitespace-nowrap">' +
-                        '<i class="fas fa-user mr-2 text-blue-400 text-xs"></i>' + safeProfileText +
+                        '<i class="fas fa-user mr-2 text-blue-400 text-xs"></i>' + escapeHtml(safeProfileText) +
                         '</a>' +
                         '<div class="border-t border-white/10 my-1"></div>' +
                         '<button onclick="logout()" class="block w-full text-left px-3 py-2 hover:bg-white/10 transition-all text-xs text-red-400 whitespace-nowrap">' +
-                        '<i class="fas fa-sign-out-alt mr-2 text-xs"></i>' + safeLogoutText +
+                        '<i class="fas fa-sign-out-alt mr-2 text-xs"></i>' + escapeHtml(safeLogoutText) +
                         '</button>' +
                         '</div>' +
                         '</div>';
