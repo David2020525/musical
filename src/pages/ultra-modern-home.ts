@@ -1054,38 +1054,46 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             
             // Remove ALL shimmer/loading elements - use querySelectorAll to get all
             const shimmers = el.querySelectorAll('.shimmer');
+            console.log('Found', shimmers.length, 'shimmer elements');
             shimmers.forEach(shimmer => {
                 console.log('Removing shimmer element:', shimmer);
                 shimmer.remove();
             });
             
-            // Also remove any child elements that might be loading placeholders
+            // Also remove ANY child elements that might be loading placeholders
+            // This is more aggressive - remove all children first
             const children = Array.from(el.children);
+            console.log('Found', children.length, 'child elements');
             children.forEach(child => {
+                // Remove any span, div, or other element that might be a placeholder
                 if (child.classList.contains('shimmer') || 
                     child.classList.contains('glass') ||
-                    child.tagName === 'SPAN' && (child.classList.contains('shimmer') || child.classList.contains('glass'))) {
-                    console.log('Removing placeholder child:', child);
+                    child.tagName === 'SPAN' ||
+                    (child.tagName === 'DIV' && (child.classList.contains('shimmer') || child.classList.contains('glass')))) {
+                    console.log('Removing placeholder child:', child.tagName, child.className);
                     child.remove();
                 }
             });
             
-            // Clear any existing text content first
-            const existingText = el.textContent.trim();
-            if (existingText) {
-                console.log('Clearing existing text:', existingText);
-            }
+            // Clear ALL content first - this ensures we start fresh
+            el.innerHTML = '';
             
-            // Set the new value (this will replace any remaining content)
+            // Set the new value as text content
+            // The gradient CSS classes are already on the element, so they'll apply to the text
             const formattedValue = formatNumber(value || 0);
             console.log('Setting textContent to:', formattedValue);
             el.textContent = formattedValue;
             
             // Verify the update worked
-            if (el.textContent.trim() === formattedValue) {
-                console.log('Successfully updated', el.id, 'to', formattedValue);
+            const actualContent = el.textContent.trim();
+            if (actualContent === formattedValue) {
+                console.log('✅ Successfully updated', el.id, 'to', formattedValue);
             } else {
-                console.error('Failed to update', el.id, '- expected:', formattedValue, 'got:', el.textContent);
+                console.error('❌ Failed to update', el.id, '- expected:', formattedValue, 'got:', actualContent);
+                // Force update by clearing and setting again
+                el.innerHTML = '';
+                el.textContent = formattedValue;
+                console.log('Retry: Set to', el.textContent);
             }
         }
         
