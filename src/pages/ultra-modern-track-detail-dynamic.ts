@@ -220,6 +220,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
         const i18nFree = ${JSON.stringify(t('common.free', locale))};
         const i18nNoDescription = ${JSON.stringify(t('track.no_description', locale))};
         const i18nNoTags = ${JSON.stringify(t('track.no_tags', locale))};
+        const i18nPurchase = ${JSON.stringify(t('track.purchase', locale))};
         let currentTrack = null;
 
         const loadingState = document.getElementById('loading-state');
@@ -454,8 +455,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                     if (purchaseBtn) {
                         purchaseBtn.disabled = false;
                         const price = currentTrack.price || 0;
-                        const purchaseText = ${JSON.stringify(t('track.purchase', locale))};
-                        purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>' + purchaseText + ' <span id="track-price">' + (price > 0 ? '$' + price : i18nFree) + '</span>';
+                        purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>' + i18nPurchase + ' <span id="track-price">' + (price > 0 ? '$' + price : i18nFree) + '</span>';
                     }
                 }
             } catch (error) {
@@ -466,8 +466,7 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 if (purchaseBtn) {
                     purchaseBtn.disabled = false;
                     const price = currentTrack.price || 0;
-                    const purchaseText = ${JSON.stringify(t('track.purchase', locale))};
-                    purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>' + purchaseText + ' <span id="track-price">' + (price > 0 ? '$' + price : i18nFree) + '</span>';
+                    purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>' + i18nPurchase + ' <span id="track-price">' + (price > 0 ? '$' + price : i18nFree) + '</span>';
                 }
             }
         }
