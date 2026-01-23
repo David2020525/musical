@@ -431,28 +431,28 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2" id="trackCount">
-                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
+                        <span class="shimmer h-12 w-20 glass rounded-xl inline-block"></span>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_tracks', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-pink-400 to-orange-400 bg-clip-text text-transparent mb-2" id="userCount">
-                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
+                        <span class="shimmer h-12 w-20 glass rounded-xl inline-block"></span>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_users', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2" id="playCount">
-                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
+                        <span class="shimmer h-12 w-20 glass rounded-xl inline-block"></span>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_plays', locale)}</div>
                 </div>
                 
                 <div class="glass-strong rounded-3xl p-8 card-3d hover:bg-white/10 transition-all">
                     <div class="text-5xl font-black bg-gradient-to-br from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2" id="artistCount">
-                        <div class="shimmer h-12 w-20 glass rounded-xl"></div>
+                        <span class="shimmer h-12 w-20 glass rounded-xl inline-block"></span>
                     </div>
                     <div class="text-sm text-gray-400 font-medium uppercase tracking-wider">${t('home.stats_artists', locale)}</div>
                 </div>
@@ -1046,12 +1046,22 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // Helper to safely update element
         function updateStatElement(el, value) {
             if (el) {
-                el.innerHTML = formatNumber(value || 0);
-                // Remove any shimmer/loading elements
+                // Remove any shimmer/loading elements FIRST (before setting innerHTML)
                 const shimmer = el.querySelector('.shimmer');
                 if (shimmer) {
                     shimmer.remove();
                 }
+                // Also check for any child elements that might be loading placeholders
+                const children = el.children;
+                if (children.length > 0) {
+                    Array.from(children).forEach(child => {
+                        if (child.classList.contains('shimmer') || child.classList.contains('glass')) {
+                            child.remove();
+                        }
+                    });
+                }
+                // Set the new value (this will replace any remaining content)
+                el.textContent = formatNumber(value || 0);
             }
         }
         
@@ -1083,21 +1093,27 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             if (data.success && data.data) {
                 const stats = data.data;
                 console.log('Updating stats UI with:', stats);
+                console.log('Elements found:', {
+                    trackCount: !!trackCountEl,
+                    userCount: !!userCountEl,
+                    playCount: !!playCountEl,
+                    artistCount: !!artistCountEl
+                });
                 
-                // Update all stats
-                updateStatElement(trackCountEl, stats.tracks);
-                updateStatElement(userCountEl, stats.users);
-                updateStatElement(playCountEl, stats.plays);
-                updateStatElement(artistCountEl, stats.artists);
+                // Update all stats - ensure elements exist before updating
+                if (trackCountEl) updateStatElement(trackCountEl, stats.tracks);
+                if (userCountEl) updateStatElement(userCountEl, stats.users);
+                if (playCountEl) updateStatElement(playCountEl, stats.plays);
+                if (artistCountEl) updateStatElement(artistCountEl, stats.artists);
                 
                 console.log('Stats UI updated successfully');
             } else {
                 console.warn('Stats API returned success:false or no data:', data);
                 // Set default values
-                updateStatElement(trackCountEl, 0);
-                updateStatElement(userCountEl, 0);
-                updateStatElement(playCountEl, 0);
-                updateStatElement(artistCountEl, 0);
+                if (trackCountEl) updateStatElement(trackCountEl, 0);
+                if (userCountEl) updateStatElement(userCountEl, 0);
+                if (playCountEl) updateStatElement(playCountEl, 0);
+                if (artistCountEl) updateStatElement(artistCountEl, 0);
             }
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -1121,14 +1137,22 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             await loadStats();
         } catch (err) {
             console.error('Stats loading error:', err);
-            // Even if loadStats fails, try to remove shimmer placeholders
+            // Even if loadStats fails, try to remove shimmer placeholders and show zeros
             ['trackCount', 'userCount', 'playCount', 'artistCount'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    const shimmer = el.querySelector('.shimmer');
-                    if (shimmer) shimmer.remove();
-                    if (el.innerHTML.trim() === '' || el.querySelector('.shimmer')) {
-                        el.innerHTML = '0';
+                    // Remove all shimmer elements
+                    const shimmers = el.querySelectorAll('.shimmer');
+                    shimmers.forEach(shimmer => shimmer.remove());
+                    // Remove any child divs that might be placeholders
+                    Array.from(el.children).forEach(child => {
+                        if (child.classList.contains('shimmer') || child.classList.contains('glass')) {
+                            child.remove();
+                        }
+                    });
+                    // Set to 0 if empty or still has shimmer
+                    if (el.textContent.trim() === '' || el.querySelector('.shimmer')) {
+                        el.textContent = '0';
                     }
                 }
             });
