@@ -1120,11 +1120,19 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
             
             const data = await response.json();
-            console.log('Stats data received:', data);
+            console.log('Stats data received:', JSON.stringify(data));
             
             if (data.success && data.data) {
                 const stats = data.data;
-                console.log('Updating stats UI with:', stats);
+                console.log('Updating stats UI with:', JSON.stringify(stats));
+                console.log('Raw stat values:', {
+                    tracks: stats.tracks,
+                    users: stats.users,
+                    plays: stats.plays,
+                    artists: stats.artists,
+                    tracksType: typeof stats.tracks,
+                    usersType: typeof stats.users
+                });
                 console.log('Elements found:', {
                     trackCount: !!trackCountEl,
                     userCount: !!userCountEl,
@@ -1132,11 +1140,31 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     artistCount: !!artistCountEl
                 });
                 
+                // Ensure values are numbers
+                const tracksValue = Number(stats.tracks) || 0;
+                const usersValue = Number(stats.users) || 0;
+                const playsValue = Number(stats.plays) || 0;
+                const artistsValue = Number(stats.artists) || 0;
+                
+                console.log('Converted values:', { tracksValue, usersValue, playsValue, artistsValue });
+                
                 // Update all stats - ensure elements exist before updating
-                if (trackCountEl) updateStatElement(trackCountEl, stats.tracks);
-                if (userCountEl) updateStatElement(userCountEl, stats.users);
-                if (playCountEl) updateStatElement(playCountEl, stats.plays);
-                if (artistCountEl) updateStatElement(artistCountEl, stats.artists);
+                if (trackCountEl) {
+                    console.log('Updating trackCount element with value:', tracksValue);
+                    updateStatElement(trackCountEl, tracksValue);
+                }
+                if (userCountEl) {
+                    console.log('Updating userCount element with value:', usersValue);
+                    updateStatElement(userCountEl, usersValue);
+                }
+                if (playCountEl) {
+                    console.log('Updating playCount element with value:', playsValue);
+                    updateStatElement(playCountEl, playsValue);
+                }
+                if (artistCountEl) {
+                    console.log('Updating artistCount element with value:', artistsValue);
+                    updateStatElement(artistCountEl, artistsValue);
+                }
                 
                 console.log('Stats UI updated successfully');
             } else {
