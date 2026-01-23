@@ -43,7 +43,13 @@ jobs:
           echo "Cloudflare API Token is configured"
         
       - name: Deploy to Cloudflare Workers
-        run: npx wrangler deploy
+        run: |
+          echo "Starting deployment to Cloudflare Workers..."
+          npx wrangler deploy --verbose 2>&1 | tee deploy.log || {
+            echo "Deployment failed. Error log:"
+            cat deploy.log
+            exit 1
+          }
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
