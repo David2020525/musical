@@ -432,7 +432,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
         function updateUserInfo() {
             if (!currentUser) return;
             
-            document.getElementById('userName').textContent = currentUser.name + "'s " + i18nDashboardTitle;
+            document.getElementById('userName').textContent = (currentUser.name || 'User') + '&apos;s ' + i18nDashboardTitle;
             
             let roleText = currentUser.is_producer ? i18nProducer : i18nListener;
             if (currentUser.role === 'admin') roleText = i18nAdmin;
@@ -456,7 +456,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                 // Set member since
                 if (currentUser.created_at) {
                     const memberDate = new Date(currentUser.created_at);
-                    document.getElementById('member-since').textContent = memberDate.toLocaleDateString('${locale}', { year: 'numeric', month: 'short' });
+                    document.getElementById('member-since').textContent = memberDate.toLocaleDateString(locale, { year: 'numeric', month: 'short' });
                 }
             }
             
@@ -491,7 +491,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                                             <h3 class="text-2xl font-bold mb-2 text-yellow-300">${_('dashboard.application_pending')}</h3>
                                             <p class="text-gray-300 mb-4">${_('dashboard.application_pending_message')}</p>
                                             <div class="flex items-center space-x-4 text-sm">
-                                                <span class="text-gray-400"><i class="fas fa-calendar mr-2"></i>Applied: \${new Date(app.created_at).toLocaleDateString('${locale}')}</span>
+                                                <span class="text-gray-400"><i class="fas fa-calendar mr-2"></i>Applied: \${new Date(app.created_at).toLocaleDateString(locale)}</span>
                                                 <a href="/${locale}/producer/apply" class="text-purple-400 hover:text-purple-300"><i class="fas fa-eye mr-2"></i>View Application</a>
                                             </div>
                                         </div>
@@ -657,7 +657,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                                     <div class="flex-1">
                                         <h3 class="font-bold text-lg">\${purchase.title}</h3>
                                         <p class="text-sm text-gray-400">\${purchase.artist}</p>
-                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString('${locale}')}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString(locale)}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-3">
@@ -754,7 +754,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
             if (diffMins < 60) return \`\${diffMins}m ago\`;
             if (diffHours < 24) return \`\${diffHours}h ago\`;
             if (diffDays < 7) return \`\${diffDays}d ago\`;
-            return past.toLocaleDateString('${locale}');
+            return past.toLocaleDateString(locale);
         }
         
         // Load purchases for listeners
@@ -784,7 +784,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                                     <div class="flex-1">
                                         <h4 class="font-bold text-lg">\${purchase.title}</h4>
                                         <p class="text-sm text-gray-400">\${purchase.artist}</p>
-                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString('${locale}')}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Purchased: \${new Date(purchase.created_at).toLocaleDateString(locale)}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-3">
@@ -841,7 +841,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                                     <p class="text-xs text-gray-400 truncate">\${item.artist || 'Unknown Artist'}</p>
                                 </div>
                                 <div class="text-xs text-gray-500">
-                                    \${new Date(item.played_at).toLocaleDateString('${locale}', { month: 'short', day: 'numeric' })}
+                                    \${new Date(item.played_at).toLocaleDateString(locale, { month: 'short', day: 'numeric' })}
                                 </div>
                             </div>
                         </a>
