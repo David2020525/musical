@@ -1757,7 +1757,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // Reveal sections immediately if they're in view
             revealOnLoad();
             // Load homepage data (includes stats)
-            loadHomepageData();
+            loadHomepageData().catch(error => {
+                console.error('loadHomepageData failed:', error);
+                // If loadHomepageData fails, show demo tracks as fallback
+                console.log('Falling back to demo tracks due to loadHomepageData error');
+                displayDemoTracks();
+            });
             // Set up scroll reveal
             revealOnScroll();
         } catch (error) {
@@ -1777,6 +1782,17 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             }
         }
     }
+    
+    // Ensure demo tracks are displayed if API fails or times out
+    // Set a timeout to show demo tracks if loadHomepageData takes too long
+    setTimeout(() => {
+        const editorsPicksContainer = document.getElementById('editorsPicks');
+        if (editorsPicksContainer && editorsPicksContainer.querySelector('.animate-pulse')) {
+            // Still showing loading skeleton, API likely failed - show demo tracks
+            console.log('Timeout: API took too long, showing demo tracks');
+            displayDemoTracks();
+        }
+    }, 5000); // 5 second timeout
     
     // Load stats immediately on script load (before DOM ready if possible)
     // This ensures stats load even if other JavaScript has errors
