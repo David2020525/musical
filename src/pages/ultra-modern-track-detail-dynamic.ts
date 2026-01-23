@@ -465,7 +465,8 @@ export function ultraModernTrackDetailDynamicHTML(trackId: string, locale: strin
                 if (purchaseBtn) {
                     purchaseBtn.disabled = false;
                     const price = currentTrack.price || 0;
-                    purchaseBtn.innerHTML = \`<i class="fas fa-shopping-cart mr-2"></i>${t('track.purchase', locale)} <span id="track-price">\${price > 0 ? '$' + price : i18nFree}</span>\`;
+                    const purchaseText = ${JSON.stringify(t('track.purchase', locale))};
+                    purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>' + purchaseText + ' <span id="track-price">' + (price > 0 ? '$' + price : i18nFree) + '</span>';
                 }
             }
         }
