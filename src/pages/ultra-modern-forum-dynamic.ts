@@ -156,7 +156,8 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
-        const i18nNetworkError = '${_('common.network_error')}';
+        const i18nNetworkError = ${JSON.stringify(_('common.network_error', locale))};
+        const i18nError = ${JSON.stringify(_('common.error', locale))};
         let currentUser = null;
         let categories = [];
         let topics = [];
@@ -385,7 +386,7 @@ export const ultraModernForumDynamicHTML = (locale: Locale) => {
                 if (data.success) {
                     window.location.href = \`/${locale}/forum/\${data.data.slug}\`;
                 } else {
-                    formError.textContent = data.error || '${_('common.error')}';
+                    formError.textContent = data.error || i18nError;
                     formError.classList.remove('hidden');
                 }
             } catch (error) {

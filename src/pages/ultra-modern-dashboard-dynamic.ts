@@ -390,11 +390,12 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
-        const i18nDashboardTitle = '${_('dashboard.title')}';
-        const i18nProducer = '${_('dashboard.producer')}';
-        const i18nListener = '${_('dashboard.listener')}';
-        const i18nAdmin = '${_('dashboard.admin')}';
-        const i18nNetworkError = '${_('common.network_error')}';
+        const i18nDashboardTitle = ${JSON.stringify(_('dashboard.title', locale))};
+        const i18nProducer = ${JSON.stringify(_('dashboard.producer', locale))};
+        const i18nListener = ${JSON.stringify(_('dashboard.listener', locale))};
+        const i18nAdmin = ${JSON.stringify(_('dashboard.admin', locale))};
+        const i18nNetworkError = ${JSON.stringify(_('common.network_error', locale))};
+        const i18nError = ${JSON.stringify(_('common.error', locale))};
         let currentUser = null;
         let userTracks = [];
         
@@ -904,7 +905,7 @@ export const ultraModernDashboardDynamicHTML = (locale: Locale) => {
                     loadTracks();
                     loadUserStats();
                 } else {
-                    errorDiv.textContent = data.error || '${_('common.error')}';
+                    errorDiv.textContent = data.error || i18nError;
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
