@@ -205,6 +205,16 @@ tracks.get('/', async (c) => {
  */
 tracks.get('/stats', async (c) => {
   try {
+    // Verify database binding exists
+    if (!c.env.DB) {
+      console.error('Database binding DB is not available')
+      return c.json({ 
+        success: false, 
+        error: 'Database not configured',
+        debug: 'DB binding is undefined'
+      }, 500)
+    }
+
     const db = c.env.DB
 
     // Get all stats in parallel
@@ -227,7 +237,8 @@ tracks.get('/stats', async (c) => {
       usersResult,
       playsResult,
       artistsResult,
-      computed: stats
+      computed: stats,
+      dbAvailable: !!db
     })
 
     return c.json({
@@ -239,7 +250,8 @@ tracks.get('/stats', async (c) => {
     console.error('Stats error details:', {
       message: error.message,
       stack: error.stack,
-      name: error.name
+      name: error.name,
+      dbAvailable: !!c.env.DB
     })
     return c.json({ 
       success: false, 
