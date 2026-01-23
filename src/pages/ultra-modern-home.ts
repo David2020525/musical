@@ -930,21 +930,21 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '</button>' +
             '<div class="p-8">' +
             '<div class="mb-8">' +
-            '<span class="inline-block px-3 py-1 bg-blue-500/80 rounded-full text-xs font-bold mb-4">' + post.category + '</span>' +
-            '<h2 class="text-4xl font-black mb-4">' + post.title + '</h2>' +
+            '<span class="inline-block px-3 py-1 bg-blue-500/80 rounded-full text-xs font-bold mb-4">' + escapeHtml(post.category) + '</span>' +
+            '<h2 class="text-4xl font-black mb-4">' + escapeHtml(post.title) + '</h2>' +
             '<div class="flex items-center space-x-6 text-sm text-gray-400 mb-6">' +
-            '<span><i class="fas fa-user mr-2"></i>' + post.author + '</span>' +
-            '<span><i class="fas fa-calendar mr-2"></i>' + post.date + '</span>' +
-            '<span><i class="fas fa-clock mr-2"></i>' + post.readTime + ' read</span>' +
-            '<span><i class="fas fa-eye mr-2"></i>' + post.views + ' views</span>' +
+            '<span><i class="fas fa-user mr-2"></i>' + escapeHtml(post.author) + '</span>' +
+            '<span><i class="fas fa-calendar mr-2"></i>' + escapeHtml(post.date) + '</span>' +
+            '<span><i class="fas fa-clock mr-2"></i>' + escapeHtml(post.readTime) + ' read</span>' +
+            '<span><i class="fas fa-eye mr-2"></i>' + escapeHtml(post.views) + ' views</span>' +
             '</div>' +
             '</div>' +
             '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden">' +
             '<div class="absolute inset-0 bg-black/40"></div>' +
-            '<i class="fas ' + post.icon + ' text-6xl text-white/30 relative z-10"></i>' +
+            '<i class="fas ' + escapeHtml(post.icon) + ' text-6xl text-white/30 relative z-10"></i>' +
             '</div>' +
             '<div class="prose prose-invert max-w-none">' +
-            '<p class="text-lg text-gray-300 leading-relaxed mb-6">' + post.content + '</p>' +
+            '<p class="text-lg text-gray-300 leading-relaxed mb-6">' + escapeHtml(post.content) + '</p>' +
             '<p class="text-gray-400 leading-relaxed mb-6">' +
             'This is demo content. In production, this would be the full blog post with rich text formatting, ' +
             'images, code snippets, embedded media, and more. The blog system would support markdown or a ' +
