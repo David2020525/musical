@@ -225,20 +225,41 @@ tracks.get('/stats', async (c) => {
       db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
     ])
 
+    // Extract values - D1 may return numbers as strings or in different formats
+    // Handle all possible formats: direct property, nested, string numbers, etc.
+    const getNumericValue = (result: any, key: string): number => {
+      if (!result) return 0
+      // Try multiple access patterns
+      const value = result[key] || (result as any)?.[key] || result?.[key]
+      if (value === null || value === undefined) return 0
+      // Convert to number, handling string numbers
+      const num = typeof value === 'string' ? parseInt(value, 10) : Number(value)
+      return isNaN(num) ? 0 : num
+    }
+
+    const tracksCount = getNumericValue(tracksResult, 'count')
+    const usersCount = getNumericValue(usersResult, 'count')
+    const playsTotal = getNumericValue(playsResult, 'total')
+    const artistsCount = getNumericValue(artistsResult, 'count')
+
     const stats = {
-      tracks: Number((tracksResult as any)?.count) || 0,
-      users: Number((usersResult as any)?.count) || 0,
-      plays: Number((playsResult as any)?.total) || 0,
-      artists: Number((artistsResult as any)?.count) || 0,
+      tracks: tracksCount,
+      users: usersCount,
+      plays: playsTotal,
+      artists: artistsCount,
     }
 
     console.log('Stats query results:', {
-      tracksResult,
-      usersResult,
-      playsResult,
-      artistsResult,
+      tracksResult: JSON.stringify(tracksResult),
+      usersResult: JSON.stringify(usersResult),
+      playsResult: JSON.stringify(playsResult),
+      artistsResult: JSON.stringify(artistsResult),
       computed: stats,
-      dbAvailable: !!db
+      dbAvailable: !!db,
+      tracksCount,
+      usersCount,
+      playsTotal,
+      artistsCount
     })
 
     return c.json({
