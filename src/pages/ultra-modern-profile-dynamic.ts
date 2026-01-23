@@ -164,9 +164,12 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
     
     <script>
         const locale = '${locale}';
-        const i18nAdmin = '${_('dashboard.admin')}';
-        const i18nProfileSaved = '${_('profile.saved') || 'Profile updated successfully!'}';
-        const i18nNetworkError = '${_('common.network_error')}';
+        const i18nAdmin = ${JSON.stringify(_('dashboard.admin', locale))};
+        const i18nProfileSaved = ${JSON.stringify(_('profile.saved', locale) || 'Profile updated successfully!')};
+        const i18nNetworkError = ${JSON.stringify(_('common.network_error', locale))};
+        const i18nProducer = ${JSON.stringify(_('dashboard.producer', locale))};
+        const i18nListener = ${JSON.stringify(_('dashboard.listener', locale))};
+        const i18nError = ${JSON.stringify(_('common.error', locale))};
         let currentUser = null;
         
         // Check authentication
@@ -217,7 +220,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
                 updateBioCount();
                 
                 // Populate sidebar
-                let roleText = currentUser.is_producer ? '${_('dashboard.producer')}' : '${_('dashboard.listener')}';
+                let roleText = currentUser.is_producer ? i18nProducer : i18nListener;
                 if (currentUser.role === 'admin') roleText = i18nAdmin;
                 document.getElementById('userRole').textContent = roleText;
                 
@@ -306,7 +309,7 @@ export const ultraModernProfileDynamicHTML = (locale: Locale) => {
                         loadProfile();
                     }, 1000);
                 } else {
-                    errorDiv.textContent = data.error || '${_('common.error')}';
+                    errorDiv.textContent = data.error || i18nError;
                     errorDiv.classList.remove('hidden');
                 }
             } catch (error) {
