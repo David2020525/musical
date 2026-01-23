@@ -1715,7 +1715,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     const excerpt = post.excerpt || (post.content ? post.content.substring(0, 100) + '...' : '');
                     const slug = post.slug || '';
                     
-                    html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="window.location.href=\'/' + locale + '/blog/' + escapeHtml(slug) + '\'">';
+                    html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="window.location.href=\\"/' + locale + '/blog/' + escapeHtml(slug) + '\\"">';
                     html += '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">';
                     html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
                     html += '<i class="fas ' + icon + ' text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
