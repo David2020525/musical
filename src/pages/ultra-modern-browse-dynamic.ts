@@ -285,10 +285,7 @@ export const ultraModernBrowseDynamicHTML = (locale: string = 'en') => {
 
     ${GlobalAudioPlayerHTML}
 
-    <script>
-    // Play Button Functions
     ${PlayButtonScript}
-    </script>
 
     <script>
         // i18n constants

@@ -199,6 +199,57 @@ tracks.get('/', async (c) => {
 })
 
 /**
+ * GET /api/tracks/stats
+ * Get public platform statistics (no auth required)
+ * IMPORTANT: Must be defined BEFORE /:id route to avoid route conflict
+ */
+tracks.get('/stats', async (c) => {
+  try {
+    const db = c.env.DB
+
+    // Get all stats in parallel
+    const [tracksResult, usersResult, playsResult, artistsResult] = await Promise.all([
+      db.prepare('SELECT COUNT(*) as count FROM tracks').first(),
+      db.prepare('SELECT COUNT(*) as count FROM users').first(),
+      db.prepare('SELECT COALESCE(SUM(plays_count), 0) as total FROM tracks').first(),
+      db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
+    ])
+
+    const stats = {
+      tracks: Number((tracksResult as any)?.count) || 0,
+      users: Number((usersResult as any)?.count) || 0,
+      plays: Number((playsResult as any)?.total) || 0,
+      artists: Number((artistsResult as any)?.count) || 0,
+    }
+
+    console.log('Stats query results:', {
+      tracksResult,
+      usersResult,
+      playsResult,
+      artistsResult,
+      computed: stats
+    })
+
+    return c.json({
+      success: true,
+      data: stats
+    })
+  } catch (error: any) {
+    console.error('Stats error:', error)
+    console.error('Stats error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
+    return c.json({ 
+      success: false, 
+      error: error.message || 'Failed to fetch stats',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, 500)
+  }
+})
+
+/**
  * GET /api/tracks/:id
  * Get track by ID and increment play count
  */
@@ -688,56 +739,6 @@ tracks.post('/upload/cover', requireAuth, requireProducer, async (c) => {
     return c.json({ 
       success: false, 
       error: 'Failed to upload cover image' 
-    }, 500)
-  }
-})
-
-/**
- * GET /api/tracks/stats
- * Get public platform statistics (no auth required)
- */
-tracks.get('/stats', async (c) => {
-  try {
-    const db = c.env.DB
-
-    // Get all stats in parallel
-    const [tracksResult, usersResult, playsResult, artistsResult] = await Promise.all([
-      db.prepare('SELECT COUNT(*) as count FROM tracks').first(),
-      db.prepare('SELECT COUNT(*) as count FROM users').first(),
-      db.prepare('SELECT COALESCE(SUM(plays_count), 0) as total FROM tracks').first(),
-      db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
-    ])
-
-    const stats = {
-      tracks: Number((tracksResult as any)?.count) || 0,
-      users: Number((usersResult as any)?.count) || 0,
-      plays: Number((playsResult as any)?.total) || 0,
-      artists: Number((artistsResult as any)?.count) || 0,
-    }
-
-    console.log('Stats query results:', {
-      tracksResult,
-      usersResult,
-      playsResult,
-      artistsResult,
-      computed: stats
-    })
-
-    return c.json({
-      success: true,
-      data: stats
-    })
-  } catch (error: any) {
-    console.error('Stats error:', error)
-    console.error('Stats error details:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    })
-    return c.json({ 
-      success: false, 
-      error: error.message || 'Failed to fetch stats',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }, 500)
   }
 })

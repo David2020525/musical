@@ -1217,21 +1217,37 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     console.error('Error loading blog preview:', err);
                 });
             } else {
-                // No tracks available or API returned success:false - show demo tracks
-                console.log('No tracks from API or API returned success:false, displaying demo content');
+                // No tracks available or API returned success:false - show demo tracks immediately
+                console.log('No tracks from API (empty array or success:false), displaying demo content immediately');
                 console.log('API response was:', {
                     success: data.success,
                     hasData: !!data.data,
                     dataType: typeof data.data,
                     dataIsArray: Array.isArray(data.data),
-                    dataLength: data.data ? (Array.isArray(data.data) ? data.data.length : 'not array') : 0,
-                    dataValue: data.data
+                    dataLength: data.data ? (Array.isArray(data.data) ? data.data.length : 'not array') : 0
                 });
                 if (!fallbackTriggered) {
                     fallbackTriggered = true;
                     displayDemoTracks();
                 }
             }
+        } catch (error) {
+            clearTimeout(timeoutId); // Clear timeout on error
+            console.error('Error loading homepage data:', error);
+            console.error('Error details:', error.name, error.message);
+            
+            // Handle AbortError (timeout)
+            if (error.name === 'AbortError') {
+                console.warn('Request aborted (timeout), showing demo content');
+            }
+            
+            // Always show demo content as fallback
+            if (!fallbackTriggered) {
+                fallbackTriggered = true;
+                displayDemoTracks();
+            }
+        }
+    }
         } catch (error) {
             clearTimeout(timeoutId); // Clear timeout on error
             console.error('Error loading homepage data:', error);
