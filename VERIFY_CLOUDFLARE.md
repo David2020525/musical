@@ -14,27 +14,40 @@
 4. Scroll to **Variables** section
 
 ### Step 2: Verify D1 Database Binding
+
+**Important:** Bindings configured via `wrangler.json` may NOT appear in Settings → Variables. This is normal!
+
+**How to Verify:**
+1. **Check Overview Tab:** You should see `DB` binding listed (you already confirmed this ✅)
+2. **Test Health Endpoint:** Visit `https://musical.david2020524.workers.dev/api/health`
+   - Should show: `database_name: "music"` and `database_id: "873f8f65-474c-490c-81dc-6dabc303dadb"`
+3. **Check Bindings Tab (if available):** Some accounts have a separate "Bindings" tab
+
 **Expected Configuration:**
 - **Binding Name**: `DB` (must match exactly)
 - **Database Name**: `music`
 - **Database ID**: `873f8f65-474c-490c-81dc-6dabc303dadb`
 
-**If binding is missing or incorrect:**
-1. Click **Add binding** → **D1 Database**
-2. Set Variable name: `DB`
-3. Select Database: `music` (ID: `873f8f65-474c-490c-81dc-6dabc303dadb`)
-4. Click **Save**
+**If bindings are missing or incorrect:**
+- They're configured via `wrangler.json` during deployment
+- Ensure `wrangler.json` has correct `d1_databases` configuration (already correct ✅)
+- Redeploy worker: `npx wrangler deploy` or push to GitHub
 
 ### Step 3: Verify R2 Bucket Binding
+
+**How to Verify:**
+1. **Check Overview Tab:** You should see `TRACKS_BUCKET` binding listed (you already confirmed this ✅)
+2. **Test File Upload:** Try uploading a track (if you have producer access)
+3. **Check Bindings Tab (if available):** Some accounts have a separate "Bindings" tab
+
 **Expected Configuration:**
 - **Binding Name**: `TRACKS_BUCKET` (must match exactly)
 - **Bucket Name**: `musical`
 
-**If binding is missing or incorrect:**
-1. Click **Add binding** → **R2 Bucket**
-2. Set Variable name: `TRACKS_BUCKET`
-3. Select Bucket: `musical`
-4. Click **Save**
+**If bindings are missing or incorrect:**
+- They're configured via `wrangler.json` during deployment
+- Ensure `wrangler.json` has correct `r2_buckets` configuration (already correct ✅)
+- Redeploy worker: `npx wrangler deploy` or push to GitHub
 
 ### Step 4: Verify Environment Variables
 Check that these variables are set:

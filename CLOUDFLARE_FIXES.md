@@ -31,20 +31,33 @@
 **Fix Required:**
 Update Cloudflare Dashboard → Settings → Variables → `R2_BUCKET_NAME` from `musichub-tracks` to `musical`
 
-### Issue 2: Need to Verify Binding Details
+### Issue 2: Verify Binding Details
 
-**What to Check:**
-1. Go to Cloudflare Dashboard → Workers & Pages → `musical` → **Settings** → **Variables**
-2. Scroll down to **D1 Database Bindings** section
-3. Verify:
-   - Binding name: `DB`
-   - Database: `music` (not `musichub` or anything else)
-   - Database ID: `873f8f65-474c-490c-81dc-6dabc303dadb`
+**Important Note:**
+Bindings configured via `wrangler.json` may NOT appear in Settings → Variables. This is normal! They're managed through the deployment process.
 
-4. Scroll to **R2 Bucket Bindings** section
-5. Verify:
-   - Binding name: `TRACKS_BUCKET`
-   - Bucket: `musical` (not `musichub-tracks`)
+**How to Verify Bindings Are Correct:**
+
+Since Overview shows bindings exist, they ARE configured. To verify they're pointing to the correct resources:
+
+1. **Test the Health Endpoint:**
+   ```
+   https://musical.david2020524.workers.dev/api/health
+   ```
+   This will show:
+   - Database connection status
+   - Database name and ID
+   - Table count and sample data
+
+2. **Check Cloudflare Logs:**
+   - Go to: Observability → Logs
+   - Look for any database connection errors
+   - Check if queries are executing successfully
+
+3. **Alternative: Check Bindings Tab (if available):**
+   - Some Cloudflare accounts have a separate **"Bindings"** tab
+   - Go to: Workers & Pages → `musical` → **Bindings** tab
+   - You should see D1 and R2 bindings listed there
 
 ## 🔧 Action Items
 
