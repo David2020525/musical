@@ -48,6 +48,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
       - name: Verify deployment
+        if: always()
+        continue-on-error: true
         run: |
           echo "Deployment completed. Checking worker status..."
           npx wrangler deployments list
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
