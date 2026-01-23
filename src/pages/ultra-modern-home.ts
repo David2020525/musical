@@ -1715,17 +1715,25 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     const excerpt = post.excerpt || (post.content ? post.content.substring(0, 100) + '...' : '');
                     const slug = post.slug || '';
                     
-                    html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="window.location.href=\\"/' + locale + '/blog/' + escapeHtml(slug) + '\\"">';
+                    // Escape all user-generated content
+                    const safeCategory = escapeHtml(category);
+                    const safeAuthor = escapeHtml(author);
+                    const safeExcerpt = escapeHtml(excerpt);
+                    const safeTitle = escapeHtml(post.title || 'Untitled');
+                    const safeSlug = escapeHtml(slug);
+                    
+                    const blogUrl = '/' + locale + '/blog/' + safeSlug;
+                    html += '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="window.location.href=' + JSON.stringify(blogUrl) + '">';
                     html += '<div class="aspect-video bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center relative overflow-hidden">';
                     html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
                     html += '<i class="fas ' + icon + ' text-5xl text-white/30 relative z-10 group-hover:text-white/50 transition-colors"></i>';
-                    html += '<div class="absolute top-3 left-3 px-3 py-1 bg-blue-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + category + '</div>';
+                    html += '<div class="absolute top-3 left-3 px-3 py-1 bg-blue-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + safeCategory + '</div>';
                     html += '</div>';
                     html += '<div class="p-6">';
-                    html += '<h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">' + post.title + '</h3>';
-                    html += '<p class="text-gray-400 text-sm mb-4 line-clamp-2">' + excerpt + '</p>';
+                    html += '<h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">' + safeTitle + '</h3>';
+                    html += '<p class="text-gray-400 text-sm mb-4 line-clamp-2">' + safeExcerpt + '</p>';
                     html += '<div class="flex items-center justify-between text-sm text-gray-500">';
-                    html += '<span><i class="fas fa-user mr-2"></i>' + author + '</span>';
+                    html += '<span><i class="fas fa-user mr-2"></i>' + safeAuthor + '</span>';
                     html += '<span><i class="fas fa-eye mr-2"></i>' + views + ' views</span>';
                     html += '</div></div></div>';
                 });
