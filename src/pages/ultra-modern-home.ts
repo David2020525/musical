@@ -842,8 +842,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             '<div class="glass p-6 rounded-xl mb-8">' +
             '<h3 class="text-lg font-bold mb-3"><i class="fas fa-align-left mr-2 text-purple-400"></i>Description</h3>' +
             '<p class="text-gray-400 leading-relaxed">' +
-            'This is a demo track showcasing the MUSICAL platform\'s capabilities. ' +
-            'In production, this section would contain the producer\'s detailed track description, ' +
+            'This is a demo track showcasing the MUSICAL platform&apos;s capabilities. ' +
+            'In production, this section would contain the producer&apos;s detailed track description, ' +
             'usage rights, licensing information, and any special notes about the production.' +
             '</p>' +
             '</div>' +
