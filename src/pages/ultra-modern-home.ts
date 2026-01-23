@@ -1045,23 +1045,47 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         
         // Helper to safely update element
         function updateStatElement(el, value) {
-            if (el) {
-                // Remove any shimmer/loading elements FIRST (before setting innerHTML)
-                const shimmer = el.querySelector('.shimmer');
-                if (shimmer) {
-                    shimmer.remove();
+            if (!el) {
+                console.warn('updateStatElement: element is null');
+                return;
+            }
+            
+            console.log('Updating element:', el.id, 'with value:', value);
+            
+            // Remove ALL shimmer/loading elements - use querySelectorAll to get all
+            const shimmers = el.querySelectorAll('.shimmer');
+            shimmers.forEach(shimmer => {
+                console.log('Removing shimmer element:', shimmer);
+                shimmer.remove();
+            });
+            
+            // Also remove any child elements that might be loading placeholders
+            const children = Array.from(el.children);
+            children.forEach(child => {
+                if (child.classList.contains('shimmer') || 
+                    child.classList.contains('glass') ||
+                    child.tagName === 'SPAN' && (child.classList.contains('shimmer') || child.classList.contains('glass'))) {
+                    console.log('Removing placeholder child:', child);
+                    child.remove();
                 }
-                // Also check for any child elements that might be loading placeholders
-                const children = el.children;
-                if (children.length > 0) {
-                    Array.from(children).forEach(child => {
-                        if (child.classList.contains('shimmer') || child.classList.contains('glass')) {
-                            child.remove();
-                        }
-                    });
-                }
-                // Set the new value (this will replace any remaining content)
-                el.textContent = formatNumber(value || 0);
+            });
+            
+            // Clear any existing text content first
+            const existingText = el.textContent.trim();
+            if (existingText) {
+                console.log('Clearing existing text:', existingText);
+            }
+            
+            // Set the new value (this will replace any remaining content)
+            const formattedValue = formatNumber(value || 0);
+            console.log('Setting textContent to:', formattedValue);
+            el.textContent = formattedValue;
+            
+            // Verify the update worked
+            if (el.textContent.trim() === formattedValue) {
+                console.log('Successfully updated', el.id, 'to', formattedValue);
+            } else {
+                console.error('Failed to update', el.id, '- expected:', formattedValue, 'got:', el.textContent);
             }
         }
         
