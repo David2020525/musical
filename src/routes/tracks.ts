@@ -225,28 +225,19 @@ tracks.get('/stats', async (c) => {
       db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
     ])
 
-    // Extract values - D1 may return numbers as strings or in different formats
-    // Handle all possible formats: direct property, nested, string numbers, etc.
-    const getNumericValue = (result: any, key: string): number => {
-      if (!result) return 0
-      // Try multiple access patterns
-      const value = result[key] || (result as any)?.[key] || result?.[key]
-      if (value === null || value === undefined) return 0
-      // Convert to number, handling string numbers
-      const num = typeof value === 'string' ? parseInt(value, 10) : Number(value)
-      return isNaN(num) ? 0 : num
-    }
-
-    const tracksCount = getNumericValue(tracksResult, 'count')
-    const usersCount = getNumericValue(usersResult, 'count')
-    const playsTotal = getNumericValue(playsResult, 'total')
-    const artistsCount = getNumericValue(artistsResult, 'count')
-
+    // Extract values - D1 returns results as objects with the column name as key
+    // Use the same pattern as admin route for consistency
+    const tracksCount = (tracksResult as any)?.count ?? 0
+    const usersCount = (usersResult as any)?.count ?? 0
+    const playsTotal = (playsResult as any)?.total ?? 0
+    const artistsCount = (artistsResult as any)?.count ?? 0
+    
+    // Ensure all values are numbers (D1 may return strings)
     const stats = {
-      tracks: tracksCount,
-      users: usersCount,
-      plays: playsTotal,
-      artists: artistsCount,
+      tracks: Number(tracksCount) || 0,
+      users: Number(usersCount) || 0,
+      plays: Number(playsTotal) || 0,
+      artists: Number(artistsCount) || 0,
     }
 
     console.log('Stats query results:', {
@@ -255,11 +246,7 @@ tracks.get('/stats', async (c) => {
       playsResult: JSON.stringify(playsResult),
       artistsResult: JSON.stringify(artistsResult),
       computed: stats,
-      dbAvailable: !!db,
-      tracksCount,
-      usersCount,
-      playsTotal,
-      artistsCount
+      dbAvailable: !!db
     })
 
     return c.json({
