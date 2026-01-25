@@ -225,19 +225,57 @@ tracks.get('/stats', async (c) => {
       db.prepare('SELECT COUNT(DISTINCT user_id) as count FROM tracks WHERE user_id IS NOT NULL').first(),
     ])
 
-    // Extract values - D1 returns results as objects with the column name as key
-    // Use the same pattern as admin route for consistency
-    const tracksCount = (tracksResult as any)?.count ?? 0
-    const usersCount = (usersResult as any)?.count ?? 0
-    const playsTotal = (playsResult as any)?.total ?? 0
-    const artistsCount = (artistsResult as any)?.count ?? 0
+    // Helper function to extract numeric value from D1 result
+    // D1 may return values as numbers, strings, or in different object structures
+    const extractNumericValue = (result: any, key: string): number => {
+      if (!result) {
+        console.warn(`extractNumericValue: result is null/undefined for key: ${key}`)
+        return 0
+      }
+      
+      // Try direct property access
+      let value = result[key]
+      
+      // If not found, try lowercase key
+      if (value === undefined || value === null) {
+        value = result[key.toLowerCase()]
+      }
+      
+      // If still not found, try accessing the result directly (in case it's the value itself)
+      if (value === undefined || value === null) {
+        if (typeof result === 'number') {
+          value = result
+        } else if (typeof result === 'string') {
+          value = parseInt(result, 10)
+        }
+      }
+      
+      // Convert to number
+      if (value === null || value === undefined) {
+        console.warn(`extractNumericValue: value not found for key: ${key}, result:`, JSON.stringify(result))
+        return 0
+      }
+      
+      const num = typeof value === 'string' ? parseInt(value, 10) : Number(value)
+      if (isNaN(num)) {
+        console.warn(`extractNumericValue: could not convert to number for key: ${key}, value:`, value, 'result:', JSON.stringify(result))
+        return 0
+      }
+      
+      return num
+    }
+
+    // Extract values using the helper function
+    const tracksCount = extractNumericValue(tracksResult, 'count')
+    const usersCount = extractNumericValue(usersResult, 'count')
+    const playsTotal = extractNumericValue(playsResult, 'total')
+    const artistsCount = extractNumericValue(artistsResult, 'count')
     
-    // Ensure all values are numbers (D1 may return strings)
     const stats = {
-      tracks: Number(tracksCount) || 0,
-      users: Number(usersCount) || 0,
-      plays: Number(playsTotal) || 0,
-      artists: Number(artistsCount) || 0,
+      tracks: tracksCount,
+      users: usersCount,
+      plays: playsTotal,
+      artists: artistsCount,
     }
 
     console.log('Stats query results:', {
@@ -245,6 +283,11 @@ tracks.get('/stats', async (c) => {
       usersResult: JSON.stringify(usersResult),
       playsResult: JSON.stringify(playsResult),
       artistsResult: JSON.stringify(artistsResult),
+      tracksResultType: typeof tracksResult,
+      tracksCountValue: tracksCount,
+      usersCountValue: usersCount,
+      playsTotalValue: playsTotal,
+      artistsCountValue: artistsCount,
       computed: stats,
       dbAvailable: !!db
     })
