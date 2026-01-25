@@ -1121,9 +1121,9 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // Verify the update worked
             const actualContent = el.textContent.trim();
             if (actualContent === formattedValue) {
-                console.log('✅ Successfully updated', el.id, 'to', formattedValue);
+                console.log('[OK] Successfully updated', el.id, 'to', formattedValue);
             } else {
-                console.error('❌ Failed to update', el.id, '- expected:', formattedValue, 'got:', actualContent);
+                console.error('[ERROR] Failed to update', el.id, '- expected:', formattedValue, 'got:', actualContent);
                 // Force update by clearing and setting again
                 el.innerHTML = '';
                 el.textContent = formattedValue;
@@ -1216,12 +1216,12 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                     // Verify updates worked
                     setTimeout(() => {
                         const verify = {
-                            trackCount: trackCountEl?.textContent?.trim() || 'NOT FOUND',
-                            userCount: userCountEl?.textContent?.trim() || 'NOT FOUND',
-                            playCount: playCountEl?.textContent?.trim() || 'NOT FOUND',
-                            artistCount: artistCountEl?.textContent?.trim() || 'NOT FOUND'
+                            trackCount: (trackCountEl && trackCountEl.textContent) ? trackCountEl.textContent.trim() : 'NOT FOUND',
+                            userCount: (userCountEl && userCountEl.textContent) ? userCountEl.textContent.trim() : 'NOT FOUND',
+                            playCount: (playCountEl && playCountEl.textContent) ? playCountEl.textContent.trim() : 'NOT FOUND',
+                            artistCount: (artistCountEl && artistCountEl.textContent) ? artistCountEl.textContent.trim() : 'NOT FOUND'
                         };
-                        console.log('✅ Stats UI update verification:', verify);
+                        console.log('[OK] Stats UI update verification:', verify);
                         
                         // If any still show 0 or are not found, try one more time
                         if (trackCountEl && (verify.trackCount === '0' || verify.trackCount === 'NOT FOUND')) {
