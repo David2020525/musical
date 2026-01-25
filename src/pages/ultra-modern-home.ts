@@ -1182,66 +1182,63 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 
                 console.log('Converted values:', { tracksValue, usersValue, playsValue, artistsValue });
                 
-                // Update all stats - ensure elements exist before updating
-                // Use a small delay to ensure DOM is ready
-                setTimeout(() => {
-                    if (trackCountEl) {
-                        console.log('Updating trackCount element with value:', tracksValue);
+                // Update all stats immediately - elements should be available by now
+                if (trackCountEl) {
+                    console.log('Updating trackCount element with value:', tracksValue);
+                    updateStatElement(trackCountEl, tracksValue);
+                } else {
+                    console.error('trackCountEl not found!');
+                }
+                
+                if (userCountEl) {
+                    console.log('Updating userCount element with value:', usersValue);
+                    updateStatElement(userCountEl, usersValue);
+                } else {
+                    console.error('userCountEl not found!');
+                }
+                
+                if (playCountEl) {
+                    console.log('Updating playCount element with value:', playsValue);
+                    updateStatElement(playCountEl, playsValue);
+                } else {
+                    console.error('playCountEl not found!');
+                }
+                
+                if (artistCountEl) {
+                    console.log('Updating artistCount element with value:', artistsValue);
+                    updateStatElement(artistCountEl, artistsValue);
+                } else {
+                    console.error('artistCountEl not found!');
+                }
+                
+                // Verify updates worked after a short delay
+                setTimeout(function verifyStats() {
+                    const verify = {
+                        trackCount: (trackCountEl && trackCountEl.textContent) ? trackCountEl.textContent.trim() : 'NOT FOUND',
+                        userCount: (userCountEl && userCountEl.textContent) ? userCountEl.textContent.trim() : 'NOT FOUND',
+                        playCount: (playCountEl && playCountEl.textContent) ? playCountEl.textContent.trim() : 'NOT FOUND',
+                        artistCount: (artistCountEl && artistCountEl.textContent) ? artistCountEl.textContent.trim() : 'NOT FOUND'
+                    };
+                    console.log('[OK] Stats UI update verification:', verify);
+                    
+                    // If any still show 0 or are not found, try one more time
+                    if (trackCountEl && (verify.trackCount === '0' || verify.trackCount === 'NOT FOUND')) {
+                        console.warn('Retrying trackCount update...');
                         updateStatElement(trackCountEl, tracksValue);
-                    } else {
-                        console.error('trackCountEl not found!');
                     }
-                    
-                    if (userCountEl) {
-                        console.log('Updating userCount element with value:', usersValue);
+                    if (userCountEl && (verify.userCount === '0' || verify.userCount === 'NOT FOUND')) {
+                        console.warn('Retrying userCount update...');
                         updateStatElement(userCountEl, usersValue);
-                    } else {
-                        console.error('userCountEl not found!');
                     }
-                    
-                    if (playCountEl) {
-                        console.log('Updating playCount element with value:', playsValue);
+                    if (playCountEl && (verify.playCount === '0' || verify.playCount === 'NOT FOUND')) {
+                        console.warn('Retrying playCount update...');
                         updateStatElement(playCountEl, playsValue);
-                    } else {
-                        console.error('playCountEl not found!');
                     }
-                    
-                    if (artistCountEl) {
-                        console.log('Updating artistCount element with value:', artistsValue);
+                    if (artistCountEl && (verify.artistCount === '0' || verify.artistCount === 'NOT FOUND')) {
+                        console.warn('Retrying artistCount update...');
                         updateStatElement(artistCountEl, artistsValue);
-                    } else {
-                        console.error('artistCountEl not found!');
                     }
-                    
-                    // Verify updates worked
-                    setTimeout(() => {
-                        const verify = {
-                            trackCount: (trackCountEl && trackCountEl.textContent) ? trackCountEl.textContent.trim() : 'NOT FOUND',
-                            userCount: (userCountEl && userCountEl.textContent) ? userCountEl.textContent.trim() : 'NOT FOUND',
-                            playCount: (playCountEl && playCountEl.textContent) ? playCountEl.textContent.trim() : 'NOT FOUND',
-                            artistCount: (artistCountEl && artistCountEl.textContent) ? artistCountEl.textContent.trim() : 'NOT FOUND'
-                        };
-                        console.log('[OK] Stats UI update verification:', verify);
-                        
-                        // If any still show 0 or are not found, try one more time
-                        if (trackCountEl && (verify.trackCount === '0' || verify.trackCount === 'NOT FOUND')) {
-                            console.warn('Retrying trackCount update...');
-                            updateStatElement(trackCountEl, tracksValue);
-                        }
-                        if (userCountEl && (verify.userCount === '0' || verify.userCount === 'NOT FOUND')) {
-                            console.warn('Retrying userCount update...');
-                            updateStatElement(userCountEl, usersValue);
-                        }
-                        if (playCountEl && (verify.playCount === '0' || verify.playCount === 'NOT FOUND')) {
-                            console.warn('Retrying playCount update...');
-                            updateStatElement(playCountEl, playsValue);
-                        }
-                        if (artistCountEl && (verify.artistCount === '0' || verify.artistCount === 'NOT FOUND')) {
-                            console.warn('Retrying artistCount update...');
-                            updateStatElement(artistCountEl, artistsValue);
-                        }
-                    }, 100);
-                }, 50);
+                }, 150);
                 
                 console.log('Stats UI update initiated');
             } else {
