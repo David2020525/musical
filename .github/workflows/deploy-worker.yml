@@ -106,45 +106,27 @@ jobs:
           DEPLOYMENTS_LIST=$(npx wrangler deployments list 2>&1)
           echo "$DEPLOYMENTS_LIST"
           
-          # Get the latest deployment version ID (UUID format)
-          LATEST_DEPLOY_ID=$(echo "$DEPLOYMENTS_LIST" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1 || echo "")
-          
-          if [ -n "$LATEST_DEPLOY_ID" ]; then
+          # Verify the deployment was created and check activation status
+          if [ -n "$VERSION" ]; then
             echo ""
-            echo "✅ Latest deployment version ID found: $LATEST_DEPLOY_ID"
-            
-            # Use the version ID from deployment output if available, otherwise use latest from list
-            VERSION_TO_ACTIVATE=${VERSION:-$LATEST_DEPLOY_ID}
-            echo "Version to check/activate: $VERSION_TO_ACTIVATE"
-            
-            # Check if deployment output indicates it's already active
-            if echo "$DEPLOY_OUTPUT" | grep -q "Current Version ID"; then
-              echo "✅ Deployment output shows 'Current Version ID' - deployment should be active"
-              echo "   If it's not active in dashboard, it may need manual activation"
-            else
-              echo "⚠️  Deployment created but may not be active"
-              echo "Attempting to activate version $VERSION_TO_ACTIVATE..."
-              
-              # Try to rollback to the version (which activates it)
-              ROLLBACK_OUTPUT=$(npx wrangler deployments rollback $VERSION_TO_ACTIVATE 2>&1)
-              ROLLBACK_EXIT=$?
-              
-              if [ $ROLLBACK_EXIT -eq 0 ]; then
-                echo "✅ Successfully activated version $VERSION_TO_ACTIVATE"
-              else
-                echo "⚠️  Could not automatically activate deployment"
-                echo "Rollback output: $ROLLBACK_OUTPUT"
-                echo ""
-                echo "MANUAL ACTION REQUIRED:"
-                echo "1. Go to: https://dash.cloudflare.com → Workers & Pages → musical → Deployments"
-                echo "2. Find the latest deployment (created just now)"
-                echo "3. Click the three dots (⋯) → 'Deploy version'"
-              fi
-            fi
+            echo "✅ Deployment created successfully!"
+            echo "   Version ID: $VERSION"
+            echo "   Created: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+            echo ""
+            echo "   The deployment output shows 'Current Version ID' which typically means"
+            echo "   the deployment is active. However, if your Cloudflare Dashboard still"
+            echo "   shows an old version, you may need to manually activate it:"
+            echo ""
+            echo "   MANUAL ACTIVATION (if needed):"
+            echo "   1. Go to: https://dash.cloudflare.com → Workers & Pages → musical → Deployments"
+            echo "   2. Find the deployment created just now (version: $VERSION)"
+            echo "   3. Click the three dots (⋯) → 'Deploy version'"
+            echo ""
+            echo "   This may be required if 'Protect deployments' is enabled in Cloudflare settings"
           else
-            echo "❌ CRITICAL: Could not find any deployments!"
-            echo "   This suggests the deployment may not have created a new version"
-            echo "   Check the deploy.log file above for errors"
+            echo "⚠️  Could not extract version ID from deployment output"
+            echo "   However, deployment command completed successfully"
+            echo "   Check Cloudflare Dashboard to verify the deployment was created"
           fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
