@@ -47,9 +47,23 @@ jobs:
         run: |
           echo "Starting deployment to Cloudflare Workers..."
           echo "Worker name: musical"
-          echo "Account ID: $(grep -o '"account_id": "[^"]*"' wrangler.json | cut -d'"' -f4)"
+          ACCOUNT_ID=$(grep -o '"account_id": "[^"]*"' wrangler.json | cut -d'"' -f4)
+          echo "Account ID: $ACCOUNT_ID"
+          
+          # Verify wrangler can authenticate
+          echo "Verifying authentication..."
+          npx wrangler whoami 2>&1 || {
+            echo "❌ Authentication failed!"
+            exit 1
+          }
+          
+          # Check current deployments before deploy
+          echo ""
+          echo "=== Current deployments BEFORE deploy ==="
+          npx wrangler deployments list 2>&1 | head -5 || echo "Could not list deployments"
           
           # Deploy with explicit activation
+          echo ""
           echo "Deploying worker (this should automatically activate)..."
           DEPLOY_OUTPUT=$(npx wrangler deploy --verbose 2>&1 | tee deploy.log)
           DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
@@ -60,9 +74,14 @@ jobs:
             exit 1
           fi
           
-          echo "✅ Deployment created successfully"
-          echo "Deployment output (last 30 lines):"
-          echo "$DEPLOY_OUTPUT" | tail -30
+          echo "✅ Deployment command completed"
+          echo ""
+          echo "=== Full deployment output ==="
+          cat deploy.log
+          
+          echo ""
+          echo "=== Deployment output (last 50 lines) ==="
+          echo "$DEPLOY_OUTPUT" | tail -50
           
           # Extract deployment version/ID from output
           VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE 'version [0-9a-f]{8}' | head -1 | awk '{print $2}' || echo "")
@@ -78,36 +97,47 @@ jobs:
             fi
           fi
           
-          # Verify and attempt to activate deployment
+          # Verify deployment was created
           echo ""
-          echo "Checking if deployment is active..."
+          echo "=== Checking deployments AFTER deploy ==="
           sleep 3
+          npx wrangler deployments list 2>&1 || echo "Failed to list deployments"
           
           # Get the latest deployment ID
           LATEST_DEPLOY_ID=$(npx wrangler deployments list 2>&1 | grep -E "^[0-9a-f]{8}" | head -1 | awk '{print $1}' || echo "")
           
           if [ -n "$LATEST_DEPLOY_ID" ]; then
-            echo "Latest deployment ID: $LATEST_DEPLOY_ID"
+            echo ""
+            echo "✅ Latest deployment ID found: $LATEST_DEPLOY_ID"
             
             # Check if it's already active
             ACTIVE_CHECK=$(npx wrangler deployments list 2>&1 | grep -i "active\|latest" | head -1 || echo "")
             if [ -z "$ACTIVE_CHECK" ]; then
-              echo "⚠️  Latest deployment is not active"
+              echo "⚠️  Latest deployment is NOT active"
               echo "Attempting to activate deployment $LATEST_DEPLOY_ID..."
               
               # Try to rollback to latest (which activates it)
-              npx wrangler deployments rollback $LATEST_DEPLOY_ID 2>&1 || {
+              ROLLBACK_OUTPUT=$(npx wrangler deployments rollback $LATEST_DEPLOY_ID 2>&1)
+              ROLLBACK_EXIT=$?
+              
+              if [ $ROLLBACK_EXIT -eq 0 ]; then
+                echo "✅ Successfully activated deployment $LATEST_DEPLOY_ID"
+              else
                 echo "⚠️  Could not automatically activate deployment"
-                echo "   This may require manual activation in Cloudflare Dashboard"
-                echo "   Go to: Workers & Pages → musical → Deployments"
-                echo "   Find version $LATEST_DEPLOY_ID and click 'Deploy version'"
-              }
+                echo "Rollback output: $ROLLBACK_OUTPUT"
+                echo ""
+                echo "MANUAL ACTION REQUIRED:"
+                echo "1. Go to: https://dash.cloudflare.com → Workers & Pages → musical → Deployments"
+                echo "2. Find version $LATEST_DEPLOY_ID"
+                echo "3. Click the three dots (⋯) → 'Deploy version'"
+              fi
             else
-              echo "✅ Deployment appears to be active"
+              echo "✅ Deployment appears to be active: $ACTIVE_CHECK"
             fi
           else
-            echo "⚠️  Could not determine latest deployment ID"
-            echo "   Please check Cloudflare Dashboard manually"
+            echo "❌ CRITICAL: Could not find any deployments!"
+            echo "   This suggests the deployment may not have created a new version"
+            echo "   Check the deploy.log file above for errors"
           fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
