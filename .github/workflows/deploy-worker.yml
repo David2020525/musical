@@ -65,7 +65,7 @@ jobs:
           # Deploy with explicit activation
           echo ""
           echo "Deploying worker (this should automatically activate)..."
-          DEPLOY_OUTPUT=$(npx wrangler deploy --verbose 2>&1 | tee deploy.log)
+          DEPLOY_OUTPUT=$(npx wrangler deploy 2>&1 | tee deploy.log)
           DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
           
           if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
