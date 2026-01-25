@@ -43,21 +43,51 @@ jobs:
           echo "Cloudflare API Token is configured"
         
       - name: Deploy to Cloudflare Workers
+        id: deploy
         run: |
           echo "Starting deployment to Cloudflare Workers..."
-          npx wrangler deploy --verbose 2>&1 | tee deploy.log || {
-            echo "Deployment failed. Error log:"
+          echo "Worker name: musical"
+          echo "Account ID: $(grep -o '"account_id": "[^"]*"' wrangler.json | cut -d'"' -f4)"
+          
+          DEPLOY_OUTPUT=$(npx wrangler deploy --verbose 2>&1 | tee deploy.log)
+          DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
+          
+          if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+            echo "❌ Deployment failed. Error log:"
             cat deploy.log
             exit 1
-          }
+          fi
+          
+          echo "✅ Deployment command completed"
+          echo "Deployment output:"
+          echo "$DEPLOY_OUTPUT" | tail -20
+          
+          # Extract deployment version if available
+          VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oP 'version \K[0-9a-f]+' | head -1 || echo "")
+          if [ -n "$VERSION" ]; then
+            echo "Deployed version: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
-      - name: Verify deployment
-        if: always()
-        continue-on-error: true
+      - name: Verify deployment activation
         run: |
-          echo "Deployment completed. Checking worker status..."
-          npx wrangler deployments list
+          echo "Checking deployment status..."
+          echo "Current time: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          
+          echo ""
+          echo "=== Latest Deployments ==="
+          npx wrangler deployments list 2>&1 | head -10 || echo "Failed to list deployments"
+          
+          echo ""
+          echo "=== Worker Info ==="
+          npx wrangler whoami 2>&1 || echo "Failed to get account info"
+          
+          echo ""
+          echo "⚠️  IMPORTANT: If deployments are created but not active, check:"
+          echo "   1. Cloudflare Dashboard → Workers → musical → Deployments"
+          echo "   2. Verify the latest deployment and manually activate if needed"
+          echo "   3. Check API token permissions (needs 'Account.Cloudflare Workers:Edit')"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
