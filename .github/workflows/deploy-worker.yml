@@ -78,15 +78,35 @@ jobs:
             fi
           fi
           
-          # Verify deployment is active
+          # Verify and attempt to activate deployment
           echo ""
           echo "Checking if deployment is active..."
-          sleep 2
-          ACTIVE_DEPLOY=$(npx wrangler deployments list 2>&1 | grep -i "active\|latest" | head -1 || echo "")
-          if [ -n "$ACTIVE_DEPLOY" ]; then
-            echo "Active deployment info: $ACTIVE_DEPLOY"
+          sleep 3
+          
+          # Get the latest deployment ID
+          LATEST_DEPLOY_ID=$(npx wrangler deployments list 2>&1 | grep -E "^[0-9a-f]{8}" | head -1 | awk '{print $1}' || echo "")
+          
+          if [ -n "$LATEST_DEPLOY_ID" ]; then
+            echo "Latest deployment ID: $LATEST_DEPLOY_ID"
+            
+            # Check if it's already active
+            ACTIVE_CHECK=$(npx wrangler deployments list 2>&1 | grep -i "active\|latest" | head -1 || echo "")
+            if [ -z "$ACTIVE_CHECK" ]; then
+              echo "⚠️  Latest deployment is not active"
+              echo "Attempting to activate deployment $LATEST_DEPLOY_ID..."
+              
+              # Try to rollback to latest (which activates it)
+              npx wrangler deployments rollback $LATEST_DEPLOY_ID 2>&1 || {
+                echo "⚠️  Could not automatically activate deployment"
+                echo "   This may require manual activation in Cloudflare Dashboard"
+                echo "   Go to: Workers & Pages → musical → Deployments"
+                echo "   Find version $LATEST_DEPLOY_ID and click 'Deploy version'"
+              }
+            else
+              echo "✅ Deployment appears to be active"
+            fi
           else
-            echo "⚠️  Warning: Could not verify active deployment status"
+            echo "⚠️  Could not determine latest deployment ID"
             echo "   Please check Cloudflare Dashboard manually"
           fi
         env:
