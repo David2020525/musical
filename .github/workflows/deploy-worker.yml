@@ -49,6 +49,8 @@ jobs:
           echo "Worker name: musical"
           echo "Account ID: $(grep -o '"account_id": "[^"]*"' wrangler.json | cut -d'"' -f4)"
           
+          # Deploy with explicit activation
+          echo "Deploying worker (this should automatically activate)..."
           DEPLOY_OUTPUT=$(npx wrangler deploy --verbose 2>&1 | tee deploy.log)
           DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
           
@@ -58,36 +60,70 @@ jobs:
             exit 1
           fi
           
-          echo "✅ Deployment command completed"
-          echo "Deployment output:"
-          echo "$DEPLOY_OUTPUT" | tail -20
+          echo "✅ Deployment created successfully"
+          echo "Deployment output (last 30 lines):"
+          echo "$DEPLOY_OUTPUT" | tail -30
           
-          # Extract deployment version if available
-          VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oP 'version \K[0-9a-f]+' | head -1 || echo "")
+          # Extract deployment version/ID from output
+          VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE 'version [0-9a-f]{8}' | head -1 | awk '{print $2}' || echo "")
           if [ -n "$VERSION" ]; then
-            echo "Deployed version: $VERSION"
+            echo "Deployed version ID: $VERSION"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            # Try alternative pattern
+            VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE '[0-9a-f]{8}' | head -1 || echo "")
+            if [ -n "$VERSION" ]; then
+              echo "Found version ID: $VERSION"
+              echo "version=$VERSION" >> $GITHUB_OUTPUT
+            fi
+          fi
+          
+          # Verify deployment is active
+          echo ""
+          echo "Checking if deployment is active..."
+          sleep 2
+          ACTIVE_DEPLOY=$(npx wrangler deployments list 2>&1 | grep -i "active\|latest" | head -1 || echo "")
+          if [ -n "$ACTIVE_DEPLOY" ]; then
+            echo "Active deployment info: $ACTIVE_DEPLOY"
+          else
+            echo "⚠️  Warning: Could not verify active deployment status"
+            echo "   Please check Cloudflare Dashboard manually"
           fi
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
       - name: Verify deployment activation
         run: |
-          echo "Checking deployment status..."
+          echo "=== Verifying Deployment Status ==="
           echo "Current time: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
           
           echo ""
-          echo "=== Latest Deployments ==="
-          npx wrangler deployments list 2>&1 | head -10 || echo "Failed to list deployments"
-          
-          echo ""
-          echo "=== Worker Info ==="
+          echo "=== Account Info ==="
           npx wrangler whoami 2>&1 || echo "Failed to get account info"
           
           echo ""
-          echo "⚠️  IMPORTANT: If deployments are created but not active, check:"
-          echo "   1. Cloudflare Dashboard → Workers → musical → Deployments"
-          echo "   2. Verify the latest deployment and manually activate if needed"
-          echo "   3. Check API token permissions (needs 'Account.Cloudflare Workers:Edit')"
+          echo "=== Latest Deployments (showing all) ==="
+          npx wrangler deployments list 2>&1 || echo "Failed to list deployments"
+          
+          echo ""
+          echo "=== Checking Active Deployment ==="
+          # Get the latest deployment ID
+          LATEST_DEPLOY=$(npx wrangler deployments list 2>&1 | grep -E "^[0-9a-f]{8}" | head -1 | awk '{print $1}' || echo "")
+          
+          if [ -n "$LATEST_DEPLOY" ]; then
+            echo "Latest deployment ID found: $LATEST_DEPLOY"
+            echo "Note: wrangler deploy should automatically activate deployments"
+            echo "If this deployment is not active, it may be a Cloudflare account setting"
+          else
+            echo "Could not determine latest deployment ID"
+          fi
+          
+          echo ""
+          echo "=== Next Steps ==="
+          echo "If the deployment is not active:"
+          echo "1. Check Cloudflare Dashboard → Workers → musical → Deployments"
+          echo "2. Manually activate the latest deployment"
+          echo "3. Verify API token has 'Account.Cloudflare Workers:Edit' permission"
+          echo "4. Check if worker has 'Protect deployments' enabled (might prevent auto-activation)"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
