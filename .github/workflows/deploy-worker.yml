@@ -83,17 +83,19 @@ jobs:
           echo "=== Deployment output (last 50 lines) ==="
           echo "$DEPLOY_OUTPUT" | tail -50
           
-          # Extract deployment version/ID from output
-          VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE 'version [0-9a-f]{8}' | head -1 | awk '{print $2}' || echo "")
+          # Extract deployment version/ID from output (Cloudflare uses UUID format)
+          VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE 'Current Version ID: [a-f0-9-]{36}' | head -1 | awk '{print $4}' || echo "")
           if [ -n "$VERSION" ]; then
-            echo "Deployed version ID: $VERSION"
+            echo "✅ Deployed version ID: $VERSION"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
           else
-            # Try alternative pattern
-            VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE '[0-9a-f]{8}' | head -1 || echo "")
+            # Try alternative pattern for version ID
+            VERSION=$(echo "$DEPLOY_OUTPUT" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1 || echo "")
             if [ -n "$VERSION" ]; then
-              echo "Found version ID: $VERSION"
+              echo "✅ Found version ID: $VERSION"
               echo "version=$VERSION" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️  Could not extract version ID from output"
             fi
           fi
           
@@ -101,38 +103,43 @@ jobs:
           echo ""
           echo "=== Checking deployments AFTER deploy ==="
           sleep 3
-          npx wrangler deployments list 2>&1 || echo "Failed to list deployments"
+          DEPLOYMENTS_LIST=$(npx wrangler deployments list 2>&1)
+          echo "$DEPLOYMENTS_LIST"
           
-          # Get the latest deployment ID
-          LATEST_DEPLOY_ID=$(npx wrangler deployments list 2>&1 | grep -E "^[0-9a-f]{8}" | head -1 | awk '{print $1}' || echo "")
+          # Get the latest deployment version ID (UUID format)
+          LATEST_DEPLOY_ID=$(echo "$DEPLOYMENTS_LIST" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1 || echo "")
           
           if [ -n "$LATEST_DEPLOY_ID" ]; then
             echo ""
-            echo "✅ Latest deployment ID found: $LATEST_DEPLOY_ID"
+            echo "✅ Latest deployment version ID found: $LATEST_DEPLOY_ID"
             
-            # Check if it's already active
-            ACTIVE_CHECK=$(npx wrangler deployments list 2>&1 | grep -i "active\|latest" | head -1 || echo "")
-            if [ -z "$ACTIVE_CHECK" ]; then
-              echo "⚠️  Latest deployment is NOT active"
-              echo "Attempting to activate deployment $LATEST_DEPLOY_ID..."
+            # Use the version ID from deployment output if available, otherwise use latest from list
+            VERSION_TO_ACTIVATE=${VERSION:-$LATEST_DEPLOY_ID}
+            echo "Version to check/activate: $VERSION_TO_ACTIVATE"
+            
+            # Check if deployment output indicates it's already active
+            if echo "$DEPLOY_OUTPUT" | grep -q "Current Version ID"; then
+              echo "✅ Deployment output shows 'Current Version ID' - deployment should be active"
+              echo "   If it's not active in dashboard, it may need manual activation"
+            else
+              echo "⚠️  Deployment created but may not be active"
+              echo "Attempting to activate version $VERSION_TO_ACTIVATE..."
               
-              # Try to rollback to latest (which activates it)
-              ROLLBACK_OUTPUT=$(npx wrangler deployments rollback $LATEST_DEPLOY_ID 2>&1)
+              # Try to rollback to the version (which activates it)
+              ROLLBACK_OUTPUT=$(npx wrangler deployments rollback $VERSION_TO_ACTIVATE 2>&1)
               ROLLBACK_EXIT=$?
               
               if [ $ROLLBACK_EXIT -eq 0 ]; then
-                echo "✅ Successfully activated deployment $LATEST_DEPLOY_ID"
+                echo "✅ Successfully activated version $VERSION_TO_ACTIVATE"
               else
                 echo "⚠️  Could not automatically activate deployment"
                 echo "Rollback output: $ROLLBACK_OUTPUT"
                 echo ""
                 echo "MANUAL ACTION REQUIRED:"
                 echo "1. Go to: https://dash.cloudflare.com → Workers & Pages → musical → Deployments"
-                echo "2. Find version $LATEST_DEPLOY_ID"
+                echo "2. Find the latest deployment (created just now)"
                 echo "3. Click the three dots (⋯) → 'Deploy version'"
               fi
-            else
-              echo "✅ Deployment appears to be active: $ACTIVE_CHECK"
             fi
           else
             echo "❌ CRITICAL: Could not find any deployments!"
@@ -157,8 +164,9 @@ jobs:
           
           echo ""
           echo "=== Checking Active Deployment ==="
-          # Get the latest deployment ID
-          LATEST_DEPLOY=$(npx wrangler deployments list 2>&1 | grep -E "^[0-9a-f]{8}" | head -1 | awk '{print $1}' || echo "")
+          # Get the latest deployment ID (UUID format)
+          DEPLOYMENTS_FULL=$(npx wrangler deployments list 2>&1)
+          LATEST_DEPLOY=$(echo "$DEPLOYMENTS_FULL" | grep -oE '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}' | head -1 || echo "")
           
           if [ -n "$LATEST_DEPLOY" ]; then
             echo "Latest deployment ID found: $LATEST_DEPLOY"
