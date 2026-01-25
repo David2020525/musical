@@ -1048,7 +1048,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             for (let i = 0; i < retries; i++) {
                 setTimeout(() => {
                     el = document.getElementById(id);
-                    if (el) console.log(`Found ${id} element on retry ${i + 1}`);
+                    if (el) console.log('Found ' + id + ' element on retry ' + (i + 1));
                 }, 100 * (i + 1));
             }
             return el;
