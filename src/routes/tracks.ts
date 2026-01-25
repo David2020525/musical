@@ -292,6 +292,18 @@ tracks.get('/stats', async (c) => {
       dbAvailable: !!db
     })
 
+    // If all stats are 0, verify database has data by checking a sample
+    if (tracksCount === 0 && usersCount === 0) {
+      console.warn('All stats are 0 - verifying database has data...')
+      try {
+        const sampleCheck = await db.prepare('SELECT COUNT(*) as count FROM tracks LIMIT 1').first()
+        const sampleUsers = await db.prepare('SELECT COUNT(*) as count FROM users LIMIT 1').first()
+        console.log('Sample check - tracks:', JSON.stringify(sampleCheck), 'users:', JSON.stringify(sampleUsers))
+      } catch (checkError) {
+        console.error('Error checking database samples:', checkError)
+      }
+    }
+
     return c.json({
       success: true,
       data: stats
