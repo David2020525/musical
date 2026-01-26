@@ -1619,8 +1619,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             
             // Add DEMO badge if this is a demo track
             if (featured.is_demo) {
-                const demoBadge = locale === 'tr' ? 'DEMO' : 'DEMO';
-                html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">' + demoBadge + '</div>';
+                html += '<div class="absolute top-4 left-4 z-20 px-3 py-1 bg-purple-500/80 backdrop-blur-sm rounded-full text-xs font-bold">DEMO</div>';
             }
             
             html += '</div>';
@@ -1931,12 +1930,18 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     
     // Ensure demo tracks are displayed if API fails or times out
     // Set a timeout to show demo tracks if loadHomepageData takes too long
-    setTimeout(() => {
+    setTimeout(function() {
         const editorsPicksContainer = document.getElementById('editorsPicks');
-        if (editorsPicksContainer && editorsPicksContainer.querySelector('.animate-pulse')) {
-            // Still showing loading skeleton, API likely failed - show demo tracks
-            console.log('Timeout: API took too long, showing demo tracks');
-            displayDemoTracks();
+        if (editorsPicksContainer) {
+            var hasContent = editorsPicksContainer.innerHTML.trim().length > 0;
+            var hasLoadingSkeleton = editorsPicksContainer.querySelector('.animate-pulse');
+            if (hasLoadingSkeleton || !hasContent) {
+                // Still showing loading skeleton or empty, API likely failed - show demo tracks
+                console.log('Timeout: API took too long or no content, showing demo tracks');
+                displayDemoTracks();
+            }
+        } else {
+            console.warn('editorsPicks container not found in timeout check');
         }
     }, 5000); // 5 second timeout
     
