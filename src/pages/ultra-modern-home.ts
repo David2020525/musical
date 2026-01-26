@@ -666,7 +666,8 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     console.log('Homepage script starting...');
     
     // Generate Play Button HTML (exposed to window)
-    window.generatePlayButton = function(track, size = 'md') {
+    window.generatePlayButton = function(track, size) {
+        if (!size) size = 'md';
         const sizes = {
             sm: { btn: 'w-8 h-8 text-xs', icon: 'text-xs' },
             md: { btn: 'w-12 h-12 text-sm', icon: 'text-sm' },
@@ -677,40 +678,26 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // Use safe JSON escaping function
         const trackJson = escapeJsonForAttribute(track);
         
-        return \`
-            <button 
-                class="play-btn \${sizeClasses.btn} rounded-full bg-gradient-to-br from-purple-600 to-pink-600 
-                       text-white flex items-center justify-center shadow-lg hover:shadow-xl 
-                       hover:scale-110 transition-all duration-300 group relative overflow-hidden"
-                data-track-id="\${track.id}"
-                data-track="\${trackJson}"
-                onclick="playTrack(this)"
-                title="Play \${escapeHtml(track.title || 'Track')}"
-            >
-                <div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <i class="fas fa-play \${sizeClasses.icon} relative z-10 play-icon"></i>
-                <i class="fas fa-pause \${sizeClasses.icon} relative z-10 pause-icon hidden"></i>
-                <div class="absolute inset-0 rounded-full animate-ping bg-purple-400 opacity-0 group-active:opacity-75"></div>
-            </button>
-            
-            <style>
-                .play-btn:active {
-                    transform: scale(0.95);
-                }
-                
-                .play-btn.playing {
-                    box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), 0 0 40px rgba(236, 72, 153, 0.4);
-                }
-                
-                .play-btn.playing .play-icon {
-                    display: none;
-                }
-                
-                .play-btn.playing .pause-icon {
-                    display: block;
-                }
-            </style>
-        \`;
+        var trackTitle = escapeHtml(track.title || 'Track');
+        return '<button ' +
+            'class="play-btn ' + sizeClasses.btn + ' rounded-full bg-gradient-to-br from-purple-600 to-pink-600 ' +
+            'text-white flex items-center justify-center shadow-lg hover:shadow-xl ' +
+            'hover:scale-110 transition-all duration-300 group relative overflow-hidden" ' +
+            'data-track-id="' + track.id + '" ' +
+            'data-track="' + trackJson + '" ' +
+            'onclick="playTrack(this)" ' +
+            'title="Play ' + trackTitle + '">' +
+            '<div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>' +
+            '<i class="fas fa-play ' + sizeClasses.icon + ' relative z-10 play-icon"></i>' +
+            '<i class="fas fa-pause ' + sizeClasses.icon + ' relative z-10 pause-icon hidden"></i>' +
+            '<div class="absolute inset-0 rounded-full animate-ping bg-purple-400 opacity-0 group-active:opacity-75"></div>' +
+            '</button>' +
+            '<style>' +
+            '.play-btn:active { transform: scale(0.95); }' +
+            '.play-btn.playing { box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), 0 0 40px rgba(236, 72, 153, 0.4); }' +
+            '.play-btn.playing .play-icon { display: none; }' +
+            '.play-btn.playing .pause-icon { display: block; }' +
+            '</style>';
     };
     
     // Fetch and display tracks data
