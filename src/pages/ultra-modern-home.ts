@@ -1358,6 +1358,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 });
                 if (!fallbackTriggered) {
                     fallbackTriggered = true;
+                    console.log('Calling displayDemoTracks as fallback');
                     displayDemoTracks();
                 }
             }
@@ -1552,15 +1553,34 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         console.log('displayEditorsPicks called with tracks:', tracks);
         console.log('Tracks type:', typeof tracks, 'Is array:', Array.isArray(tracks));
         
-        const container = document.getElementById('editorsPicks');
+        // Try to find container, with retry if not immediately available
+        let container = document.getElementById('editorsPicks');
         
         if (!container) {
-            console.error('Editors Picks container not found!');
-            console.error('Available elements with "editors" in id:', Array.from(document.querySelectorAll('[id*="editors" i]')).map(el => el.id));
+            console.warn('Editors Picks container not found immediately, retrying...');
+            // Wait a bit and try again (DOM might not be ready)
+            setTimeout(function() {
+                container = document.getElementById('editorsPicks');
+                if (container) {
+                    console.log('Container found on retry');
+                    displayEditorsPicksContent(container, tracks);
+                } else {
+                    console.error('Editors Picks container still not found after retry!');
+                    console.error('Available elements with "editors" in id:', Array.from(document.querySelectorAll('[id*="editors" i]')).map(function(el) { return el.id; }));
+                }
+            }, 200);
             return;
         }
         
         console.log('Container found:', container);
+        displayEditorsPicksContent(container, tracks);
+    }
+    
+    function displayEditorsPicksContent(container, tracks) {
+        if (!container) {
+            console.error('displayEditorsPicksContent: container is null');
+            return;
+        }
         
         if (!tracks || !Array.isArray(tracks) || tracks.length === 0) {
             console.warn('No tracks provided to displayEditorsPicks. Tracks:', tracks);
@@ -1583,7 +1603,13 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             
             // Build featured track HTML with card-level click (no play button overlay)
             // Use safe JSON escaping function
-            const trackJson = escapeJsonForAttribute(featured);
+            let trackJson;
+            try {
+                trackJson = escapeJsonForAttribute(featured);
+            } catch (e) {
+                console.error('Error escaping track JSON:', e);
+                trackJson = JSON.stringify(featured).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            }
             let html = '<div class="glass-strong rounded-3xl overflow-hidden card-3d group cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
             html += '<div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center relative overflow-hidden">';
             html += '<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>';
@@ -1609,10 +1635,16 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // Build other tracks HTML with card-level click
             if (rest.length > 0) {
                 html += '<div class="grid grid-rows-2 gap-6">';
-                rest.forEach(track => {
+                rest.forEach(function(track) {
                     if (!track) return;
                     // Use safe JSON escaping function
-                    const trackJson = escapeJsonForAttribute(track);
+                    let trackJson;
+                    try {
+                        trackJson = escapeJsonForAttribute(track);
+                    } catch (e) {
+                        console.error('Error escaping track JSON:', e);
+                        trackJson = JSON.stringify(track).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    }
                     html += '<div class="glass-strong rounded-3xl p-6 card-3d group cursor-pointer flex items-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10" onclick="playTrackFromCard(this)" data-track="' + trackJson + '">';
                     html += '<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">';
                     
