@@ -744,7 +744,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         const isPlaying = window.GlobalAudioPlayer.isPlaying();
         
         // Update all track cards
-        document.querySelectorAll('[data-track]').forEach(card => {
+        document.querySelectorAll('[data-track]').forEach(function(card) {
             try {
                 const trackData = card.getAttribute('data-track');
                 if (!trackData) return;
@@ -1061,7 +1061,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // Remove ALL shimmer/loading elements - use querySelectorAll to get all
             const shimmers = el.querySelectorAll('.shimmer');
             console.log('Found', shimmers.length, 'shimmer elements');
-            shimmers.forEach(shimmer => {
+            shimmers.forEach(function(shimmer) {
                 console.log('Removing shimmer element:', shimmer);
                 shimmer.remove();
             });
@@ -1070,7 +1070,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // This is more aggressive - remove all children first
             const children = Array.from(el.children);
             console.log('Found', children.length, 'child elements');
-            children.forEach(child => {
+            children.forEach(function(child) {
                 // Remove any span, div, or other element that might be a placeholder
                 if (child.classList.contains('shimmer') || 
                     child.classList.contains('glass') ||
@@ -1244,7 +1244,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         } catch (err) {
             console.error('Stats loading error:', err);
             // Even if loadStats fails, try to remove shimmer placeholders and show zeros
-            ['trackCount', 'userCount', 'playCount', 'artistCount'].forEach(id => {
+            ['trackCount', 'userCount', 'playCount', 'artistCount'].forEach(function(id) {
                 const el = document.getElementById(id);
                 if (el) {
                     // Remove all shimmer elements
@@ -1343,7 +1343,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 displayTrackGrid(tracks.slice(0, 8));
                 
                 // Display Blog Preview (async - don't await, let it load independently)
-                displayBlogPreview().catch(err => {
+                displayBlogPreview().catch(function(err) {
                     console.error('Error loading blog preview:', err);
                 });
             } else {
@@ -1902,7 +1902,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             // Reveal sections immediately if they're in view
             revealOnLoad();
             // Load homepage data (includes stats)
-            loadHomepageData().catch(error => {
+            loadHomepageData().catch(function(error) {
                 console.error('loadHomepageData failed:', error);
                 // If loadHomepageData fails, show demo tracks as fallback
                 console.log('Falling back to demo tracks due to loadHomepageData error');
@@ -1914,7 +1914,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
             console.error('Critical error in homepage initialization:', error);
             // Even on error, try to load stats independently
             try {
-                loadStats().catch(e => console.error('Stats failed in error handler:', e));
+                loadStats().catch(function(e) { console.error('Stats failed in error handler:', e); });
             } catch (statsError) {
                 console.error('Stats loading failed in error handler:', statsError);
             }
