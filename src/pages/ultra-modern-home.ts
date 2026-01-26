@@ -1039,22 +1039,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
     async function loadStats() {
         console.log('loadStats() called');
         
-        // Retry mechanism to find elements if they're not immediately available
-        function getStatElement(id, retries = 5) {
-            let el = document.getElementById(id);
-            if (el) return el;
-            
-            // Retry with delay if element not found
-            for (let i = 0; i < retries; i++) {
-                setTimeout(() => {
-                    el = document.getElementById(id);
-                    if (el) console.log('Found ' + id + ' element on retry ' + (i + 1));
-                }, 100 * (i + 1));
-            }
-            return el;
-        }
-        
-        // Try to get elements, with retry if needed
+        // Get elements
         let trackCountEl = document.getElementById('trackCount');
         let userCountEl = document.getElementById('userCount');
         let playCountEl = document.getElementById('playCount');
@@ -1063,7 +1048,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
         // If elements not found, wait a bit and try again
         if (!trackCountEl || !userCountEl || !playCountEl || !artistCountEl) {
             console.warn('Some stat elements not found immediately, waiting 200ms...');
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(function(resolve) { setTimeout(resolve, 200); });
             trackCountEl = document.getElementById('trackCount');
             userCountEl = document.getElementById('userCount');
             playCountEl = document.getElementById('playCount');
@@ -1180,7 +1165,7 @@ export function ultraModernHomeHTML(locale: Locale = 'en') {
                 const playsValue = Number(stats.plays) || 0;
                 const artistsValue = Number(stats.artists) || 0;
                 
-                console.log('Converted values:', { tracksValue, usersValue, playsValue, artistsValue });
+                console.log('Converted values:', { tracksValue: tracksValue, usersValue: usersValue, playsValue: playsValue, artistsValue: artistsValue });
                 
                 // Update all stats immediately - elements should be available by now
                 if (trackCountEl) {
